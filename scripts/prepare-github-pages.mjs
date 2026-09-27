@@ -4,7 +4,7 @@ import { join, relative } from 'node:path';
 const outputRoot = join(import.meta.dirname, '..', 'dist');
 const basePath = '/AI-DIRECTOR';
 const textExtensions = new Set(['.html', '.js', '.mjs', '.css']);
-const rootedAsset = /(["'`=(\s])\/(?!\/)(shared-ui|engine|project|assets|component-previews|player)\//g;
+const rootedAsset = /(["'`=(\s])\/(?!\/)(shared-ui|engine|project|assets|component-previews|player|vendor)\//g;
 
 async function visit(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
