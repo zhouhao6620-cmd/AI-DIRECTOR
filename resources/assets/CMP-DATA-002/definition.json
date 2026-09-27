@@ -1,0 +1,142 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-002",
+    "name": "StatProof｜数据实证",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KPI_STATEMENT",
+    "pattern": "NUMBER_WITH_PROVENANCE",
+    "useCases": [
+      "用一个核心数字说明规模、比例或成绩",
+      "给数字配上单位、出处与中文解释"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/stat-proof/content.schema.json",
+    "requiredFields": [
+      "kicker",
+      "value"
+    ],
+    "optionalFields": [
+      "kickerZh",
+      "prefix",
+      "suffix",
+      "footEn",
+      "footZh"
+    ],
+    "nodeShape": "单数字：kicker（英文等宽）+ 可选中文小注 + 核心数字（可选前后缀）+ 可选双语注脚",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "kickerMaxLength": 32,
+    "kickerZhMaxLength": 24,
+    "prefixMaxLength": 4,
+    "suffixMaxLength": 8,
+    "footEnMaxLength": 48,
+    "footZhMaxLength": 40,
+    "valueLimit": 1000000000000,
+    "labelCapacityNote": "150 px 巨号数字在 9:16 安全区内约容纳 10 位数字；更长的数值自动缩小到 14 px 下限，仍放不下则明确拒绝，不裁切数字。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "count-up",
+      "composableParameter": "countMs｜计数时长（来源 400–5000 ms，对齐口播）；保留为可编排参数，本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "glass｜来源玻璃底",
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/stat-proof/StatProof.jsx",
+    "export": "StatProof",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "countMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal",
+        "Emphasis"
+      ],
+      "description": "整卡先上浮淡入（不透明度 600 毫秒 CSS ease、位移 700 毫秒 cubic-bezier(0.22, 1, 0.36, 1)，自 +24 px），核心数字用 ease-out-expo 在 countMs 内从 0 滚到目标值；计数落定 1.4 秒后巨号数字按来源进入轻微『呼吸』（2.8 秒一个来回，亮度 1→1.12 并叠加 9 px 强调色光晕）。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"IBM Plex Mono\", ui-monospace, \"SF Mono\", monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourceEffectId": "stat-proof",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/StatProof.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一，AKK 项目使用 5 次）；来源设计优先，保留裸排版四件套（kicker + 小注 + 巨号数字 + 双语注脚）、150 px 字级、字距、强调色与滚动计数动画，仅适配内容树、文字测量、画幅、安全区定位、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04A_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04A_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "数据实证",
+    "description": "用一个核心数字及出处支撑画面中的结论。",
+    "tags": [
+      "数字",
+      "证据"
+    ],
+    "aliases": [
+      "数据证明",
+      "核心数字"
+    ]
+  }
+}

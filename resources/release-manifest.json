@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "applicationId": "com.hao.aivideodirector.r3",
+  "releaseVersion": "0.1.0",
+  "engine": {
+    "name": "hyperframes",
+    "version": "0.8.46",
+    "files": ["engine/hyperframes/hyperframe.runtime.iife.js", "engine/hyperframes/hyperframes-player.global.js", "engine/hyperframes/gsap.min.js"]
+  },
+  "seeds": {
+    "sharedAssets": [{"id": "r3-hyperframes-assets", "version": "m0-b-accepted", "source": "hyperframes-assets", "installArea": "asset-library"}],
+    "productSkills": []
+  },
+  "schemas": [],
+  "licenses": ["licenses/THIRD_PARTY_NOTICES.md"],
+  "notes": "Product Skill and formal business schema seeds are intentionally empty until M0-D."
+}

@@ -1,0 +1,79 @@
+{
+  "componentId": "CMP-ENT-001",
+  "folder": "entity-chips",
+  "content": {
+    "chips": [
+      {
+        "id": "org-1",
+        "style": "LIGHT",
+        "name": "枝鸥实验室",
+        "sub": "ORG · STUDIO"
+      },
+      {
+        "id": "person-1",
+        "style": "DARK",
+        "name": "讲解人 A",
+        "sub": "主讲 · 第一作者"
+      }
+    ],
+    "noteA": "侧注上行",
+    "noteB": "代码 / 身份小字"
+  },
+  "optionDefaults": {
+    "size": 1,
+    "positionOffset": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "stepMs": 500,
+    "position": "LEFT",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 15,
+    "durationInFrames": 210
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "ink": "#ffffff",
+      "muted": "rgba(255, 255, 255, 0.70)",
+      "faint": "rgba(255, 255, 255, 0.44)",
+      "node": "#12121a"
+    },
+    "LIGHT": {
+      "ink": "#1a2540",
+      "muted": "rgba(26, 37, 64, 0.66)",
+      "faint": "rgba(26, 37, 64, 0.42)",
+      "node": "#ece6e0"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

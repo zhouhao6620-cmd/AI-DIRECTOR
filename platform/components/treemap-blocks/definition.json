@@ -1,0 +1,182 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-023",
+    "name": "TreemapBlocks｜矩形树图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_COMPOSITION",
+    "pattern": "SQUARIFIED_TREEMAP",
+    "useCases": [
+      "3–8 个构成项的面积占比（例：收入结构、流量来源、成本拆解）",
+      "面积按数值分配，块按数值降序依次长出来",
+      "每个块内部直接给名称 + 数值 + 占比，不需要坐标轴"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 8,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/treemap-blocks/content.schema.json",
+    "requiredFields": [
+      "blocks"
+    ],
+    "optionalFields": [
+      "unit"
+    ],
+    "nodeShape": "矩形：稳定 ID + 1–6 字标签 + 大于 0 的数值（±2 位小数、≤1e9）；可选统一单位后缀（最多 4 字）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 3,
+    "maxCardinality": 8,
+    "labelMaxLength": 6,
+    "unitMaxLength": 4,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "块内文字两行（标签 + 数值·占比），字号先按来源公式 min(innerWidth × 0.16, innerHeight × 0.2, 34 px) 取，再按真实字宽与三行高收缩，渲染后下限 12 px。8 个块、最大 / 最小 ≤ 4 倍时可全部容纳 6 字标签；落差更大时最小的块会触到下限被拒绝（来源的行为是直接把标签丢掉）。块的最小内尺寸由面积分配决定：面积按数值等比，落差越大最小的块越小。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2
+    },
+    "sizeNote": "来源 820 × 460 px = 默认大小（1.0）；缩放为整组件等比缩放，默认大小与默认落位不变。",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯图形组件，内容树里没有图片或视频素材位。",
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "block-growth",
+      "composableParameter": "来源固定每块 20 帧落定、错峰 6 帧（按数值降序）；本批不开放参数"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK"
+    ],
+    "surfaceDefault": "DARK",
+    "surfaceNote": "块内文字（标签与数值）压在自己彩色的块上，来源墨色固定深墨 #0b0b10，与画布底色无关，因此不提供浅底模式。",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源退场：本项目由实例时长决定",
+      "showShare｜来源占比开关：占比是这部分内容的信息，固定开启",
+      "colors / valueFormatter｜来源逐项取色与自定义格式：改为四套主题色板 + 项目数值格式"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/treemap-blocks/TreemapBlocks.jsx",
+    "export": "TreemapBlocks",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Stagger",
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "矩形按数值降序依次长出来：每块 20 帧、错峰 6 帧，从自己的中心把内外尺寸推到目标值（EASING.enter）；标签与数值在这条进度的后 40% 淡入。",
+      "implementationNote": "按技能 V1.4 §4.1 自持规范：内联 interpolate()、Interactive.* + name（每个块是可选中元素）、输出范围与 easing 硬编码。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "复制式来源 `treemap-blocks`（registry/bases/default/primitives/treemap-blocks.tsx，MIT · commit 802a637）：squarify 铺块算法、gap 8 / 圆角 12、字号公式、标签与数值在块内的摆位、按数值降序的错峰入场全部保留。",
+      "elements": "零件私有副本：chart-utils（formatCompactNumber）、motion-tokens（EASING）、timing（EASING_ENTER / EASING_EXIT）。"
+    },
+    "knownDifferences": [
+      "标签与数值：来源按 fits 阈值（fontSize > 9 且宽度够）决定画不画，本组件改为「先缩字号到放得下，到渲染后 12 px 下限仍放不下就拒绝并指出是哪一块」，不静默丢内容。",
+      "数值格式：来源用最大 1 位小数的紧凑写法，本组件保留紧凑写法但按真实小数位显示到 2 位，不静默取整。",
+      "占比：来源 Math.round(value / total × 100)，本组件沿用（占比是整数百分比，四舍五入是这一步的语义本身）。",
+      "画布与落位：来源固定 820 × 460，本组件按画幅等比缩放并落到安全区 0–1 比例。",
+      "配色：来源 5 色板保留为 SOURCE；四套项目主题另有色板。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "treemap-blocks",
+    "sourceRegistryUrl": "https://remotionui.com/r/treemap-blocks.json",
+    "sourcePath": "RemotionGit/registry/treemap-blocks.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/treemap-blocks.tsx（riaz37/remotion-ui）",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "802a63708cc5c13936bcccb47f091a0b14325cb5（2026-09-11）",
+    "sourceLicense": "MIT（RemotionGit/repo/LICENSE）",
+    "sourceRole": "来源设计优先：铺块算法、间距与圆角、块内文字摆位与字号公式、降序错峰节奏全部保留；只改可编辑内容、中文字宽校验、画幅、安全区定位、主题映射与透明输出。",
+    "reuseAnalysis": "三级复用查完的结论：① 已注册 23 项里没有构成占比 / 面积拆分类组件（RankBars 是排名条形、GrowthCurve 是时间序列、RingMetric 是单一比例、StatProof 是单个数字），且已注册目录本卡不可修改 → 不复用；② 组件内元素登记表尚未正式登记，无现成片段可拆 → 不拆；③ 元素零件工厂命中 3 个零件：chart-utils（数值紧凑格式）、motion-tokens（EASING）、timing（motion-tokens 的 registry 依赖）→ 取这 3 个零件（组件私有副本）；铺块算法属来源组件本体，随源码适配。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/components/treemap-blocks/elements/chart-utils/",
+        "status": "Adapted",
+        "usedFor": "formatCompactNumber（数值紧凑写法）"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/components/treemap-blocks/elements/motion-tokens/",
+        "status": "Adapted",
+        "usedFor": "EASING.enter（矩形生长）"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "timing",
+        "source": "RemotionGit/registry/timing.json",
+        "localPath": "platform/components/treemap-blocks/elements/timing/",
+        "status": "Adapted",
+        "usedFor": "motion-tokens 的 registry 依赖"
+      }
+    ],
+    "elementPromotionNeeded": "chart-utils / motion-tokens / timing 在本批被复制 5–6 次，按技能 V1.4 护栏第 12 条必须先提升为 platform/elements/ 共享零件；本窗口按任务卡第 6 节边界未自行提升，等待总控执行。",
+    "rawEvidence": "dev-control-panel/tasks/CMP-06_DATA_CHARTS_TASK.md",
+    "adaptationRef": "docs/component-assets/CMP-06_TREEMAP_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_TREEMAP_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.4 草稿通道：componentId = DRAFT-treemap、status = DRAFT；不占正式 CMP- 编号、不进能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-treemap → CMP-DATA-023，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-023/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "矩形占比图",
+    "description": "用矩形面积比较各部分在整体中的份额。",
+    "tags": [
+      "数据图表",
+      "构成"
+    ],
+    "aliases": [
+      "树图",
+      "矩形树图"
+    ]
+  }
+}

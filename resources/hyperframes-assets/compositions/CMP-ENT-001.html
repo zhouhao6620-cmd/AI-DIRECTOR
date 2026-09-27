@@ -1,0 +1,158 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"position","type":"enum","label":"落位","default":"LEFT","options":[{"value":"LEFT","label":"左侧"},{"value":"RIGHT","label":"右侧"}]},
+  {"id":"stepMs","type":"number","label":"逐枚节奏（毫秒）","default":500,"min":120,"max":1600,"step":20},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-ENT-001 人物机构标签 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-ent-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .etc-chip { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; text-shadow: none; }
+    .etc-note-a { font-weight: 800; color: rgba(255,255,255,0.85); white-space: pre; }
+    .etc-note-b { font-weight: 600; color: rgba(255,255,255,0.5); white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-ent-001" data-width="1920" data-height="1080">
+    <div data-scope><div data-box style="position:absolute;inset:0">
+      <div data-chips></div>
+      <div data-notes style="position:absolute;display:flex;flex-direction:column"></div>
+    </div></div>
+
+    <script type="application/json" data-hf-content>
+      {"chips": [{"id": "org-1", "style": "LIGHT", "name": "枝鸥实验室", "sub": "ORG · STUDIO"}, {"id": "person-1", "style": "DARK", "name": "讲解人 A", "sub": "主讲 · 第一作者"}], "noteA": "侧注上行", "noteB": "代码 / 身份小字"}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {anchorInsetX: 120, anchorInsetY: 96, rowGap: 20, chipPaddingX: 28, chipPaddingY: 16, chipRadius: 12,
+          chipLightBackground: "rgba(255,255,255,0.94)", chipDarkBackground: "rgba(20,19,28,0.85)", chipDarkBorder: "rgba(255,255,255,0.14)",
+          chipBorderWidth: 1, chipShadow: "0 14px 34px rgba(0,0,0,0.3)", lightNameColor: "#16181d", lightSubColor: "rgba(22,24,29,0.62)",
+          darkNameColor: "#f4f2ec", nameFontSize: 30, nameLetterSpacingEm: 0.04, subFontSize: 15, subLetterSpacingEm: 0.2, subMarginTop: 5,
+          noteGap: 4, noteAFontSize: 22, noteBFontSize: 17, chipEnterMs: 500, chipSlideDistance: 30, noteSlideDistance: 20, staggerMs: 500};
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", darkSub: "rgba(244,242,236,0.62)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(255,255,255,0.70)", darkSub: "rgba(244,242,236,0.62)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-ent-001",
+          mount: "instance",           // 位置/大小由实例包装层承担（与 component-sample 的 WRAPPED_POSITION 同源）
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            position: String(variables.position || "LEFT").toUpperCase() === "RIGHT" ? "RIGHT" : "LEFT",
+            stepMs: Math.min(1600, Math.max(120, Number(variables.stepMs) || 500)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+          }),
+          applyTokens(ctx) {
+            ctx.root.setAttribute("data-position", ctx.options.position);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const chipsHost = root.querySelector("[data-chips]");
+            const notes = root.querySelector("[data-notes]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const alignRight = options.position === "RIGHT";
+            const anchorX = alignRight ? stage.width - GEO.anchorInsetX : GEO.anchorInsetX;
+            const anchorY = GEO.anchorInsetY;
+            const chips = (Array.isArray(content.chips) ? content.chips : []).slice(0, 4);
+            const noteA = String(content.noteA ?? "");
+            const noteB = String(content.noteB ?? "");
+            if (!chips.length) ctx.reject("人物机构标签至少需要一枚标签。");
+
+            chipsHost.textContent = "";
+            notes.textContent = "";
+            const nameFontSize = GEO.nameFontSize * scale;
+            const subFontSize = GEO.subFontSize * scale;
+            const padX = GEO.chipPaddingX * scale;
+            const padY = GEO.chipPaddingY * scale;
+            let cursorY = anchorY;
+            const nodes = chips.map((chip, index) => {
+              const name = String(chip.name ?? "");
+              const sub = String(chip.sub ?? "");
+              const nameWidth = measure.width(name, nameFontSize, 900, nameFontSize * GEO.nameLetterSpacingEm);
+              const subWidth = sub ? measure.width(sub, subFontSize, 700, subFontSize * GEO.subLetterSpacingEm) : 0;
+              const width = Math.max(nameWidth, subWidth) + padX * 2;
+              const height = (nameFontSize * 1.2 + (sub ? GEO.subMarginTop * scale + subFontSize * 1.2 : 0)) + padY * 2;
+              const node = document.createElement("div");
+              node.className = "etc-chip";
+              node.setAttribute("data-etc-chip-id", chip.id ?? `chip-${index}`);
+              node.setAttribute("data-etc-chip-style", String(chip.style ?? "LIGHT").toUpperCase());
+              node.style.cssText = `left:${alignRight ? anchorX - width : anchorX}px;top:${cursorY}px;width:${width}px;height:${height}px;`
+                + `padding:${padY}px ${padX}px;border-radius:${GEO.chipRadius * scale}px;box-shadow:${GEO.chipShadow};`
+                + `background:${String(chip.style).toUpperCase() === "DARK" ? GEO.chipDarkBackground : GEO.chipLightBackground};`
+                + (String(chip.style).toUpperCase() === "DARK" ? `border:${GEO.chipBorderWidth * scale}px solid ${GEO.chipDarkBorder};` : "border:none;");
+              const nameNode = document.createElement("span");
+              nameNode.setAttribute("data-etc-name", "");
+              nameNode.style.cssText = `white-space:pre;color:${String(chip.style).toUpperCase() === "DARK" ? GEO.darkNameColor : GEO.lightNameColor};`
+                + `font-size:${nameFontSize}px;font-weight:900;letter-spacing:${nameFontSize * GEO.nameLetterSpacingEm}px;line-height:${nameFontSize * 1.2}px;`;
+              nameNode.textContent = name;
+              node.appendChild(nameNode);
+              if (sub) {
+                const subNode = document.createElement("span");
+                subNode.setAttribute("data-etc-sub", "");
+                subNode.style.cssText = `white-space:pre;font-family:var(--font-mono);color:rgba(244,242,236,0.62);`
+                  + `font-size:${subFontSize}px;font-weight:700;letter-spacing:${subFontSize * GEO.subLetterSpacingEm}px;line-height:${subFontSize * 1.2}px;margin-top:${GEO.subMarginTop * scale}px;`;
+                subNode.textContent = sub;
+                node.appendChild(subNode);
+              }
+              chipsHost.appendChild(node);
+              cursorY += height + GEO.rowGap * scale;
+              return node;
+            });
+
+            if (noteA || noteB) {
+              notes.style.cssText += `;left:${alignRight ? anchorX - 420 * scale : anchorX}px;top:${cursorY + GEO.noteGap * scale}px;gap:${GEO.noteGap * scale}px;`
+                + `align-items:${alignRight ? "flex-end" : "flex-start"};`;
+              if (noteA) {
+                const node = document.createElement("div");
+                node.className = "etc-note-a";
+                node.setAttribute("data-etc-note", "");
+                node.style.fontSize = `${GEO.noteAFontSize * scale}px`;
+                node.textContent = noteA;
+                notes.appendChild(node);
+              }
+              if (noteB) {
+                const node = document.createElement("div");
+                node.className = "etc-note-b";
+                node.setAttribute("data-etc-note", "");
+                node.style.fontSize = `${GEO.noteBFontSize * scale}px`;
+                node.textContent = noteB;
+                notes.appendChild(node);
+              }
+            }
+
+            nodes.forEach((node, index) => {
+              const at = (index * options.stepMs) / 1000;
+              timeline.from(node, {opacity: 0, x: -GEO.chipSlideDistance * scale, duration: GEO.chipEnterMs / 1000, ease: "power3.out"}, at);
+            });
+            if (notes.children.length) {
+              timeline.from(notes.children, {opacity: 0, x: -GEO.noteSlideDistance * scale, duration: GEO.chipEnterMs / 1000, ease: "power3.out"}, (chips.length * options.stepMs) / 1000);
+            }
+            ctx.setAttr(root, "data-chip-count", chips.length);
+            ctx.meta = {chips: chips.length, position: options.position};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

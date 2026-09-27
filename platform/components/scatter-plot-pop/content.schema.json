@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ScatterPlotPopContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["points"],
+  "properties": {
+    "points": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "x", "y"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "x": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "y": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 100}
+        }
+      }
+    },
+    "xLabel": {"type": "string", "maxLength": 8, "pattern": "^[^\\r\\n\\t]*$"},
+    "yLabel": {"type": "string", "maxLength": 8, "pattern": "^[^\\r\\n\\t]*$"}
+  }
+}

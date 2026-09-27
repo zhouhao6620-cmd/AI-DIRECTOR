@@ -1,0 +1,165 @@
+<!doctype html>
+<!--
+  CMP-DATA-005 环形进度指标 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 组件库改造，不是基线）
+  事实源：workbench-v0/platform/components/ring-metric/**（只读复制）
+          · 版式：ring 320 / 半径 140 / 线宽 14 / gap 26 / kicker 20·0.2em / 数字 92·300·-0.02em /
+            单位 40 / 标签 26 / 安全区 X 84÷1080、Y 8%
+          · 动效：进度 1100ms ease-out-expo 从 0 到目标比例（弧长 = C×(1-ratio×progress)，数字同步数起）
+          · 内容：{kicker, value, max, decimals, unit, label}
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-DATA-005 环形进度指标 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-005"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --track: rgba(255,255,255,0.16); --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .rm-card { position: absolute; display: flex; flex-direction: column; align-items: center; color: var(--ink); }
+    .rm-kicker { font-family: var(--font-mono); font-weight: 600; text-transform: uppercase; color: var(--muted); white-space: pre; }
+    .rm-ring { position: relative; }
+    .rm-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .rm-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .rm-num { display: flex; align-items: baseline; font-family: var(--font-mono); font-weight: 300; color: var(--ink); white-space: pre; }
+    .rm-unit { color: var(--muted); white-space: pre; }
+    .rm-label { color: var(--muted); white-space: pre; line-height: 1.2; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-005" data-width="1920" data-height="1080">
+    <div class="rm-card" data-card>
+      <div class="rm-kicker" data-kicker></div>
+      <div class="rm-ring" data-ring>
+        <svg viewBox="0 0 320 320" aria-hidden="true">
+          <circle data-track cx="160" cy="160" r="140" fill="none" stroke-width="14" stroke="var(--track)"/>
+          <circle data-prog cx="160" cy="160" r="140" fill="none" stroke-width="14" stroke="var(--accent)"
+            stroke-linecap="round" stroke-dasharray="879.6459" stroke-dashoffset="879.6459"/>
+        </svg>
+        <div class="rm-center"><div class="rm-num"><span data-value></span><span class="rm-unit" data-unit></span></div></div>
+      </div>
+      <div class="rm-label" data-label></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"kicker": "COMPLETION", "value": 72, "max": 100, "decimals": 0, "unit": "%", "label": "本季度目标完成度"}
+    </script>
+
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/canvas-backdrop.js"></script>
+    <script src="/vendor/hf-component-kit.js"></script>
+    <script>
+      (function () {
+        const GEO = {ringSize: 320, ringRadius: 140, strokeWidth: 14, gap: 26, kickerFontSize: 20, kickerLetterSpacingEm: 0.2,
+          numFontSize: 92, numLetterSpacingEm: -0.02, unitFontSize: 40, unitMarginLeft: 4, labelFontSize: 26, maxValue: 1000};
+        const CIRCUMFERENCE = 2 * Math.PI * GEO.ringRadius;
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", track: "rgba(255,255,255,0.16)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", track: "rgba(26,37,64,0.13)"},
+        };
+        const formatNumber = (value, decimals) => value.toLocaleString("en-US", {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+
+        hfComponentKit.mount({
+          id: "cmp-data-005",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--track", tokens.track);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const factor = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const gap = GEO.gap * factor;
+            const value = Number(content.value ?? 0);
+            const max = Math.max(1, Number(content.max ?? 100));
+            const decimals = Number.isInteger(Number(content.decimals)) ? Math.max(0, Math.min(2, Number(content.decimals))) : 0;
+            const ratio = Math.max(0, Math.min(1, value / max));
+            const kicker = String(content.kicker ?? "");
+            const unit = String(content.unit ?? "");
+            const label = String(content.label ?? "");
+
+            const kickerNode = root.querySelector("[data-kicker]");
+            kickerNode.style.cssText = `font-size:${GEO.kickerFontSize * factor}px;letter-spacing:${GEO.kickerFontSize * GEO.kickerLetterSpacingEm * factor}px;margin-bottom:${gap}px;`;
+            kickerNode.textContent = kicker;
+            const ring = root.querySelector("[data-ring]");
+            ring.style.cssText = `width:${GEO.ringSize * factor}px;height:${GEO.ringSize * factor}px;`;
+            ring.querySelector("svg").setAttribute("viewBox", `0 0 ${GEO.ringSize} ${GEO.ringSize}`);
+            const center = {x: GEO.ringSize / 2, y: GEO.ringSize / 2};
+            ring.querySelectorAll("circle").forEach(circle => {
+              circle.setAttribute("cx", String(center.x));
+              circle.setAttribute("cy", String(center.y));
+              circle.setAttribute("r", String(GEO.ringRadius));
+              circle.setAttribute("stroke-width", String(GEO.strokeWidth));
+              if (circle.hasAttribute("data-prog")) circle.setAttribute("stroke-dasharray", String(CIRCUMFERENCE));
+            });
+            const numNode = root.querySelector(".rm-num");
+            numNode.style.cssText = `font-size:${GEO.numFontSize * factor}px;letter-spacing:${GEO.numFontSize * GEO.numLetterSpacingEm * factor}px;`;
+            const unitNode = root.querySelector("[data-unit]");
+            unitNode.style.cssText = `font-size:${GEO.unitFontSize * factor}px;margin-left:${GEO.unitMarginLeft * factor}px;`;
+            unitNode.textContent = unit;
+            const labelNode = root.querySelector("[data-label]");
+            labelNode.style.cssText = `font-size:${GEO.labelFontSize * factor}px;margin-top:${gap}px;`;
+            labelNode.textContent = label;
+
+            const cardWidth = Math.min(availableWidth, Math.max(GEO.ringSize * factor,
+              measure.width(kicker, GEO.kickerFontSize * factor, 600, 0),
+              measure.width(label, GEO.labelFontSize * factor, 400, 0)));
+            card.style.width = `${cardWidth}px`;
+            card.style.gap = `${gap}px`;
+            const cardHeight = card.getBoundingClientRect().height;
+            card.style.left = `${safeX + (availableWidth - cardWidth) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - cardHeight) * options.position.y}px`;
+
+            const progCircle = root.querySelector("[data-prog]");
+            const valueNode = root.querySelector("[data-value]");
+            const counter = {progress: 0};
+            valueNode.textContent = formatNumber(0, decimals);
+            timeline.to(counter, {
+              progress: 1, duration: 1.1, ease: "expo.out",
+              onUpdate: () => {
+                progCircle.setAttribute("stroke-dashoffset", String(CIRCUMFERENCE * (1 - ratio * counter.progress)));
+                valueNode.textContent = formatNumber(value * counter.progress, decimals);
+              },
+            }, 0);
+            ctx.setAttr(root, "data-ratio", ratio.toFixed(6));
+            ctx.setAttr(root, "data-value", String(value));
+            ctx.meta = {ratio, cardWidth: Math.round(cardWidth)};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "applicationId": "com.hao.aivideodirector.r3",
+  "releasePackage": {
+    "includes": ["application-code", "engine-runtime", "product-skill-seeds", "shared-asset-seeds", "schemas-and-config", "licenses", "release-manifest"],
+    "excludes": ["project-workspaces", "app-data", "runtime", "cache", "logs", "temp", "preview", "jobs", "test-artifacts"]
+  },
+  "appDataRoot": {
+    "directories": ["asset-library", "product-skills", "settings", "registries"],
+    "seedPolicy": "Install or upgrade versioned release seeds without treating mutable AppData as part of the release package."
+  },
+  "projectPackage": {
+    "requiredEntries": ["project.json", "01_输入素材", "02_导演计划", "03_项目实现", "04_导出成片"],
+    "excludedNames": ["runtime", ".runtime", "cache", ".cache", "build", "logs", "temp", "preview", "jobs"]
+  },
+  "runtimeRoot": {
+    "directories": ["jobs", "cache", "preview", "build", "logs", "temp"],
+    "durability": "deletable-and-rebuildable"
+  }
+}

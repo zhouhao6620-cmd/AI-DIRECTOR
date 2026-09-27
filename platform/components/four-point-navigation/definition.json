@@ -1,0 +1,109 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-NAV-004",
+    "name": "FourPointNavigation｜逐项导航",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "PROGRESSIVE_NAVIGATION",
+    "pattern": "PARALLEL_SEQUENTIAL_FOCUS",
+    "useCases": [
+      "讲解 3–5 个并列要点",
+      "逐项说明并突出当前要点"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 5,
+    "depth": "ONE_LEVEL",
+    "density": "LOW_MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/four-point-navigation/content.schema.json",
+    "requiredFields": [
+      "title",
+      "items"
+    ],
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 3,
+    "maxCardinality": 5,
+    "titleMaxLength": 40,
+    "itemMaxLength": 48,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "sequential-focus"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/four-point-navigation/FourPointNavigation.jsx",
+    "export": "FourPointNavigation",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal",
+        "Emphasis"
+      ],
+      "description": "保留来源弹簧入场、逐项显现、1.035 倍当前项强调；默认每 1.35 秒移至下一项，短时长时压缩强调间隔，随实例结束移除。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif"
+  },
+  "provenance": {
+    "source": "LOCAL_REMOTION",
+    "sourcePath": "/Users/skyai/Documents/ChatGPT/Remotion/smoke-test-remotion-free-core/src/remotion/FourPointNavigation.tsx",
+    "sourceRole": "用户本地原生样例；来源设计优先，保留布局、字体、原色、卡片、徽章、阴影和动画，仅适配内容树、安全区、画幅、可选主题和正式合同",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "qaRef": "docs/component-assets/CMP-02_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "逐项导航",
+    "description": "逐条讲解并列要点，始终突出当前讲到的一项。",
+    "tags": [
+      "要点",
+      "流程"
+    ],
+    "aliases": [
+      "四点导航",
+      "要点切换"
+    ]
+  }
+}

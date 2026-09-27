@@ -1,0 +1,136 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-SUB-001",
+    "name": "SubtitleTrack｜字幕轨",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "SUBTITLE",
+    "pattern": "TIME_SYNCED_CAPTION",
+    "useCases": [
+      "按正式字幕时间轴显示中文主行",
+      "中文主行 + 英文小字 + 关键词强调"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 500,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/subtitle-track/content.schema.json",
+    "requiredFields": [
+      "cues"
+    ],
+    "optionalFields": [
+      "translation"
+    ],
+    "nodeShape": "字幕条：稳定 ID + 真实起止毫秒（startMs / endMs）+ 中文主行 text；translation 为可选英文小字",
+    "primaryLine": "text，支持来源的 *关键词* 强调标记",
+    "secondaryLine": "translation（可选英文小字行）",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 500,
+    "textMaxLength": 80,
+    "translationMaxLength": 120,
+    "outOfBounds": "REJECT_WITH_MESSAGE",
+    "srtAdapter": "platform/components/subtitle-track/srt.js（复用平台既有 SRT 解析结果）"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": true,
+    "variants": [
+      "BILINGUAL",
+      "ZH_ONLY"
+    ],
+    "variantDefault": "BILINGUAL",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "timeline-switch"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "strokeToggle": "stroke 保留来源「描边」开关，默认关闭；描边宽度与颜色固定为来源默认值",
+    "variantLabels": {
+      "BILINGUAL": "双语字幕",
+      "ZH_ONLY": "中文字幕"
+    }
+  },
+  "runtime": {
+    "module": "platform/components/subtitle-track/SubtitleTrack.jsx",
+    "export": "SubtitleTrack",
+    "props": [
+      "content",
+      "position",
+      "variant",
+      "stroke",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal"
+      ],
+      "description": "字幕按真实时间轴直接切换：来源刻意不做淡入淡出，避免换行空档在成片里闪一下；中文主行按时长整段出现，关键词用强调色点亮，英文小字作为二级行跟随。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 1,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "globalLayer": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "remotionui": "核验 SRT Caption Track 的数据模型：src / source / captions 输入、wordTiming、combineTokensWithinMilliseconds、offsetInFrames、activeColor / inactiveColor / fontSize，确认字幕条应以「字幕文件 → 时间字幕数组 → 按时间渲染」为合同；本轮未安装该包，未复制其源码。",
+      "overlay": "复用 CaptionTrack 的中文排版、双语小字、关键词点亮、描边与底部居中落位；保留 44 / 17 px、0.04 / 0.1 em 字距、1.35 行高、44 px 底距与三层黑晕。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO_WITH_REMOTIONUI_MODEL_CHECK",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/CaptionTrack.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "modelCheckPath": "/Users/skyai/Documents/ChatGPT/Remotion/research/remotion-foundation/data/remotionui-components.normalized.json（srt-caption-track 记录，commit 802a637）",
+    "sourceRole": "中文排版与双语样式来自用户本地内部制作来源 CaptionTrack；时间字幕数据模型按 RemotionUI SRT Caption Track 的能力记录核验；保留底部居中、白字黑晕、关键词点亮、英文小字与直接切换，仅适配真实字幕时间轴、内容树、画幅、位置比例、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-03_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-03_SUBTITLE_TRACK_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "字幕",
+    "description": "按时间轴显示中文或双语字幕，并突出关键词。",
+    "tags": [
+      "全局包装",
+      "文字"
+    ],
+    "aliases": [
+      "字幕轨",
+      "双语字幕"
+    ]
+  }
+}

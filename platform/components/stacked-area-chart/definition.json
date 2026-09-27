@@ -1,0 +1,162 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-022",
+    "name": "StackedAreaChart｜堆叠面积图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_TREND",
+    "pattern": "STACKED_BANDS_WIPE",
+    "useCases": [
+      "2–4 条系列在 3–6 个类别上的累积构成",
+      "色带自下而上依次横向擦入，图例与刻度同时给出"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 4,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/stacked-area-chart/content.schema.json",
+    "requiredFields": [
+      "categories",
+      "series"
+    ],
+    "optionalFields": [
+      "title",
+      "unit",
+      "caption"
+    ],
+    "nodeShape": "系列：稳定 ID + 1–8 字系列名 + 与类别同长的 3–6 个非负数值；横轴类别为 3–6 个 1–6 字标签",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 4,
+    "titleMaxLength": 14,
+    "seriesLabelMaxLength": 8,
+    "categoryMaxLength": 6,
+    "unitMaxLength": 4,
+    "captionMaxLength": 28,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "880 px 图表宽、绘图区约 796 px：6 个类别时每槽约 159 px，6 个汉字在 19 px 下仍放得下（12 px 下限可容 13 字）。图例按实测宽度排布，4 条 8 字系列名共约 814 px，超宽时明确拒绝——来源用固定 133 px 间距，8 字中文会直接压到下一个色块上。数值轴刻度按真实字体测量，左侧刻度区不得超过图表宽度的 34%。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "band-wipe",
+      "composableParameter": "wipeMs｜单条色带擦入时长（来源 60 帧 = 2000 ms，可编排范围 600–6000 ms）；色带错峰固定为来源的 8 帧（267 ms）；本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.4,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源的退场，本项目由编排层控制出点",
+      "width / height｜来源的像素参数，本项目固定为 880 × 460 并整组件等比缩放",
+      "showAxis / showXLabels / showLegend / showBoundaries｜来源开关，固定为开（图表要自带刻度、图例与色带边界）",
+      "colors｜来源的调色板数组，改为四套主题 + 明暗底色映射（来源原色为 SOURCE 默认）",
+      "valueFormatter｜来源接受函数，内容树不能存函数，固定为项目的中文紧凑格式",
+      "labels 与 series.values 长度不一致｜来源按 0 静默补齐，本项目明确拒绝"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/stacked-area-chart/StackedAreaChart.jsx",
+    "export": "StackedAreaChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "wipeMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Stagger"
+      ],
+      "description": "色带按 8 帧（267 ms）自下而上依次错峰，每条用 EASING.editorial = cubic-bezier(0.45, 0, 0.55, 1) 让一条横向裁剪从左走到右擦入（不是淡入、也不是纵向生长——堆叠面积读的是一段历史，按时间轴揭开才和横轴一致）。色带上边缘同色发丝线随色带一起揭开，图例项跟着对应色带出现。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, PingFang SC, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTION_UI",
+    "sourceEffectId": "stacked-area-chart",
+    "sourcePath": "RemotionGit/registry/stacked-area-chart.json → registry/bases/default/primitives/stacked-area-chart.tsx",
+    "sourceRole": "RemotionUI 来源库（源码复制式，MIT，commit 802a637）；来源设计优先：保留 880 × 460 画布、累积堆叠口径、由峰值堆叠决定的值域、横向裁剪擦入的顺序语义、色带顶部同色发丝线与 0.85 填充不透明度，仅适配块尺寸测量、安全区定位、整组件缩放、刻度与图例实测、内容树、画幅、主题映射与透明输出",
+    "reuseAnalysis": "复用结论：① 已注册 23 项里 GrowthCurve 只有单条曲线与渐变面积、RankBars 是条形排名，都不能承载「多条系列累积构成 + 按时间揭开」的语义，也不允许在并行批次里改动；② 组件内元素尚未正式登记，本组件用不到；③ 取零件工厂的 chart-utils（累积值域 + 平滑路径 + 中文紧凑刻度）与 motion-tokens（editorial 曲线）两个零件装配，无需补建。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/elements/chart-utils/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/elements/motion-tokens/",
+        "status": "Adapted"
+      }
+    ],
+    "rawEvidence": "RemotionGit/README.md（来源与许可记录：MIT，commit 802a637）",
+    "adaptationRef": "docs/component-assets/CMP-06_DATA_CHARTS_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-06_STACKED_AREA_CHART_QA_REPORT.md",
+    "draftLane": "本组件是 CMP-06 A 批草稿：componentId = DRAFT-stacked-area-chart、status = DRAFT，不占正式 CMP- 编号，不进能力索引，AI 导演不可见。",
+    "sourceNote": "来源条目已在本地可真实渲染（http://127.0.0.1:4174/remotionui-preview.html 左侧目录 179 项之一）；仓库 License 为 MIT（RemotionGit/repo/LICENSE）。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-stacked-area-chart → CMP-DATA-022，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-022/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "堆叠面积图",
+    "description": "展示多组数据随类别变化的累计构成。",
+    "tags": [
+      "数据图表",
+      "趋势",
+      "构成"
+    ],
+    "aliases": [
+      "面积图",
+      "堆叠趋势"
+    ]
+  }
+}

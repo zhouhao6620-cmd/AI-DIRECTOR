@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "FunnelChartContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stages"],
+  "properties": {
+    "stages": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "value"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 8, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "value": {"type": "number", "minimum": 0, "maximum": 1000000000},
+          "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+        }
+      }
+    },
+    "unit": {"type": "string", "maxLength": 6, "pattern": "^[^\\r\\n\\t]*$"},
+    "showDropoff": {"type": "boolean"},
+    "showConversion": {"type": "boolean"}
+  }
+}

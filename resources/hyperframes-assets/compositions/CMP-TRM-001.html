@@ -1,0 +1,142 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-TRM-001 术语解释 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-trm-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --accent: #5fa0fa;
+      --glass: linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+      --glass-shadow: 0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .tc-card { position: absolute; box-sizing: border-box; background: var(--glass); box-shadow: var(--glass-shadow); }
+    .tc-en { font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; color: var(--muted); white-space: pre; }
+    .tc-term { font-weight: 800; color: var(--accent); }
+    .tc-def { font-weight: 400; color: var(--ink); }
+    .tc-line { white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-trm-001" data-width="1920" data-height="1080">
+    <div class="tc-card" data-card>
+      <div class="tc-en" data-en></div>
+      <div class="tc-term" data-term></div>
+      <div class="tc-def" data-def></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"en": ["THROUGHPUT"], "term": ["吞吐量"], "definition": ["单位时间内系统真正处理完的请求数量，", "它比“并发数”更接近用户感受到的速度。"]}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {cardContentWidth: 620, paddingX: 38, paddingY: 34, radius: 22, accentBorder: 5,
+          enFontSize: 20, enLetterSpacingEm: 0.14, enMarginBottom: 10,
+          termFontSize: 52, termLetterSpacingEm: -0.01, termLineHeight: 1.2,
+          defFontSize: 30, defLineHeight: 1.45, defMarginTop: 18,
+          enterMs: 520, enterOffsetY: 16, enterScaleFrom: 0.98};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", glass: "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+            shadow: "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", glass: "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+            shadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-trm-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--glass", tokens.glass);
+            ctx.root.style.setProperty("--glass-shadow", tokens.shadow);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const enNode = root.querySelector("[data-en]");
+            const termNode = root.querySelector("[data-term]");
+            const defNode = root.querySelector("[data-def]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const en = (Array.isArray(content.en) ? content.en : []).map(String).filter(Boolean);
+            const term = (Array.isArray(content.term) ? content.term : []).map(String).filter(Boolean);
+            const definition = (Array.isArray(content.definition) ? content.definition : []).map(String).filter(Boolean);
+            if (!term.length) ctx.reject("术语卡至少需要术语名。");
+
+            const termLetterSpacing = GEO.termFontSize * GEO.termLetterSpacingEm;
+            const termLines = term.flatMap(line => measure.wrap(line, GEO.cardContentWidth, GEO.termFontSize, GEO.termFontWeight ?? 800, termLetterSpacing));
+            if (termLines.length > 2) ctx.reject("术语名过长：超过 2 行，请缩短术语。");
+            const defLines = definition.flatMap(line => measure.wrap(line, GEO.cardContentWidth, GEO.defFontSize, 400, 0));
+            if (defLines.length > 4) ctx.reject("解释过长：超过 4 行，请精简说明。");
+
+            enNode.textContent = en.join(" ");
+            enNode.style.display = en.length ? "block" : "none";
+            termNode.textContent = "";
+            defNode.textContent = "";
+            termLines.forEach(line => {
+              const node = document.createElement("div");
+              node.className = "tc-line";
+              node.textContent = line;
+              termNode.appendChild(node);
+            });
+            defLines.forEach(line => {
+              const node = document.createElement("div");
+              node.className = "tc-line";
+              node.textContent = line;
+              defNode.appendChild(node);
+            });
+            card.style.cssText = `padding:${GEO.paddingY * scale}px ${GEO.paddingX * scale}px;border-radius:${GEO.radius * scale}px;`
+              + `border-left:${GEO.accentBorder * scale}px solid var(--accent);transform-origin:left center;`;
+            enNode.style.cssText = `font-size:${GEO.enFontSize * scale}px;letter-spacing:${GEO.enFontSize * GEO.enLetterSpacingEm * scale}px;margin-bottom:${GEO.enMarginBottom * scale}px;`;
+            termNode.style.cssText = `font-size:${GEO.termFontSize * scale}px;line-height:${GEO.termLineHeight};letter-spacing:${termLetterSpacing * scale}px;`;
+            defNode.style.cssText = `font-size:${GEO.defFontSize * scale}px;line-height:${GEO.defLineHeight};margin-top:${GEO.defMarginTop * scale}px;`;
+
+            const box = card.getBoundingClientRect();
+            card.style.left = `${safeX + (availableWidth - box.width) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - box.height) * options.position.y}px`;
+
+            timeline.from(card, {opacity: 0, duration: GEO.enterMs / 1000, ease: "power3.out"}, 0);
+            timeline.from(card, {y: GEO.enterOffsetY * scale, scale: GEO.enterScaleFrom, duration: GEO.enterMs / 1000, ease: "power3.out"}, 0);
+            ctx.setAttr(root, "data-term", term.join(""));
+            ctx.meta = {termLines: termLines.length, defLines: defLines.length};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

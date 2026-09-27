@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-label="合成测试文档页">
+  <rect width="1600" height="1000" fill="#f7f5f2"/>
+  <rect x="0" y="0" width="1600" height="96" fill="#141821"/>
+  <text x="64" y="60" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#ffffff">SYNTHETIC TEST PAGE</text>
+  <text x="64" y="82" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#9aa3b2">项目内合成素材 · 非真实论文 · 仅用于组件验证</text>
+  <rect x="64" y="152" width="620" height="26" rx="6" fill="#141821"/>
+  <rect x="64" y="200" width="1180" height="14" rx="7" fill="#141821" opacity="0.22"/>
+  <rect x="64" y="230" width="1080" height="14" rx="7" fill="#141821" opacity="0.22"/>
+  <rect x="64" y="260" width="1240" height="14" rx="7" fill="#141821" opacity="0.22"/>
+  <rect x="64" y="290" width="900" height="14" rx="7" fill="#141821" opacity="0.22"/>
+  <rect x="64" y="360" width="700" height="420" rx="14" fill="#ffffff" stroke="#141821" stroke-opacity="0.14" stroke-width="2"/>
+  <rect x="104" y="404" width="620" height="16" rx="8" fill="#1e63d8" opacity="0.85"/>
+  <rect x="104" y="440" width="480" height="16" rx="8" fill="#e0326f" opacity="0.75"/>
+  <rect x="104" y="476" width="560" height="16" rx="8" fill="#6353d6" opacity="0.75"/>
+  <rect x="104" y="512" width="380" height="16" rx="8" fill="#d97a1c" opacity="0.75"/>
+  <line x1="104" y1="700" x2="724" y2="700" stroke="#141821" stroke-opacity="0.2" stroke-width="2"/>
+  <rect x="104" y="726" width="120" height="30" rx="8" fill="#141821" opacity="0.85"/>
+  <rect x="240" y="726" width="90" height="30" rx="8" fill="#141821" opacity="0.45"/>
+  <rect x="346" y="726" width="160" height="30" rx="8" fill="#141821" opacity="0.25"/>
+  <rect x="820" y="360" width="716" height="200" rx="14" fill="#ffffff" stroke="#141821" stroke-opacity="0.14" stroke-width="2"/>
+  <rect x="860" y="400" width="360" height="20" rx="10" fill="#141821" opacity="0.6"/>
+  <rect x="860" y="444" width="560" height="14" rx="7" fill="#141821" opacity="0.2"/>
+  <rect x="860" y="472" width="500" height="14" rx="7" fill="#141821" opacity="0.2"/>
+  <rect x="860" y="500" width="420" height="14" rx="7" fill="#141821" opacity="0.2"/>
+  <rect x="820" y="596" width="716" height="184" rx="14" fill="#ffffff" stroke="#141821" stroke-opacity="0.14" stroke-width="2"/>
+  <circle cx="900" cy="688" r="42" fill="#1e63d8" opacity="0.85"/>
+  <rect x="972" y="660" width="480" height="18" rx="9" fill="#141821" opacity="0.55"/>
+  <rect x="972" y="696" width="380" height="14" rx="7" fill="#141821" opacity="0.22"/>
+  <text x="64" y="960" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#141821" opacity="0.55">Figure 1 — synthetic layout sample · 1600 × 1000</text>
+</svg>

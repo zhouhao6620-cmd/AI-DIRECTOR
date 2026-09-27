@@ -1,0 +1,131 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-QTE-001",
+    "name": "QuoteLockup｜引用金句",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KEY_STATEMENT",
+    "pattern": "MULTILINE_QUOTE_LOCKUP",
+    "useCases": [
+      "多条结论一次性定格",
+      "带署名的引用或金句"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 4,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/quote-lockup/content.schema.json",
+    "requiredFields": [
+      "lines"
+    ],
+    "optionalFields": [
+      "author"
+    ],
+    "nodeShape": "金句行数组（1–4 行，每行一个揭示遮罩）+ 可选署名",
+    "primaryLine": "lines[]，逐行揭示并保留",
+    "secondaryLine": "author（可选署名，等宽大写小标）",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 4,
+    "lineMaxLength": 36,
+    "authorMaxLength": 24,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "line-mask-reveal"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "positionSupport": "来源左侧 / 右侧锚点合并为安全区内的 0–1 位置；默认 1 / 0.5 即来源右侧落位"
+  },
+  "runtime": {
+    "module": "platform/components/quote-lockup/QuoteLockup.jsx",
+    "export": "QuoteLockup",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Mask Reveal",
+        "Sequential Reveal"
+      ],
+      "description": "每行从自身遮罩下方 112% 处升入并定格：760 毫秒同一条三次贝塞尔缓动，行间延迟 140 + 150 × 行号毫秒；引号淡入，强调色横线从左侧展开（700 毫秒，延迟 260 毫秒），署名最后淡入；全部元素保持不动，无退场。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 QuoteLockup 的金句卡形态：640 px 内容宽、42 / 52 / 44 px 内边距、玻璃底与来源卡片阴影、等宽 110 px 引号、48 px / 700 正文、92 × 4 px 强调色横线与等宽大写署名。"
+    },
+    "knownDifferences": [
+      "来源用 `|` 在单个字符串里手工分行；本项目把行作为内容数组，并在每行遮罩内按 640 px 内容宽自动换行，行内容不会被裁切。"
+    ]
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/QuoteLockup.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留金句卡布局、遮罩逐行揭示、引号、强调色横线、署名层级与来源配色；仅为行数组内容树、长行换行、画幅、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "引用金句",
+    "description": "将引用、结论和署名定格呈现。",
+    "tags": [
+      "观点",
+      "文字"
+    ],
+    "aliases": [
+      "金句卡",
+      "引述"
+    ]
+  }
+}

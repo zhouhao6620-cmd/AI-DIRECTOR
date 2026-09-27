@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "StageFlowContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stages"],
+  "properties": {
+    "title": {"type": "string", "maxLength": 18, "pattern": "^[^\\r\\n\\t]*$"},
+    "stages": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title"],
+        "properties": {
+          "title": {"type": "string", "minLength": 1, "maxLength": 14, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "detail": {"type": "string", "maxLength": 30, "pattern": "^[^\\r\\n\\t]*$"},
+          "icon": {
+            "type": "string",
+            "enum": ["", "shield", "activity", "heart-pulse", "brain", "layers", "target", "trending-up", "zap", "droplet", "atom", "pill", "flame", "leaf"]
+          }
+        }
+      }
+    },
+    "activeStageIndex": {"type": "integer", "minimum": -1, "maximum": 4},
+    "stepMs": {"type": "number", "minimum": 160, "maximum": 1200}
+  }
+}

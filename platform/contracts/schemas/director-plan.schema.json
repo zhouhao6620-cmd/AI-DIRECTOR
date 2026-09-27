@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "DirectorPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "overview", "chapters"],
+      "properties": {
+        "projectId": {"type": "string", "minLength": 1},
+        "overview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["videoTheme", "communicationGoal", "narrativeStructure", "overallVisualStrategy", "characterStrategy", "componentStrategy"],
+          "properties": {
+            "videoTheme": {"type": "string", "minLength": 1},
+            "communicationGoal": {"type": "string", "minLength": 1},
+            "narrativeStructure": {"type": "string", "minLength": 1},
+            "overallVisualStrategy": {"type": "string", "minLength": 1},
+            "characterStrategy": {"type": "string", "minLength": 1},
+            "componentStrategy": {"type": "string", "minLength": 1}
+          }
+        },
+        "chapters": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["chapterId", "title", "startMs", "endMs", "goal", "visualRole", "shots"],
+            "properties": {
+              "chapterId": {"type": "string", "minLength": 1},
+              "title": {"type": "string", "minLength": 1},
+              "startMs": {"type": "integer", "minimum": 0},
+              "endMs": {"type": "integer", "minimum": 1},
+              "goal": {"type": "string", "minLength": 1},
+              "visualRole": {"type": "string", "minLength": 1},
+              "shots": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["directorShotId", "title", "startMs", "endMs", "sourceSubtitle", "sourceSegmentIds", "keyMessage", "directorIntent", "visualStrategy", "characterLayout", "components", "assetGaps"],
+                  "properties": {
+                    "directorShotId": {"type": "string", "minLength": 1},
+                    "title": {"type": "string", "minLength": 1},
+                    "startMs": {"type": "integer", "minimum": 0},
+                    "endMs": {"type": "integer", "minimum": 1},
+                    "sourceSubtitle": {"type": "string", "minLength": 1},
+                    "sourceSegmentIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+                    "keyMessage": {"type": "string", "minLength": 1},
+                    "directorIntent": {"type": "string", "minLength": 1},
+                    "visualStrategy": {"type": "string", "minLength": 1},
+                    "characterLayout": {"type": "string", "enum": ["FULL_CHARACTER", "SPLIT_LAYOUT", "SMALL_CHARACTER"]},
+                    "components": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["componentId", "componentType", "componentName", "purpose", "contentBinding", "sequence", "relation"],
+                        "properties": {
+                          "componentId": {"type": "string", "minLength": 1},
+                          "componentType": {"type": "string", "minLength": 1},
+                          "componentName": {"type": "string", "minLength": 1},
+                          "purpose": {"type": "string", "minLength": 1},
+                          "contentBinding": {"type": "object"},
+                          "sequence": {"type": "integer", "minimum": 1},
+                          "relation": {"type": "string", "enum": ["SEQUENTIAL", "PARALLEL", "CONTINUE"]},
+                          "componentVersion": {"type": "string", "minLength": 1},
+                          "role": {"type": "string", "enum": ["PRIMARY", "SUPPORTING"]},
+                          "presentation": {"type": "string", "enum": ["OVERLAY", "IN_ZONE"]},
+                          "slotIntent": {"type": "string", "minLength": 1}
+                        }
+                      }
+                    },
+                    "assetGaps": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["type", "recommendation"],
+                        "properties": {
+                          "type": {"type": "string", "enum": ["NEW_COMPONENT", "AI_GENERATION"]},
+                          "recommendation": {"type": "string", "minLength": 1}
+                        }
+                      }
+                    },
+                    "readiness": {"type": "string", "minLength": 1}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "schemaVersion", "lifecycle", "directorPlanVersion", "inputRevision", "createdAt", "traceability", "critic", "executabilityPassed"],
+      "properties": {
+        "artifactId": {"type": "string", "minLength": 1},
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "lifecycle": {"type": "string", "enum": ["DRAFT", "CANDIDATE", "CONFIRMED", "READY_FOR_PACKAGING", "FROZEN"]},
+        "directorPlanVersion": {"type": "string", "minLength": 1},
+        "inputRevision": {"type": "string", "minLength": 1},
+        "createdAt": {"type": "string", "minLength": 1},
+        "traceability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contentUnderstandingArtifactId", "componentCapabilityIndexRevision"],
+          "properties": {
+            "contentUnderstandingArtifactId": {"type": "string", "minLength": 1},
+            "componentCapabilityIndexRevision": {"type": "string", "minLength": 1}
+          }
+        },
+        "critic": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "correctionAttempts", "issues"],
+          "properties": {
+            "status": {"type": "string", "enum": ["PENDING", "PASSED", "NEEDS_FIX", "NEEDS_USER_DECISION"]},
+            "correctionAttempts": {"type": "integer", "minimum": 0, "maximum": 1},
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "reason", "resolution"],
+                "properties": {
+                  "type": {"type": "string", "minLength": 1},
+                  "directorShotId": {"type": "string", "minLength": 1},
+                  "reason": {"type": "string", "minLength": 1},
+                  "resolution": {"type": "string", "enum": ["KEEP_STATE", "MODIFY", "REGENERATE", "DEFER", "ASSET_GAP"]}
+                }
+              }
+            }
+          }
+        },
+        "executabilityPassed": {"type": "boolean"}
+      }
+    }
+  }
+}

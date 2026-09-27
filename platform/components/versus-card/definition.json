@@ -1,0 +1,128 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-VRS-001",
+    "name": "VersusCard｜双项对比",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "COMPARISON",
+    "pattern": "DUAL_SIDE_CONTRAST",
+    "useCases": [
+      "两个对象或方案并列比较",
+      "突出其中一边、压暗另一边"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 2,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/versus-card/content.schema.json",
+    "requiredFields": [
+      "a",
+      "b",
+      "emphasis"
+    ],
+    "optionalFields": [],
+    "nodeShape": "两侧对比内容：各含 kicker / title / sub；emphasis 指出 A、B 或都不强调",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 2,
+    "kickerMaxLength": 16,
+    "titleMaxLength": 24,
+    "subMaxLength": 40,
+    "capacityNote": "16 / 24 / 40 字是内容上限，均可在来源 520 px 卡片内完整换行显示；超过行数上限（小标 1 行、标题 3 行、说明 3 行）时按可读性明确拒绝，不裁切文字。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "dual-side-collision"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "emphasisToggle": "emphasis 保留来源「强调哪边」三态：A / B / 都不"
+  },
+  "runtime": {
+    "module": "platform/components/versus-card/VersusCard.jsx",
+    "export": "VersusCard",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Dual Side Collision",
+        "Emphasis"
+      ],
+      "description": "两侧卡片从各自方向对撞合拢：左卡 translateX −48 px → 0、右卡 +48 px → 0，560 毫秒同一条三次贝塞尔缓动，右卡延迟 140 毫秒；中央 VS 徽章延迟 500 毫秒后淡入并从 0.5 倍放大到 1；被压暗的一边只降调边框与标题色，不进不退场。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 VersusCard 的双卡对撞布局、520 px 列宽、24 px 圆角、玻璃底与来源卡片阴影、84 px 圆形 VS 徽章（−42 px 重叠、5 px 底色描边）、等宽大写 kicker、48 px 标题、24 px 说明，以及 winner 三态的压暗规则。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/VersusCard.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留双卡对撞、中央徽章、来源配色令牌、玻璃卡与进场动画；仅为内容树、长文本、画幅、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "双项对比",
+    "description": "并列呈现两个方案或对象，并突出其中一方。",
+    "tags": [
+      "对比",
+      "观点"
+    ],
+    "aliases": [
+      "左右对比",
+      "方案对比"
+    ]
+  }
+}

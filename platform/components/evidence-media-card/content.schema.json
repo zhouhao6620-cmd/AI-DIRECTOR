@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "EvidenceMediaCardContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "media", "source"],
+  "properties": {
+    "title": {
+      "type": "string", "minLength": 1, "maxLength": 24,
+      "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+    },
+    "media": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "src", "frame"],
+      "properties": {
+        "kind": {"enum": ["IMAGE", "VIDEO"]},
+        "src": {"type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[^\\s][^\\r\\n\\t]*$"},
+        "frame": {"enum": ["WIDE", "SQUARE", "PORTRAIT"]},
+        "caption": {
+          "type": "string", "maxLength": 40,
+          "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+        }
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false, "required": ["publisher"],
+      "properties": {
+        "publisher": {
+          "type": "string", "minLength": 1, "maxLength": 20,
+          "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+        },
+        "workTitle": {
+          "type": "string", "maxLength": 40,
+          "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+        },
+        "reference": {
+          "type": "string", "maxLength": 48,
+          "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+        },
+        "date": {"type": "string", "maxLength": 16, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+        "url": {"type": "string", "maxLength": 64, "pattern": "^[^\\s][^\\r\\n\\t]*$"}
+      }
+    }
+  }
+}

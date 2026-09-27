@@ -1,0 +1,35 @@
+{
+  "elementId": "EL-UTIL-003",
+  "nameZh": "路径工具",
+  "nameEn": "path-utils",
+  "kind": "工具 / 参数",
+  "source": {
+    "from": "RemotionGit",
+    "file": "registry/path-utils.json",
+    "sourcePath": "registry/bases/default/lib/path-utils.ts",
+    "license": "MIT",
+    "commit": "802a637"
+  },
+  "localPath": "platform/elements/path-utils/",
+  "module": "platform/elements/path-utils/path-utils.js",
+  "status": "Adapted",
+  "renderable": true,
+  "usedBy": [
+    "CMP-DATA-016"
+  ],
+  "notes": "适配差异：来源的 pathLength / pointAtLength / getPathDrawStyles 转调 @remotion/paths，而该包不是本项目的声明依赖（只作为 @remotion/shapes / @remotion/transitions 的传递依赖出现，package-lock 里也没有），所以在本地重写了这三个原语：只解析本批图表会产生的 M / L / C / Z 命令，按弧长采样并缓存；输出与 evolvePath 一致的 strokeDasharray / strokeDashoffset。来源的 fitViewBox / waypointsToPath 未取用（本批图表用不到）。",
+  "elementType": "UTILITY",
+  "summary": "计算路径长度、路径上的点和描画样式，供连线动画复用。",
+  "tags": [
+    "路径",
+    "连线",
+    "描画"
+  ],
+  "exports": [
+    "pathLength",
+    "clampProgress",
+    "pointAtLength",
+    "getPathDrawStyles"
+  ],
+  "standalonePreviewable": false
+}

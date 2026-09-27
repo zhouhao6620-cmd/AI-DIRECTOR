@@ -1,0 +1,358 @@
+/* Workbench 公共骨架 · 设计规范页
+   只定义"规范展示"自身的版式；颜色、控件外观一律继承 src/styles.css 的 --wb-* 与公共类。 */
+
+/* 主工作台需要锁定视口；规范页是长文档，独立恢复纵向滚动。 */
+.design-spec-page {
+  overflow: auto;
+}
+
+.design-spec-page #root {
+  min-height: 100vh;
+}
+
+.spec-app {
+  min-height: 100vh;
+  background: var(--wb-canvas, #fff);
+  color: var(--wb-text, #171717);
+  padding: 24px 32px 64px;
+  font: 400 14px/1.6 "PingFang SC", "Noto Sans CJK SC", Inter, system-ui, sans-serif;
+}
+
+.spec-topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--wb-border, #e7e7e9);
+}
+
+.spec-topbar h1 {
+  margin: 6px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.spec-meta {
+  max-width: 620px;
+  margin: 0;
+  color: var(--wb-text-muted, #737373);
+  font-size: 14px;
+}
+
+.spec-app code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  background: var(--wb-surface, #f7f7f8);
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.spec-section {
+  padding-top: 32px;
+}
+
+.spec-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.spec-index {
+  color: var(--wb-primary, #ff6a00);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.spec-section-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.spec-section-head p {
+  margin: 0;
+  color: var(--wb-text-muted, #737373);
+  font-size: 14px;
+}
+
+/* 01 骨架：真实外壳实例的取景框。
+   注意：这里**只做取景**（高度、裁切、外框），不覆盖 .topbar / .sidebar / .canvas / .inspector
+   的任何尺寸或颜色 —— 那些值唯一来源是 src/styles.css。 */
+.spec-shell-frame {
+  height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 8px;
+}
+
+/* 取景框适配：真实外壳是 height:100vh（填满浏览器视口），在取景框里让它填满取景框。
+   这是**唯一**一处作用域内的适配，不改变任何骨架尺寸 —— 48px 行高与 220 / 320 列宽
+   仍然只来自 src/styles.css。 */
+.spec-shell-frame .workbench-app {
+  height: 100%;
+}
+
+.spec-callout-strong {
+  margin-top: 16px;
+  border-left: 3px solid var(--wb-primary, #ff6a00);
+}
+
+/* 02 色板 */
+.spec-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.spec-swatch {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.spec-chip {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid var(--wb-border, #e7e7e9);
+}
+
+.spec-swatch div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spec-swatch code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--wb-text, #171717);
+}
+
+.spec-swatch strong {
+  font-size: 12px;
+  color: var(--wb-text-muted, #737373);
+}
+
+.spec-swatch p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--wb-text-muted, #737373);
+}
+
+.spec-callout {
+  margin-top: 16px;
+  border: 1px solid var(--wb-border, #e7e7e9);
+  background: var(--wb-surface, #f7f7f8);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+/* 03 表格 */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.spec-table th,
+.spec-table td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--wb-border, #e7e7e9);
+  vertical-align: top;
+}
+
+.spec-table th {
+  color: var(--wb-text-muted, #737373);
+  font-weight: 500;
+}
+
+.spec-table td:first-child {
+  white-space: nowrap;
+  color: var(--wb-text, #171717);
+}
+
+/* 04/05 控件与模式 */
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+}
+
+.spec-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.spec-cell p {
+  margin: 0;
+  color: var(--wb-text-muted, #737373);
+  font-size: 12px;
+}
+
+.spec-cell .field-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.control-feature-title {
+  color: var(--wb-text, #171717);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.transform-control-demo {
+  display: grid;
+  gap: 9px;
+}
+
+.transform-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 9px;
+  color: var(--wb-text-soft, #9a9a9f);
+  font-size: 12px;
+}
+
+.transform-row output {
+  color: var(--wb-text-muted, #737373);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.range-input {
+  width: 100%;
+  height: 20px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range-input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--wb-primary, #ff6a00) 0 var(--range-progress, 50%), #dfe1e4 var(--range-progress, 50%) 100%);
+}
+
+.range-input::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  appearance: none;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--wb-primary, #ff6a00);
+  box-shadow: 0 1px 4px rgba(30, 25, 20, 0.18);
+}
+
+.range-input::-moz-range-track { height: 6px; border-radius: 999px; background: #dfe1e4; }
+.range-input::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--wb-primary, #ff6a00); }
+.range-input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; background: var(--wb-primary, #ff6a00); }
+}
+
+.transform-row .select-shell {
+  grid-column: 2 / 4;
+  width: 100%;
+}
+
+.spec-cell .input-shell,
+.spec-cell .segmented-control,
+.spec-cell .toast-message {
+  width: 100%;
+}
+
+.spec-source {
+  align-self: flex-start;
+}
+
+.spec-states {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-states span {
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--wb-text-muted, #737373);
+}
+
+.spec-states .is-selected {
+  border-color: var(--wb-primary, #ff6a00);
+  color: var(--wb-primary, #ff6a00);
+  background: #fff3ea;
+}
+
+.spec-states .is-focus {
+  border-color: var(--wb-primary, #ff6a00);
+  color: var(--wb-text, #171717);
+}
+
+.spec-states .is-disabled {
+  opacity: 0.45;
+}
+
+/* 列表与清单 */
+.spec-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--wb-text, #171717);
+  font-size: 14px;
+}
+
+.spec-checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 8px;
+}
+
+.spec-checklist li {
+  position: relative;
+  border: 1px solid var(--wb-border, #e7e7e9);
+  border-radius: 6px;
+  padding: 9px 12px 9px 34px;
+  font-size: 14px;
+}
+
+.spec-checklist li::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 13px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--wb-border-strong, #d7d7da);
+  border-radius: 3px;
+}
+
+.spec-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--wb-border, #e7e7e9);
+  color: var(--wb-text-muted, #737373);
+  font-size: 14px;
+}

@@ -1,0 +1,221 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#e8b86d"},
+  {"id":"growMs","type":"number","label":"生长时长（毫秒）","default":1000,"min":300,"max":3000,"step":50},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-DATA-011 前后对比条形 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-011"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --ink: #fafafa; --label: rgba(250,250,250,0.55); --before: rgba(250,250,250,0.22); --bar-ink: #0b0b10; --accent: #e8b86d;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .cb-box { position: absolute; display: flex; flex-direction: column; transform-origin: 0 0; }
+    .cb-title { color: var(--ink); font-weight: 700; line-height: 1.2; white-space: pre; }
+    .cb-legend { display: flex; align-items: center; color: var(--label); font-weight: 600; }
+    .cb-swatch { display: block; border-radius: 4px; }
+    .cb-row { display: flex; align-items: center; }
+    .cb-label { color: var(--ink); white-space: pre; overflow: hidden; }
+    .cb-bars { flex: 1; display: flex; flex-direction: column; }
+    .cb-track { position: relative; width: 100%; }
+    .cb-bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; transform-origin: left center; }
+    .cb-bar.is-before { background: var(--before); }
+    .cb-bar.is-after { background: var(--accent); }
+    .cb-value { position: absolute; top: 50%; transform: translateY(-50%); color: var(--bar-ink); font-weight: 700; white-space: pre; }
+    .cb-delta { color: var(--accent); font-weight: 700; white-space: pre; }
+    .cb-caption { color: var(--label); white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-011" data-width="1920" data-height="1080">
+    <div class="cb-box" data-box>
+      <div class="cb-title" data-title></div>
+      <div class="cb-legend" data-legend>
+        <span style="display:flex;align-items:center;gap:8px"><span class="cb-swatch" data-swatch-before></span><span data-legend-before></span></span>
+        <span style="display:flex;align-items:center;gap:8px;margin-left:26px"><span class="cb-swatch" data-swatch-after></span><span data-legend-after></span></span>
+      </div>
+      <div data-rows></div>
+      <div class="cb-caption" data-caption></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"title": "本机合成样例", "beforeLabel": "改造前", "afterLabel": "改造后", "unit": "件", "caption": "数值来自本机合成样例", "rows": [{"id": "row-1", "label": "单件耗时", "before": 42, "after": 18}, {"id": "row-2", "label": "人工介入", "before": 26, "after": 7}, {"id": "row-3", "label": "返工次数", "before": 15, "after": 3}, {"id": "row-4", "label": "交付周期", "before": 30, "after": 21}]}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {boxWidth: 820, rowHeight: 74, rowGap: 26, labelWidth: 190, labelPaddingRight: 20, barGap: 8,
+          barRadiusRatio: 0.28, chipHeightRatio: 0.5, labelFontRatio: 0.5, valueFontRatio: 0.46, legendFontRatio: 0.46,
+          legendSwatchRatio: 0.42, titleFontSize: 30, titleMarginBottom: 16, captionFontSize: 16, captionMarginTop: 10,
+          valueRevealStart: 0.55, valueRevealWindow: 0.25, deltaRevealStart: 0.86, deltaRevealWindow: 0.14, deltaSlidePx: 12, deltaGap: 14};
+        const MOTION = {defaultStaggerMs: 400, defaultPairOffsetMs: 200};
+        const SAFE_SIDE_RATIO = 0.0625;
+        const SAFE_VERTICAL_RATIO = 0.08;
+        const MIN_SCALE = 0.62;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#fafafa", label: "rgba(250,250,250,0.55)", before: "rgba(250,250,250,0.22)", barInk: "#0b0b10"},
+          LIGHT: {ink: "#12131a", label: "rgba(18,19,26,0.62)", before: "rgba(18,19,26,0.16)", barInk: "#ffffff"},
+        };
+        const formatCompact = value => {
+          const rounded = Math.round(value * 10) / 10;
+          return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+        };
+        const deltaOf = row => {
+          if (row.delta !== undefined && row.delta !== "") return row.delta;
+          const change = Number(row.before) === 0 ? 0 : ((Number(row.after) - Number(row.before)) / Number(row.before)) * 100;
+          return `${change >= 0 ? "+" : "−"}${Math.abs(Math.round(change))}%`;
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-data-011",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#e8b86d"),
+            growMs: Math.min(3000, Math.max(300, Number(variables.growMs) || 1000)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--label", tokens.label);
+            ctx.root.style.setProperty("--before", tokens.before);
+            ctx.root.style.setProperty("--bar-ink", tokens.barInk);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const box = root.querySelector("[data-box]");
+            const rowsHost = root.querySelector("[data-rows]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_SIDE_RATIO;
+            const safeY = stage.height * SAFE_VERTICAL_RATIO;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const rows = (Array.isArray(content.rows) ? content.rows : []).slice(0, 6);
+            if (!rows.length) ctx.reject("前后对比条形至少需要一行数据。");
+            const rowHeight = GEO.rowHeight * scale;
+            const rowGap = GEO.rowGap * scale;
+            const labelWidth = GEO.labelWidth * scale;
+            const barGap = GEO.barGap * scale;
+            const barHeight = (rowHeight - barGap) / 2;
+            const title = String(content.title ?? "");
+            const caption = String(content.caption ?? "");
+            const unit = String(content.unit ?? "");
+            const peak = Math.max(...rows.map(row => Math.max(Number(row.before) || 0, Number(row.after) || 0)), 1);
+
+            const titleNode = root.querySelector("[data-title]");
+            titleNode.textContent = title;
+            titleNode.style.display = title ? "block" : "none";
+            titleNode.style.fontSize = `${GEO.titleFontSize * scale}px`;
+            titleNode.style.marginBottom = `${GEO.titleMarginBottom * scale}px`;
+            const legend = root.querySelector("[data-legend]");
+            const legendFont = rowHeight * GEO.legendFontRatio;
+            const swatch = legendFont * GEO.legendSwatchRatio;
+            const showLegend = Boolean(content.beforeLabel || content.afterLabel);
+            legend.style.display = showLegend ? "flex" : "none";
+            legend.style.marginLeft = `${labelWidth}px`;
+            legend.style.fontSize = `${legendFont}px`;
+            legend.style.marginBottom = `${rowGap}px`;
+            root.querySelector("[data-swatch-before]").style.cssText = `width:${swatch}px;height:${swatch}px;background:var(--before);`;
+            root.querySelector("[data-swatch-after]").style.cssText = `width:${swatch}px;height:${swatch}px;background:var(--accent);`;
+            root.querySelector("[data-legend-before]").textContent = String(content.beforeLabel ?? "");
+            root.querySelector("[data-legend-after]").textContent = String(content.afterLabel ?? "");
+            const captionNode = root.querySelector("[data-caption]");
+            captionNode.textContent = caption;
+            captionNode.style.display = caption ? "block" : "none";
+            captionNode.style.fontSize = `${GEO.captionFontSize * scale}px`;
+            captionNode.style.marginTop = `${GEO.captionMarginTop * scale}px`;
+
+            rowsHost.textContent = "";
+            rowsHost.style.cssText = `display:flex;flex-direction:column;gap:${rowGap}px;`;
+            const nodeRows = rows.map((row, index) => {
+              const rowNode = document.createElement("div");
+              rowNode.className = "cb-row";
+              rowNode.setAttribute("data-cb-row-id", row.id ?? `row-${index}`);
+              rowNode.setAttribute("data-cb-row-index", String(index));
+              rowNode.style.height = `${rowHeight}px`;
+              const label = document.createElement("span");
+              label.className = "cb-label";
+              label.style.cssText = `width:${labelWidth}px;padding-right:${GEO.labelPaddingRight * scale}px;font-size:${rowHeight * GEO.labelFontRatio}px;`;
+              label.textContent = String(row.label ?? "");
+              const bars = document.createElement("span");
+              bars.className = "cb-bars";
+              bars.style.gap = `${barGap}px`;
+              const beforeTrack = document.createElement("span");
+              beforeTrack.className = "cb-track";
+              beforeTrack.style.height = `${barHeight}px`;
+              const beforeBar = document.createElement("span");
+              beforeBar.className = "cb-bar is-before";
+              beforeBar.style.width = "0%";
+              const beforeValue = document.createElement("span");
+              beforeValue.className = "cb-value";
+              beforeValue.style.cssText = `left:${rowHeight * 0.32 + 8}px;font-size:${rowHeight * GEO.valueFontRatio}px;`;
+              beforeValue.textContent = `${formatCompact(Number(row.before) || 0)}${unit}`;
+              beforeTrack.append(beforeBar, beforeValue);
+              const afterTrack = document.createElement("span");
+              afterTrack.className = "cb-track";
+              afterTrack.style.height = `${barHeight}px`;
+              const afterBar = document.createElement("span");
+              afterBar.className = "cb-bar is-after";
+              afterBar.style.width = "0%";
+              const afterValue = document.createElement("span");
+              afterValue.className = "cb-value";
+              afterValue.style.cssText = `left:${rowHeight * 0.32 + 8}px;font-size:${rowHeight * GEO.valueFontRatio}px;`;
+              afterValue.textContent = `${formatCompact(Number(row.after) || 0)}${unit}`;
+              afterTrack.append(afterBar, afterValue);
+              bars.append(beforeTrack, afterTrack);
+              const delta = document.createElement("span");
+              delta.className = "cb-delta";
+              delta.style.cssText = `margin-left:${GEO.deltaGap * scale}px;font-size:${rowHeight * GEO.valueFontRatio}px;`;
+              delta.textContent = deltaOf(row);
+              rowNode.append(label, bars, delta);
+              rowsHost.appendChild(rowNode);
+              return {beforeBar, afterBar, beforeValue, afterValue, delta, beforeRatio: (Number(row.before) || 0) / peak, afterRatio: (Number(row.after) || 0) / peak};
+            });
+
+            const boxWidth = GEO.boxWidth * scale;
+            const boxHeight = box.getBoundingClientRect().height;
+            box.style.cssText = `width:${boxWidth}px;gap:0;scale:1;`;
+            const finalHeight = box.getBoundingClientRect().height;
+            box.style.left = `${safeX + (availableWidth - boxWidth) * options.position.x}px`;
+            box.style.top = `${safeY + (availableHeight - finalHeight) * options.position.y}px`;
+
+            nodeRows.forEach((entry, index) => {
+              const start = (index * MOTION.defaultStaggerMs) / 1000;
+              const grow = options.growMs / 1000;
+              const pairOffset = MOTION.defaultPairOffsetMs / 1000;
+              timeline.fromTo(entry.beforeBar, {width: "0%"}, {width: `${entry.beforeRatio * 100}%`, duration: grow, ease: "power3.out"}, start);
+              timeline.fromTo(entry.afterBar, {width: "0%"}, {width: `${entry.afterRatio * 100}%`, duration: grow, ease: "power3.out"}, start + pairOffset);
+              timeline.fromTo(entry.beforeValue, {opacity: 0}, {opacity: 1, duration: grow * GEO.valueRevealWindow * 2, ease: "power2.out"}, start + grow * GEO.valueRevealStart);
+              timeline.fromTo(entry.afterValue, {opacity: 0}, {opacity: 1, duration: grow * GEO.valueRevealWindow * 2, ease: "power2.out"}, start + pairOffset + grow * GEO.valueRevealStart);
+              timeline.fromTo(entry.delta, {opacity: 0, x: GEO.deltaSlidePx * scale}, {opacity: 1, x: 0, duration: grow * GEO.deltaRevealWindow * 2, ease: "power2.out"}, start + pairOffset + grow * GEO.deltaRevealStart);
+            });
+            ctx.setAttr(root, "data-row-count", rows.length);
+            ctx.setAttr(root, "data-peak", String(peak));
+            ctx.meta = {rows: rows.length, peak};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,148 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-005",
+    "name": "RingMetric｜环形指标",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KPI_RATIO",
+    "pattern": "SINGLE_RING_PROGRESS",
+    "useCases": [
+      "单个比例、完成度或达标率",
+      "用圆环注水表达进度并同步滚动数值"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/ring-metric/content.schema.json",
+    "requiredFields": [
+      "value",
+      "max"
+    ],
+    "optionalFields": [
+      "kicker",
+      "decimals",
+      "unit",
+      "label"
+    ],
+    "nodeShape": "单比例：可选小标签 + 数值 / 满值（比例决定圆环注水）+ 可选小数位 + 可选单位与说明",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "kickerMaxLength": 24,
+    "unitMaxLength": 6,
+    "labelMaxLength": 28,
+    "valueRange": {
+      "min": 0,
+      "max": 1000
+    },
+    "maxRange": {
+      "min": 1,
+      "max": 1000
+    },
+    "decimalsRange": {
+      "min": 0,
+      "max": 2
+    },
+    "labelCapacityNote": "环内可用宽度约 292 px（320 px 圆环 − 2 × 14 px 描边）：92 px 等宽数字约容纳 5 位，加上单位后更少；超长数值会先缩小到 20 px 下限，再明确拒绝。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "ring-fill",
+      "composableParameter": "来源固定 1100 ms 圆环与数值同步推进；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "glass｜来源玻璃底",
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/ring-metric/RingMetric.jsx",
+    "export": "RingMetric",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Radial",
+        "Emphasis"
+      ],
+      "description": "圆环用 stroke-dashoffset 在 1100 毫秒内从满周长推进到目标比例（cubic-bezier(0.22, 1, 0.36, 1)，与来源 CSS 过渡同一条曲线），环内数值同步滚动到位；落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourceEffectId": "ring-metric",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/RingMetric.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一）；来源设计优先，保留 320 px 圆环、14 px 圆头描边、92 px 等宽轻字重数字、强调色环与 1100 ms 推进节奏，仅适配环内数字容量、比例边界、内容树、画幅、安全区定位、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04A_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04A_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "环形进度指标",
+    "description": "用圆环和数字展示完成率或达标率。",
+    "tags": [
+      "数字",
+      "进度"
+    ],
+    "aliases": [
+      "环形指标",
+      "完成率"
+    ]
+  }
+}

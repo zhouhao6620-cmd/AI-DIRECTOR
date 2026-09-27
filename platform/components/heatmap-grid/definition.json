@@ -1,0 +1,180 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-015",
+    "name": "HeatmapGrid｜热力图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_DISTRIBUTION",
+    "pattern": "DIAGONAL_HEAT_WAVE",
+    "useCases": [
+      "二维分布：一周 × 时段的忙碌度、月份 × 渠道的密度",
+      "强度同时用颜色和尺寸表达，波前斜向扫过整张网格"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "HIGH"
+  },
+  "content": {
+    "schemaRef": "platform/components/heatmap-grid/content.schema.json",
+    "requiredFields": [
+      "cells"
+    ],
+    "optionalFields": [
+      "rowLabels",
+      "columnLabels",
+      "maxValue",
+      "showLegend"
+    ],
+    "nodeShape": "矩阵：2–6 行、每行 2–7 个非负数值（最多 2 位小数，行长度必须一致）；可选行标签（≤6 字 / 行）、列标签（≤3 字 / 列）、色阶上限与图例开关",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "rowLabelMaxLength": 6,
+    "columnLabelMaxLength": 3,
+    "rowRange": {
+      "min": 2,
+      "max": 6
+    },
+    "columnRange": {
+      "min": 2,
+      "max": 7
+    },
+    "valueRange": {
+      "min": 0,
+      "max": 1000000000
+    },
+    "labelCapacityNote": "列标签槽 = pitch（默认 34 + 8 = 42 px）：字号下限 12 px，所以最多 3 个全宽汉字（3 × 14 px ≈ 42 px）；再多一个只剩 10.5 px，低于下限。行标签槽 = 34 × 2.6 − 8 = 80.4 px，最多 6 个全宽汉字。超出的内容先缩到 12 px 下限，仍放不下就明确拒绝，不静默裁切。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "diagonal-fill",
+      "composableParameter": "来源固定「每格 467 ms 填色 + 列间 100 ms / 行间 50 ms 错峰」（14 / 3 / 1.5 帧 @30 fps）；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE",
+      "note": "整组件等比缩放：格子边长、圆角、行列标签与图例同乘一个系数。下限 0.8× 是「格子不小于标签」的可读下限（0.8× 时格子 27.2 px、标签 12 px）；上限按 05 §1.4 统一为 2×。默认大小 1×、默认落位未改变。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "参差不齐的行｜来源允许短行按空格子补齐（改为要求矩形网格）",
+      "Less / More｜来源图例为英文（改为中文「少」「多」）",
+      "exitAtInFrames / exitInFrames｜来源退场（由片段时序决定，本组件落定后保持）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/heatmap-grid/HeatmapGrid.jsx",
+    "export": "HeatmapGrid",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "每格用 0.16, 1, 0.3, 1 的入场曲线填到位（467 ms）；错峰按「列 × 100 ms + 行 × 50 ms」，因此波前是斜着推过去的——按格子序号错峰会在每一行回到左边。强度同时改颜色（interpolateColors）与尺寸（0.55 → 1.0 + 6% 强度差），所以忙的一列在余光里也读得出来。落定后不再变化。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Noto Sans CJK SC\", sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceEntry": "heatmap-grid",
+    "sourceRegistryPath": "RemotionGit/registry/heatmap-grid.json",
+    "sourcePath": "RemotionGit/registry/bases/default/primitives/heatmap-grid.tsx",
+    "sourceRole": "RemotionUI 源码复制式来源（primitives/heatmap-grid.tsx）：保留 34 px 格子、8 px 间隙、8 px 圆角、0.42 × 格子边长的标签字号、2.6 × 格子边长的行标签栏、0.5 → 1.0 + 6% 强度差的尺寸语义、interpolateColors 的色阶、按列 / 行错峰的斜向波前与 5 档图例；仅适配矩形网格、中文标签容量、图例中文、双画幅、四套主题、透明输出、安全区定位与内容树",
+    "license": "MIT",
+    "upstreamRepository": "https://github.com/riaz37/remotion-ui",
+    "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5",
+    "installCommand": "RemotionUI 为源码复制式库：不执行 npx remotion-ui add，直接从本地 registry/heatmap-grid.json 的 files[].content 取源，本组件不从 npm 包 import",
+    "dependencyEntries": [
+      "@remotionui/motion-tokens"
+    ],
+    "reuseAnalysis": "复用结论：① 无可用——已注册组件里没有二维分布表达（CMP-DATA-001 PinBoard 是点位、CMP-DATA-004 RankBars 是一维排名、CMP-DATA-006 GrowthCurve 是一维时间）；② 组件内元素尚未登记（REUSE_INDEX §② 仍为空）；③ 取 motion-tokens 零件（入场曲线是唯一的动效依赖）；补建矩阵几何、中文行列标签容量规则、矩形网格校验与中文图例。",
+    "elements": [
+      {
+        "elementId": "EL-MOTION-TOKENS-001",
+        "name": "motion-tokens",
+        "nameZh": "动效令牌",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/motion-tokens.json",
+          "path": "registry/bases/default/lib/motion-tokens.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/heatmap-grid/elements/motion-tokens/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-heatmap-grid"
+        ],
+        "notes": "本组件用到 EASING.enter（每格填色）与 DURATION / DELAY / STAGGER 令牌；来源的 secondsToFrames() 换算成常量帧数，数值与来源一致。色阶本身用 Remotion 的 interpolateColors（来源同款）。"
+      }
+    ],
+    "elementPromotion": "本批（CMP-06 B 批）6 个组件都取用了 motion-tokens，全部按「组件私有副本」放在各自 platform/components/<组件>/elements/motion-tokens/ 下。按元素工厂护栏第 12 条应提升为 platform/elements/motion-tokens/ 共享零件；提升动作留给总控执行——任务卡 §6 规定「公共零件提升为 platform/elements/ 前先回传总控」。",
+    "rawEvidence": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "adaptationRef": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_HEATMAP_GRID_QA_REPORT.md",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-heatmap-grid → CMP-DATA-015，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-015/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "热力分布图",
+    "description": "按行列颜色与尺寸展示二维数据的强弱分布。",
+    "tags": [
+      "数据图表",
+      "关系"
+    ],
+    "aliases": [
+      "热力图",
+      "密度图"
+    ]
+  }
+}

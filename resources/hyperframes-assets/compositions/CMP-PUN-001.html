@@ -1,0 +1,113 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-PUN-001 短观点强调 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-pun-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --ink: #ffffff; --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .pp-block { position: absolute; display: flex; align-items: center; }
+    .pp-pill { box-sizing: border-box; display: inline-flex; align-items: center; border-radius: 100px; font-weight: 700;
+      color: var(--ink); white-space: pre; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+    .pp-dot { border-radius: 50%; background: var(--accent); flex: none; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-pun-001" data-width="1920" data-height="1080">
+    <div class="pp-block" data-block><div class="pp-pill" data-pill><span class="pp-dot" data-dot></span><span data-text></span></div></div>
+
+    <script type="application/json" data-hf-content>
+      {"text": "先把结论说清楚，再解释为什么。"}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {fontSize: 30, fontWeight: 700, lineHeight: 1.2, paddingX: 32, paddingY: 15, border: 2, radius: 100,
+          dotSize: 13, gap: 14, fillAlpha: 0.14, enterOpacityMs: 420, enterScaleMs: 460, enterScaleFrom: 0.9};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", cardShadow: "0 30px 70px rgba(0,0,0,0.38)"},
+          LIGHT: {ink: "#1a2540", cardShadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-pun-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const block = root.querySelector("[data-block]");
+            const pill = root.querySelector("[data-pill]");
+            const textNode = root.querySelector("[data-text]");
+            const dot = root.querySelector("[data-dot]");
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            const text = String(content.text ?? "");
+            if (!text.trim()) ctx.reject("短观点强调需要一句文字。");
+
+            // 字号先按安全区缩放，再按需要换行（最多 3 行）
+            const chromeWidth = GEO.paddingX * 2 + GEO.border * 2 + GEO.dotSize + GEO.gap;
+            let fontSize = GEO.fontSize;
+            const wrapAt = size => measure.wrap(text, Math.max(120, availableWidth - chromeWidth * (size / GEO.fontSize)), size, GEO.fontWeight, 0);
+            let lines = wrapAt(fontSize);
+            if (lines.length > 3) {
+              fontSize = Math.max(18, fontSize * Math.min(1, availableHeight / (lines.length * fontSize * GEO.lineHeight + GEO.paddingY * 2)));
+              lines = wrapAt(fontSize);
+            }
+            if (lines.length > 4) ctx.reject("短观点过长：在安全区内超过 4 行，请缩短句子。");
+            const scale = options.size;
+            textNode.textContent = lines.join("\n");
+            pill.style.cssText = `gap:${GEO.gap * scale}px;padding:${GEO.paddingY * scale}px ${GEO.paddingX * scale}px;border-width:${GEO.border * scale}px;`
+              + `font-size:${fontSize * scale}px;line-height:${GEO.lineHeight};box-shadow:${tokens.cardShadow};`;
+            dot.style.cssText = `width:${GEO.dotSize * scale}px;height:${GEO.dotSize * scale}px;`;
+            const pillBox = pill.getBoundingClientRect();
+            const blockWidth = pillBox.width;
+            const blockHeight = pillBox.height;
+            block.style.left = `${safeX + (availableWidth - blockWidth) * options.position.x}px`;
+            block.style.top = `${safeY + (availableHeight - blockHeight) * options.position.y}px`;
+
+            timeline.from(pill, {opacity: 0, duration: GEO.enterOpacityMs / 1000, ease: "power2.out"}, 0);
+            timeline.from(pill, {scale: GEO.enterScaleFrom, duration: GEO.enterScaleMs / 1000, ease: "power3.out"}, 0);
+            ctx.setAttr(root, "data-lines", lines.length);
+            ctx.meta = {lines: lines.length, fontSize: Math.round(fontSize * scale)};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,191 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-018",
+    "name": "PieSliceReveal｜饼图切片揭示",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_COMPOSITION",
+    "pattern": "PIE_SLICE_SWEEP",
+    "useCases": [
+      "2–6 个部分构成整体的占比，按数据顺序一片一片揭示",
+      "扇区内直接写百分比，图例给出名称与数值"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/pie-slice-reveal/content.schema.json",
+    "requiredFields": [
+      "slices"
+    ],
+    "optionalFields": [
+      "showLabels",
+      "showLegend"
+    ],
+    "nodeShape": "分片：稳定 ID + 1–12 字名称 + 数值（最多 2 位小数，占比须 ≥6%，可单片覆盖颜色）；两个显示开关可留空",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "sliceLabelMaxLength": 12,
+    "minimumShare": 0.06,
+    "valueRange": {
+      "min": 0,
+      "max": 1000000000
+    },
+    "labelCapacityNote": "扇区内百分比按「标签出现的那一帧（progress 0.7）」的真实弦长实测：6% 分片是 21.6° 扇区，标签半径 0.66R 处的弦长约 28 px，正好放下 12 px 下限的双字符百分比；低于 6% 时标签会被挤到相邻扇区上，因此最小占比写进内容校验。图例名称槽 = 饼径 × 0.42（默认 159.6 px），12 个汉字缩到 13.3 px 仍放得下，13 个汉字是公式上限、本组件按 12 字封顶。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "slice-sweep",
+      "composableParameter": "来源固定「每片 800 ms 扫过 + 片间 467 ms 错峰」（24 / 14 帧 @30 fps）；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.6,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE",
+      "note": "整组件等比缩放：饼径、扇区角度、图例与字号同乘一个系数。下限 0.6× 是图例中文（14.1 px）与扇区内百分比（13.2 px）的可读下限；上限按 05 §1.4 统一为 2×。默认大小 1×、默认落位未改变。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "colors[]｜来源的分片调色板（改为组件级主题 + 单片可选覆盖色）",
+      "explode / gapInDegrees｜来源固定 0.04 与 1.4°（本批不开放参数）",
+      "exitAtInFrames / exitInFrames｜来源退场（由片段时序决定，本组件落定后保持）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/pie-slice-reveal/PieSliceReveal.jsx",
+    "export": "PieSliceReveal",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "每片扇形从十二点钟起按自己的占比扫过（0.16, 1, 0.3, 1 入场曲线，800 ms），片间错峰 467 ms；扫过的过程中扇区沿自己的角平分线向外滑出 explode × radius；百分比标签在 progress 0.7 之后淡入；图例每行跟着自己那一片一起到位。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Noto Sans CJK SC\", sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceEntry": "pie-slice-reveal",
+    "sourceRegistryPath": "RemotionGit/registry/pie-slice-reveal.json",
+    "sourcePath": "RemotionGit/registry/bases/default/primitives/pie-slice-reveal.tsx",
+    "sourceRole": "RemotionUI 源码复制式来源（primitives/pie-slice-reveal.tsx）：保留 380 px 饼、从十二点钟顺时针的扇形、0.66R 处的百分比标签、0.04 的外滑 explode、1.4° 的扇形间隙、整圆拆两段半弧的 wedgePath 写法与 (0.16, 1, 0.3, 1) 入场曲线；仅适配中文排版、图例、最小占比、双画幅、四套主题、透明输出、安全区定位与内容树",
+    "license": "MIT",
+    "upstreamRepository": "https://github.com/riaz37/remotion-ui",
+    "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5",
+    "installCommand": "RemotionUI 为源码复制式库：不执行 npx remotion-ui add，直接从本地 registry/pie-slice-reveal.json 的 files[].content 取源，本组件不从 npm 包 import",
+    "dependencyEntries": [
+      "@remotionui/chart-utils",
+      "@remotionui/motion-tokens"
+    ],
+    "reuseAnalysis": "复用结论：① 无可用——已注册的 CMP-DATA-005 RingMetric 是单比例圆环、CMP-DATA-004 RankBars 是条长排名，都没有扇形角度几何与「按占比扫过」的表现；② 组件内元素尚未登记（REUSE_INDEX §② 仍为空）；③ 取 chart-utils + motion-tokens 两个零件装配；补建扇形角度数学、最小占比容量规则与图例。",
+    "elements": [
+      {
+        "elementId": "EL-CHART-UTIL-001",
+        "name": "chart-utils",
+        "nameZh": "图表工具",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/chart-utils.json",
+          "path": "registry/bases/default/lib/chart-utils.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/pie-slice-reveal/elements/chart-utils/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-pie-slice-reveal"
+        ],
+        "notes": "只取来源里本组件真正用到的 formatCompactNumber（图例数值）；域 / 路径类函数留给线柱面积类组件按需取用。"
+      },
+      {
+        "elementId": "EL-MOTION-TOKENS-001",
+        "name": "motion-tokens",
+        "nameZh": "动效令牌",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/motion-tokens.json",
+          "path": "registry/bases/default/lib/motion-tokens.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/pie-slice-reveal/elements/motion-tokens/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-pie-slice-reveal"
+        ],
+        "notes": "取 EASING（enter / exit / editorial / pop）与 DURATION / DELAY / STAGGER / EMPHASIS；来源的 secondsToFrames() 换算成常量帧数，数值与来源一致。"
+      }
+    ],
+    "elementPromotion": "本批（CMP-06 B 批）6 个组件都取用了 motion-tokens、其中 3 个取用了 chart-utils，全部按「组件私有副本」放在各自 platform/components/<组件>/elements/<零件>/ 下。按元素工厂护栏第 12 条应提升为 platform/elements/motion-tokens/ 与 platform/elements/chart-utils/；提升动作留给总控执行——任务卡 §6 规定「公共零件提升为 platform/elements/ 前先回传总控」。",
+    "rawEvidence": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "adaptationRef": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_PIE_SLICE_REVEAL_QA_REPORT.md",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-pie-slice-reveal → CMP-DATA-018，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-018/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "饼图占比",
+    "description": "逐片揭示整体中的各部分占比。",
+    "tags": [
+      "数据图表",
+      "构成"
+    ],
+    "aliases": [
+      "饼图",
+      "扇形图"
+    ]
+  }
+}

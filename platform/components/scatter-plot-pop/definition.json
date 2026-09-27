@@ -1,0 +1,184 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-020",
+    "name": "ScatterPlotPop｜散点图弹出",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_CORRELATION",
+    "pattern": "SCATTER_WITH_TREND",
+    "useCases": [
+      "3–12 个样本在两个指标上的分布与相关性（例：客单价 × 复购率）",
+      "点按横轴从左到右依次弹出，最后画一条最小二乘趋势线",
+      "用点的大小表达第三个维度（weight）"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 12,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/scatter-plot-pop/content.schema.json",
+    "requiredFields": [
+      "points[].x",
+      "points[].y"
+    ],
+    "optionalFields": [
+      "points[].weight",
+      "xLabel",
+      "yLabel"
+    ],
+    "nodeShape": "散点：稳定 ID + x / y 两个数值（±1e9、最多 2 位小数）+ 可选 weight（点半径权重 0–100）；可选 x / y 轴标题",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 3,
+    "maxCardinality": 12,
+    "axisLabelMaxLength": 8,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "刻度字号沿用来源 max(12, 22 × 860/960) ≈ 19.7 px：y 轴刻度可用宽度 = 左侧留白（3.4 × 字号）减去 0.6 × 字号 ≈ 55 px；x 轴刻度按相邻刻度间距单独校验，不允许两个刻度压在一起。轴标题宽度按真实字宽量到 plot 宽 / 高；超限时明确拒绝，不缩字、不省略。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.65,
+      "max": 2
+    },
+    "sizeNote": "来源 860 × 480 px = 默认大小（1.0）。下限取 0.65：来源的刻度字号是 19.7 px，再缩小就会低于本项目 12 px 的可读下限。缩放为整组件等比缩放，默认大小与落位不变。",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯图形组件，内容树里没有图片或视频素材位。",
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "point-pop-with-trend",
+      "composableParameter": "来源固定每点 16 帧落定、错峰 2.5 帧（按 x 升序）、趋势线最后 26 帧画出；本批不开放参数"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源退场：本项目由实例时长决定",
+      "color / trendColor / gridColor / labelColor｜来源逐项取色：改为四套主题 + 深 / 浅两套底色令牌",
+      "showAxis / showTrend｜来源开关：本项目恒定开启（轴与趋势线是这张图的信息本身）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/scatter-plot-pop/ScatterPlotPop.jsx",
+    "export": "ScatterPlotPop",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Stagger",
+        "Pop",
+        "Progressive Build"
+      ],
+      "description": "散点按 x 升序依次弹出：每点 16 帧、错峰 2.5 帧，从 0 长到目标半径并带一圈 2.2× 的光晕，缓动用来源 motion-tokens 的 EASING.pop；最后一点落定后 6.4 帧开始，用 26 帧画出最小二乘趋势线（EASING.enter），画到哪算哪。",
+      "implementationNote": "按技能 V1.4 §4.1 自持规范：内联 interpolate()、Interactive.* + name、坐标用 SVG 独立属性；输出范围、easing、extrapolate 全部硬编码。唯一的 transform 是 y 轴标题的静态 rotate(-90)。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "复制式来源 `scatter-plot-pop`（registry/bases/default/primitives/scatter-plot-pop.tsx，MIT · commit 802a637）：niceDomain 双轴、plot 内边距、weight → 半径插值、光晕、x 升序错峰、EASING.pop / enter、最小二乘趋势线全部保留。",
+      "elements": "零件私有副本：chart-utils（niceDomain / scaleValue / getPlotArea / formatAxisValue）、motion-tokens（EASING）、timing（EASING_ENTER / EASING_EXIT）。"
+    },
+    "knownDifferences": [
+      "刻度与轴标题：来源直接画（数量级跨度大时刻度会互相压住），本组件改为真实字宽校验，放不下就拒绝并给出可用 / 需要宽度。",
+      "x 值全相同时：来源会画出一条压扁的竖线，本组件改为明确拒绝（横轴没有跨度时趋势线没有意义）。",
+      "底色：来源只有深底浅字一套，本组件增加 LIGHT（浅底深字）并把网格 / 刻度 / 趋势线色一起切换。",
+      "配色：来源单色 #e8b86d 保留为 SOURCE；四套项目主题取各自色板第一位。",
+      "画布与落位：来源固定 860 × 480，本组件按画幅等比缩放并落到安全区 0–1 比例。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "scatter-plot-pop",
+    "sourceRegistryUrl": "https://remotionui.com/r/scatter-plot-pop.json",
+    "sourcePath": "RemotionGit/registry/scatter-plot-pop.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/scatter-plot-pop.tsx（riaz37/remotion-ui）",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "802a63708cc5c13936bcccb47f091a0b14325cb5（2026-09-11）",
+    "sourceLicense": "MIT（RemotionGit/repo/LICENSE）",
+    "sourceRole": "来源设计优先：双轴域、plot 内边距、点半径与光晕比例、x 升序错峰节奏、趋势线的拟合口径与画法全部保留；只改可编辑内容、中文字宽校验、画幅、安全区定位、主题与底色映射、透明输出。",
+    "reuseAnalysis": "三级复用查完的结论：① 已注册 23 项里没有相关性 / 双指标分布类组件（CMP-DATA-004 是排名条形、CMP-DATA-006 是时间序列、CMP-DATA-005 是单比例），且已注册目录本卡不可修改 → 不复用；② 组件内元素登记表尚未正式登记，无现成片段可拆 → 不拆；③ 元素零件工厂命中 3 个零件：chart-utils（niceDomain / getPlotArea / scaleValue / formatAxisValue）、motion-tokens（EASING.pop / enter）、timing（motion-tokens 的 registry 依赖）→ 取这 3 个零件（组件私有副本）；图表本体按来源源码适配，不补建新算法。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/components/scatter-plot-pop/elements/chart-utils/",
+        "status": "Adapted",
+        "usedFor": "双轴 niceDomain、scaleValue、getPlotArea、formatAxisValue"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/components/scatter-plot-pop/elements/motion-tokens/",
+        "status": "Adapted",
+        "usedFor": "EASING.pop（散点弹出）、EASING.enter（趋势线）"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "timing",
+        "source": "RemotionGit/registry/timing.json",
+        "localPath": "platform/components/scatter-plot-pop/elements/timing/",
+        "status": "Adapted",
+        "usedFor": "motion-tokens 的 registry 依赖"
+      }
+    ],
+    "elementPromotionNeeded": "chart-utils / motion-tokens / timing 在本批被复制 5–6 次，按技能 V1.4 护栏第 12 条必须先提升为 platform/elements/ 共享零件；本窗口按任务卡第 6 节边界未自行提升，等待总控执行。",
+    "rawEvidence": "dev-control-panel/tasks/CMP-06_DATA_CHARTS_TASK.md",
+    "adaptationRef": "docs/component-assets/CMP-06_SCATTER_PLOT_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_SCATTER_PLOT_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.4 草稿通道：componentId = DRAFT-scatter-plot、status = DRAFT；不占正式 CMP- 编号、不进能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-scatter-plot → CMP-DATA-020，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-020/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "散点关系图",
+    "description": "用散点和趋势线观察两个指标的分布关系。",
+    "tags": [
+      "数据图表",
+      "关系"
+    ],
+    "aliases": [
+      "散点图",
+      "相关性"
+    ]
+  }
+}

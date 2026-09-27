@@ -1,0 +1,140 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-MED-001",
+    "name": "FreeMedia｜自由媒体",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "FREE_MEDIA",
+    "pattern": "FREE_PLACEMENT_MEDIA_LAYER",
+    "useCases": [
+      "在画面上自由放置图片、录屏或 Logo",
+      "把截图与标识组合成一块媒体版面"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 4,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/free-media/content.schema.json",
+    "requiredFields": [
+      "items"
+    ],
+    "nodeShape": "媒体项：稳定 ID + 类型（IMAGE / VIDEO / LOGO）+ 项目内素材路径 + 归一化中心点 x / y + 画布宽度占比 width + 画框比例 aspect + 填充方式 fit（CONTAIN / COVER）+ 可选圆角 radius 与透明度 opacity",
+    "optionalNodes": true,
+    "secondaryNodes": false,
+    "dynamicReflow": false,
+    "minCardinality": 1,
+    "maxCardinality": 4,
+    "positionSpace": "NORMALIZED_0_1",
+    "widthRange": {
+      "min": 0.05,
+      "max": 1,
+      "unit": "CANVAS_WIDTH_SHARE"
+    },
+    "aspectRange": {
+      "min": 0.25,
+      "max": 4
+    },
+    "mediaSrcRule": "只接受 publicDir 相对路径：不得是网络地址、不得以 / 或 ~ 开头、不得包含 ..",
+    "overlap": "允许媒体项互相叠放（自由媒体本身允许分层）；越界与超尺寸会明确拒绝",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.05,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": true,
+    "assetKinds": [
+      "IMAGE",
+      "VIDEO",
+      "LOGO"
+    ],
+    "variant": true,
+    "variants": [
+      "BARE",
+      "FRAMED"
+    ],
+    "variantDefault": "FRAMED",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "per-item-fade-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "staggerControl": "stepMs 控制多个媒体项的依次入场，范围 0–2000 ms，默认 400 ms",
+    "variantLabels": {
+      "BARE": "无边框",
+      "FRAMED": "带画框"
+    }
+  },
+  "runtime": {
+    "module": "platform/components/free-media/FreeMedia.jsx",
+    "export": "FreeMedia",
+    "props": [
+      "content",
+      "variant",
+      "stepMs",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal"
+      ],
+      "description": "每个媒体项按 stepMs 间隔淡入并从 0.94 缩放到 1（460 毫秒 0.22/1/0.36/1 缓动）；媒体本身不做二次动画，真实比例与可读性优先。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 1,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "mediaLoading": "IMG 使用 Remotion Img（等待真实加载，失败即抛错）；VIDEO 使用 Remotion OffthreadVideo（后台解码，随帧对齐）",
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "remotionui": "Media Frame / Media Sequence 只核验过目录记录（CMP-01 证据表明示详情抓取未成功），本轮未安装、未复制其源码，也未使用其组件。",
+      "overlay": "FRAMED 形态沿用本地 HUD 的玻璃边框与卡片投影令牌；放置模型（归一化位置 / 宽度占比 / 画框比例 / 填充方式）由本项目自建。"
+    }
+  },
+  "provenance": {
+    "source": "BUILT_IN_PROJECT",
+    "sourcePath": "workbench-v0/platform/components/free-media/layout.js",
+    "sourceRole": "补建组件：枝鸥 / Overlay Studio 的 20 个效果中没有自由媒体组件；媒体项内容结构、归一化放置模型与渲染通道由本项目自建并已验证媒体加载、替换与透明合成；RemotionUI Media Frame / Media Sequence 未安装、未复制，不作为已验证来源。",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "自由媒体排布",
+    "description": "自由摆放图片、录屏或标识，组合成一个画面。",
+    "tags": [
+      "媒体"
+    ],
+    "aliases": [
+      "自由媒体",
+      "图片组合"
+    ]
+  }
+}

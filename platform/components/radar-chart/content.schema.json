@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RadarChartContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["axes", "series"],
+  "properties": {
+    "axes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {"type": "string", "minLength": 1, "maxLength": 6, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+    },
+    "series": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "values"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 10, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "values": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 6,
+            "items": {"type": "number", "minimum": 0, "maximum": 1000000000}
+          },
+          "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+        }
+      }
+    },
+    "maxValue": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000000},
+    "showLabels": {"type": "boolean"},
+    "showVertices": {"type": "boolean"},
+    "showLegend": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-024",
+    "name": "WaterfallChart｜瀑布图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_BRIDGE",
+    "pattern": "CUMULATIVE_WATERFALL_BRIDGE",
+    "useCases": [
+      "3–7 步的增减拆解：从一个水位走到另一个水位（例：期初 120 → 新签 / 续费 / 退款 / 成本 → 期末 144）",
+      "浮空柱的「位置」本身就是信息：柱从上一笔结果起跳，长度是这次变化",
+      "合计步（isTotal）从 0 起画并重置水位，用来加一根小计柱"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 7,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/waterfall-chart/content.schema.json",
+    "requiredFields": [
+      "steps[].value"
+    ],
+    "optionalFields": [
+      "steps[].isTotal",
+      "unit"
+    ],
+    "nodeShape": "步骤：稳定 ID + 1–6 字步骤名 + 带符号数值（±1e9、最多 2 位小数）+ 可选 isTotal（合计步从 0 起画并重置水位）；可选统一单位后缀（最多 4 字）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 3,
+    "maxCardinality": 7,
+    "stepLabelMaxLength": 6,
+    "unitMaxLength": 4,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "每一步的口径是 pitch = plot 宽 / 步数（860 画布下 7 步时约 104 px）；步骤名下压在 pitch 的 0.8 倍以内，柱顶数值（含符号与单位）同样按 pitch 校验，y 轴刻度按左侧留白（3.0 × 字号 ≈ 56 px）校验。字号沿用来源 max(11, 21 × 860/960) ≈ 18.8 px；超限时明确拒绝并给出需要 / 可用宽度，不缩字、不省略。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.65,
+      "max": 2
+    },
+    "sizeNote": "来源 860 × 440 px = 默认大小（1.0）。下限取 0.65：来源刻度字号 18.8 px 再缩小就低于本项目 12 px 可读下限。缩放为整组件等比缩放，默认大小与落位不变。",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯图形组件，内容树里没有图片或视频素材位。",
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "bar-bridge-build",
+      "composableParameter": "来源固定每步 20 帧生长、错峰 10 帧、连接线在生长到 85% 后接上；本批不开放参数"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源退场（淡出 + 上移 12 px）：本项目由实例时长决定",
+      "upColor / downColor / totalColor / gridColor / labelColor｜来源逐项取色：改为四套主题（按角色位取色）+ 深 / 浅两套底色令牌",
+      "showConnectors / showValues / showAxis｜来源开关：恒定开启（这三样是瀑布图的信息本身）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/waterfall-chart/WaterfallChart.jsx",
+    "export": "WaterfallChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Stagger",
+        "Emphasis"
+      ],
+      "description": "每根柱从自己的起点水位长到落点水位：20 帧、错峰 10 帧，缓动 EASING.enter；柱顶数值在生长到 70% 后淡入；连接线在柱长到 85% 后从落点水位接到下一根柱，保证「水位到了才连」的因果顺序。",
+      "implementationNote": "按技能 V1.4 §4.1 自持规范：内联 interpolate()、Interactive.* + name、SVG 坐标用独立属性；输出范围、easing、extrapolate 全部硬编码。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "复制式来源 `waterfall-chart`（registry/bases/default/primitives/waterfall-chart.tsx，MIT · commit 802a637）：累计水位解析（isTotal 从 0 起并重置）、浮空柱画法、plot 内边距与 pitch / barWidth 比例、虚线连接线、柱顶数值的上下摆位、三色角色（上行 / 下行 / 合计）与错峰节奏全部保留。",
+      "elements": "零件私有副本：chart-utils（niceDomain / scaleValue / getPlotArea / formatAxisValue / formatCompactNumber）、motion-tokens（EASING）、timing（EASING_ENTER / EASING_EXIT）。"
+    },
+    "knownDifferences": [
+      "文字容量：来源直接画（步数多、数值大时步骤名与柱顶数值会互相压住），本组件改为真实字宽校验，放不下就拒绝并给出需要 / 可用宽度。",
+      "数值格式：来源最大 1 位小数的紧凑写法，本组件保留紧凑写法但按真实小数位显示到 2 位，不静默取整；符号沿用来源的 + / −（U+2212）。",
+      "底色：来源只有深底浅字一套，本组件增加 LIGHT（浅底深字）并把水位线 / 刻度 / 连接线色一起切换。",
+      "配色：来源三色保留为 SOURCE；四套项目主题按同一角色位（合计 / 上行 / 下行）取各自色板。",
+      "全 0 水位：来源会画出一排零高柱，本组件明确拒绝（没有可画的桥）。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "waterfall-chart",
+    "sourceRegistryUrl": "https://remotionui.com/r/waterfall-chart.json",
+    "sourcePath": "RemotionGit/registry/waterfall-chart.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/waterfall-chart.tsx（riaz37/remotion-ui）",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "802a63708cc5c13936bcccb47f091a0b14325cb5（2026-09-11）",
+    "sourceLicense": "MIT（RemotionGit/repo/LICENSE）",
+    "sourceRole": "来源设计优先：桥式画法、三色角色、连接线、数值摆位、节奏与缓动全部保留；只改可编辑内容、中文字宽校验、画幅、安全区定位、主题与底色映射、透明输出。",
+    "reuseAnalysis": "三级复用查完的结论：① 已注册 23 项里没有累计桥 / 增减拆解类组件（RankBars 是静态排名条形、GrowthCurve 是时间序列、StatProof 是单个数字），且已注册目录本卡不可修改 → 不复用；② 组件内元素登记表尚未正式登记，无现成片段可拆 → 不拆；③ 元素零件工厂命中 3 个零件：chart-utils（niceDomain / scaleValue / getPlotArea / formatAxisValue）、motion-tokens（EASING.enter）、timing（motion-tokens 的 registry 依赖）→ 取这 3 个零件（组件私有副本）；桥式画法属来源组件本体，随源码适配。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/components/waterfall-chart/elements/chart-utils/",
+        "status": "Adapted",
+        "usedFor": "niceDomain / scaleValue / getPlotArea / formatAxisValue / formatCompactNumber"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/components/waterfall-chart/elements/motion-tokens/",
+        "status": "Adapted",
+        "usedFor": "EASING.enter（柱生长）"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "timing",
+        "source": "RemotionGit/registry/timing.json",
+        "localPath": "platform/components/waterfall-chart/elements/timing/",
+        "status": "Adapted",
+        "usedFor": "motion-tokens 的 registry 依赖"
+      }
+    ],
+    "elementPromotionNeeded": "chart-utils / motion-tokens / timing 在本批被复制 5–6 次，按技能 V1.4 护栏第 12 条必须先提升为 platform/elements/ 共享零件；本窗口按任务卡第 6 节边界未自行提升，等待总控执行。",
+    "rawEvidence": "dev-control-panel/tasks/CMP-06_DATA_CHARTS_TASK.md",
+    "adaptationRef": "docs/component-assets/CMP-06_WATERFALL_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_WATERFALL_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.4 草稿通道：componentId = DRAFT-waterfall、status = DRAFT；不占正式 CMP- 编号、不进能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-waterfall → CMP-DATA-024，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-024/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "增减瀑布图",
+    "description": "逐步拆解增减项如何从起点走到终点。",
+    "tags": [
+      "数据图表",
+      "对比"
+    ],
+    "aliases": [
+      "瀑布图",
+      "增减拆解"
+    ]
+  }
+}

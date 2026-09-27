@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SkillIntroCardContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cards"],
+  "properties": {
+    "cards": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skill", "hook", "body"],
+        "properties": {
+          "skill": {"type": "string", "minLength": 1, "maxLength": 20, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "hook": {"type": "string", "minLength": 1, "maxLength": 24, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "body": {"type": "string", "minLength": 1, "maxLength": 51, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "badge": {"type": "string", "maxLength": 18, "pattern": "^[^\\r\\n\\t]*$"},
+          "accent": {"type": "string", "enum": ["INHERIT", "BLUE", "ORANGE", "RED", "PURPLE"]}
+        }
+      }
+    }
+  }
+}

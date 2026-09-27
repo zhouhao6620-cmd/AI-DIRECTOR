@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RingMetricContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["value", "max"],
+  "properties": {
+    "kicker": {
+      "type": "string", "maxLength": 24, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "value": {"type": "number", "minimum": 0, "maximum": 1000},
+    "max": {"type": "number", "minimum": 1, "maximum": 1000},
+    "decimals": {"type": "integer", "minimum": 0, "maximum": 2},
+    "unit": {
+      "type": "string", "maxLength": 6, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "label": {
+      "type": "string", "maxLength": 28, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

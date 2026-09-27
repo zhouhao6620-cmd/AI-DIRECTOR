@@ -1,0 +1,261 @@
+<!doctype html>
+<!--
+  CMP-SUB-001 字幕轨 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 组件库改造，不是基线）
+  事实源：workbench-v0/platform/components/subtitle-track/**（只读复制，未改动原文件）
+          · 版式常量：layout.js SOURCE_GEOMETRY（中文 44/800/1.35/0.04em，英文 17/500/1.35/0.1em，
+            底距 44、左右安全 6%、块宽上限 1500 或画布 86%、中文字幕上限 4 行 / 英文 3 行）
+          · 关键词：layout.js highlightSegments（*关键词* 标记成对；model.js ACCENTS[theme].keyword）
+          · 行为：resolveActiveCue —— start <= t < end 才显示，空档不显示、不做淡入淡出
+
+  实现说明：每条字幕是一个 clip（data-start / data-duration），可见性交给运行时按时间轴算 ——
+  这是 HyperFrames 的原生做法，也天然可 Seek；位置用组件自己的布局数学，大小按实例包装层的
+  独立 scale 挂在**字幕块自己**身上（与 component-sample.jsx 的 WRAPPED_SIZE 语义一致）。
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"variant","type":"enum","label":"变体","default":"BILINGUAL","options":[{"value":"BILINGUAL","label":"双语字幕"},{"value":"ZH_ONLY","label":"中文字幕"}]},
+  {"id":"showTranslation","type":"boolean","label":"显示英文字幕","default":true},
+  {"id":"stroke","type":"boolean","label":"描边","default":false},
+  {"id":"accent","type":"color","label":"关键词强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":1,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":1,"min":0,"max":1,"step":0.01}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-SUB-001 字幕轨 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-sub-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --keyword: #5fa0fa;
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: transparent;      /* 组件 transparent = true，画布底色交给外壳 */
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+    /* 每条字幕一个 clip：可见性由运行时的 data-start / data-duration 决定 */
+    .sub-clip { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; visibility: hidden; }
+    .sub-zh { color: #fff; font-weight: 800; line-height: 1.35; }
+    .sub-en { color: rgba(255,255,255,0.82); font-weight: 500; line-height: 1.35; }
+    .sub-line { white-space: pre; }
+    .sub-line i { font-style: normal; color: var(--keyword); }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-sub-001" data-width="1920" data-height="1080">
+    <div data-subtitle-host></div>
+
+    <!-- 样例内容（与 model.js createSampleState 同源：6 条 2 秒字幕，含 *关键词* 标记） -->
+    <script type="application/json" data-hf-content>
+      {
+        "cues": [
+          {"id": "cue-0001", "startMs": 0, "endMs": 2000, "text": "先确认*目标*，再动手。", "translation": "Confirm the goal before building."},
+          {"id": "cue-0002", "startMs": 2000, "endMs": 4000, "text": "把要点拆成*可验证*的小步。", "translation": "Split the work into verifiable steps."},
+          {"id": "cue-0003", "startMs": 4000, "endMs": 6000, "text": "字幕按真实时间轴切换。", "translation": "Captions follow the real timeline."},
+          {"id": "cue-0004", "startMs": 6000, "endMs": 8000, "text": "关键词用强调色*点亮*。", "translation": "Keywords light up in the accent colour."},
+          {"id": "cue-0005", "startMs": 8000, "endMs": 10000, "text": "空档时间不显示字幕。", "translation": "Nothing is drawn between cues."},
+          {"id": "cue-0006", "startMs": 10000, "endMs": 12000, "text": "结尾保留一行*收束*句。", "translation": "The last line closes the track."}
+        ]
+      }
+    </script>
+
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/canvas-backdrop.js"></script>
+    <script src="/vendor/hf-component-kit.js"></script>
+    <script>
+      (function () {
+        const GEO = {
+          zhFontSize: 44, zhFontWeight: 800, zhLineHeight: 1.35, zhLetterSpacingEm: 0.04,
+          enFontSize: 17, enFontWeight: 500, enLineHeight: 1.35, enLetterSpacingEm: 0.1,
+          enMarginTop: 8, bottomOffset: 44, maxBlockWidth: 1500, blockWidthRatio: 0.86,
+          strokeWidth: 3, strokeColor: "#000000", topRatio: 0.08, sideRatio: 0.06,
+        };
+        const MAX_ZH_LINES = 4;
+        const MAX_EN_LINES = 3;
+
+        // layout.js highlightSegments：*关键词* 成对标记，落成强调段
+        function highlight(text) {
+          const source = String(text ?? "");
+          const ranges = [];
+          let plain = "";
+          let openAt = null;
+          for (const character of source) {
+            if (character === "*") {
+              if (openAt === null) openAt = plain.length;
+              else {
+                if (plain.length === openAt) return {error: "关键词标记内不能为空。"};
+                ranges.push({start: openAt, end: plain.length});
+                openAt = null;
+              }
+              continue;
+            }
+            plain += character;
+          }
+          if (openAt !== null) return {error: "关键词标记未闭合，请成对使用 * 强调。"};
+          if (/^\s*$/.test(plain)) return {error: "字幕内容不能为空。"};
+          return {plain, ranges, error: null};
+        }
+        function segmentsFor(plain, ranges, start, end) {
+          const result = [];
+          let cursor = start;
+          for (const range of ranges.filter(item => item.end > start && item.start < end).sort((a, b) => a.start - b.start)) {
+            const from = Math.max(range.start, start);
+            const to = Math.min(range.end, end);
+            if (from > cursor) result.push({text: plain.slice(cursor, from), emphasis: false});
+            if (to > from) result.push({text: plain.slice(from, to), emphasis: true});
+            cursor = Math.max(cursor, to);
+          }
+          if (cursor < end) result.push({text: plain.slice(cursor, end), emphasis: false});
+          return result;
+        }
+
+        function captionLines(text, maxWidth, fontSize, fontWeight, letterSpacing, maxLines, measure) {
+          const parsed = highlight(text);
+          if (parsed.error) throw new Error(parsed.error);
+          const lines = [];
+          let line = "";
+          for (const grapheme of Array.from(new Intl.Segmenter("zh", {granularity: "grapheme"}).segment(parsed.plain), item => item.segment)) {
+            const next = line + grapheme;
+            if (line && measure.width(next, fontSize, fontWeight, letterSpacing) > maxWidth) { lines.push(line); line = grapheme; }
+            else line = next;
+          }
+          if (line) lines.push(line);
+          if (lines.length > maxLines) return {overflow: true, lines: []};
+          let cursor = 0;
+          return {
+            overflow: false,
+            lines: lines.map(text => {
+              const start = cursor;
+              cursor += text.length;
+              return {width: measure.width(text, fontSize, fontWeight, letterSpacing), segments: segmentsFor(parsed.plain, parsed.ranges, start, cursor)};
+            }),
+          };
+        }
+
+        hfComponentKit.mount({
+          id: "cmp-sub-001",
+          mount: "none",                       // 位置由组件自己的布局数学决定，大小挂在字幕块自己身上
+          options: variables => ({
+            variant: String(variables.variant || "BILINGUAL").toUpperCase() === "ZH_ONLY" ? "ZH_ONLY" : "BILINGUAL",
+            // 「显示英文字幕」开关：显式给了就听它，没给就按变体（BILINGUAL 显示 / ZH_ONLY 不显示）
+            showTranslation: variables.showTranslation === undefined
+              ? String(variables.variant || "BILINGUAL").toUpperCase() !== "ZH_ONLY"
+              : Boolean(variables.showTranslation),
+            stroke: Boolean(variables.stroke),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            position: {
+              x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))),
+              y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 1))),
+            },
+          }),
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const host = root.querySelector("[data-subtitle-host]");
+            const cues = Array.isArray(content.cues) ? content.cues.slice(0, 500) : [];
+            if (!cues.length) ctx.reject("字幕轨至少需要 1 条字幕。");
+            root.style.setProperty("--keyword", options.accent);
+
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const zhLetterSpacing = GEO.zhFontSize * GEO.zhLetterSpacingEm;
+            const enLetterSpacing = GEO.enFontSize * GEO.enLetterSpacingEm;
+            const sideSafe = stage.width * GEO.sideRatio;
+            const maxBlockWidth = Math.min(stage.width - sideSafe * 2, GEO.maxBlockWidth, stage.width * GEO.blockWidthRatio);
+            const showTranslation = options.showTranslation;
+            const strokeShadow = value => (options.stroke
+              ? `-${value}px 0 ${GEO.strokeColor}, ${value}px 0 ${GEO.strokeColor}, 0 -${value}px ${GEO.strokeColor}, 0 ${value}px ${GEO.strokeColor}, 0 0 ${value * 2}px ${GEO.strokeColor}`
+              : "none");
+
+            host.textContent = "";
+            cues.forEach((cue, index) => {
+              const zh = captionLines(cue.text, maxBlockWidth, GEO.zhFontSize, GEO.zhFontWeight, zhLetterSpacing, MAX_ZH_LINES, measure);
+              if (zh.overflow) ctx.reject(`字幕过长：中文主行在安全区内超过 ${MAX_ZH_LINES} 行，请拆分字幕条。`);
+              const en = showTranslation && cue.translation
+                ? captionLines(cue.translation, maxBlockWidth, GEO.enFontSize, GEO.enFontWeight, enLetterSpacing, MAX_EN_LINES, measure)
+                : {lines: [], overflow: false};
+              if (en.overflow) ctx.reject(`英文小字过长：超过 ${MAX_EN_LINES} 行，请缩短译文。`);
+
+              const zhLineHeight = GEO.zhFontSize * GEO.zhLineHeight;
+              const enLineHeight = GEO.enFontSize * GEO.enLineHeight;
+              const blockWidth = Math.min(maxBlockWidth, Math.max(...zh.lines.map(line => line.width), ...en.lines.map(line => line.width), 1));
+              const blockHeight = zh.lines.length * zhLineHeight + (en.lines.length ? GEO.enMarginTop + en.lines.length * enLineHeight : 0);
+              const topSafe = stage.height * GEO.topRatio;
+              const bottomSafe = GEO.bottomOffset;
+              const verticalSpace = Math.max(0, stage.height - topSafe - bottomSafe - blockHeight);
+
+              const clip = document.createElement("div");
+              clip.className = "sub-clip";
+              clip.setAttribute("data-cue-id", cue.id);
+              clip.setAttribute("data-cue-index", String(index));
+              clip.setAttribute("data-start", String(cue.startMs / 1000));
+              clip.setAttribute("data-duration", String((cue.endMs - cue.startMs) / 1000));
+              clip.setAttribute("data-track-index", "2");
+              clip.style.left = `${sideSafe + (stage.width - sideSafe * 2 - blockWidth) * options.position.x}px`;
+              clip.style.top = `${topSafe + verticalSpace * options.position.y}px`;
+              clip.style.width = `${blockWidth}px`;
+              clip.style.scale = String(options.size);
+
+              const zhNode = document.createElement("div");
+              zhNode.className = "sub-zh";
+              zhNode.setAttribute("data-subtitle-line", "zh");
+              zhNode.style.fontSize = `${GEO.zhFontSize}px`;
+              zhNode.style.letterSpacing = `${zhLetterSpacing}px`;
+              zhNode.style.textShadow = strokeShadow(GEO.strokeWidth);
+              zh.lines.forEach(line => {
+                const row = document.createElement("div");
+                row.className = "sub-line";
+                row.setAttribute("data-text-line", "");
+                line.segments.forEach(segment => {
+                  const node = document.createElement(segment.emphasis ? "i" : "span");
+                  if (segment.emphasis) node.setAttribute("data-keyword", "");
+                  node.textContent = segment.text;
+                  row.appendChild(node);
+                });
+                zhNode.appendChild(row);
+              });
+              clip.appendChild(zhNode);
+
+              if (en.lines.length) {
+                const enNode = document.createElement("div");
+                enNode.className = "sub-en";
+                enNode.setAttribute("data-subtitle-line", "en");
+                enNode.style.marginTop = `${GEO.enMarginTop}px`;
+                enNode.style.fontSize = `${GEO.enFontSize}px`;
+                enNode.style.letterSpacing = `${enLetterSpacing}px`;
+                enNode.style.textShadow = strokeShadow(GEO.strokeWidth * 0.6);
+                en.lines.forEach(line => {
+                  const row = document.createElement("div");
+                  row.className = "sub-line";
+                  row.setAttribute("data-text-line", "");
+                  line.segments.forEach(segment => {
+                    const node = document.createElement("span");
+                    node.textContent = segment.text;
+                    row.appendChild(node);
+                  });
+                  enNode.appendChild(row);
+                });
+                clip.appendChild(enNode);
+              }
+              host.appendChild(clip);
+              // 来源口径是硬切（不淡入淡出）；预览为了「看得见动效」给每条字幕加一个 200ms 入场，
+              // 且只在每条自己的时间窗内播放，窗口之间仍然是硬切。
+              timeline.from(clip, {opacity: 0, y: 6, duration: 0.2, ease: "power2.out"}, cue.startMs / 1000);
+            });
+
+            ctx.setAttr(root, "data-cue-count", cues.length);
+            ctx.setAttr(root, "data-variant", options.variant);
+            ctx.setAttr(root, "data-show-translation", options.showTranslation ? "on" : "off");
+            ctx.setAttr(root, "data-stroke", options.stroke ? "on" : "off");
+            ctx.meta = {cues: cues.length};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

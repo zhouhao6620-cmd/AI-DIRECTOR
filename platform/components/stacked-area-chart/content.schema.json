@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "StackedAreaChartContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["categories", "series"],
+  "properties": {
+    "title": {
+      "type": "string", "maxLength": 14, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "unit": {
+      "type": "string", "maxLength": 4, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "categories": {
+      "type": "array", "minItems": 3, "maxItems": 6,
+      "items": {"type": "string", "minLength": 1, "maxLength": 6, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+    },
+    "series": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "label", "values"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 8, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "values": {
+            "type": "array", "minItems": 3, "maxItems": 6,
+            "items": {"type": "number", "minimum": 0, "maximum": 1000000000}
+          }
+        }
+      }
+    },
+    "caption": {
+      "type": "string", "maxLength": 28, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

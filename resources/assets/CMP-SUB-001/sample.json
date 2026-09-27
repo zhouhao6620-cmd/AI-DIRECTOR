@@ -1,0 +1,92 @@
+{
+  "componentId": "CMP-SUB-001",
+  "folder": "subtitle-track",
+  "content": {
+    "cues": [
+      {
+        "id": "cue-0001",
+        "startMs": 0,
+        "endMs": 2000,
+        "text": "先确认*目标*，再动手。",
+        "translation": "Confirm the goal before building."
+      },
+      {
+        "id": "cue-0002",
+        "startMs": 2000,
+        "endMs": 4000,
+        "text": "把要点拆成*可验证*的小步。",
+        "translation": "Split the work into verifiable steps."
+      },
+      {
+        "id": "cue-0003",
+        "startMs": 4000,
+        "endMs": 6000,
+        "text": "字幕按真实时间轴切换。",
+        "translation": "Captions follow the real timeline."
+      },
+      {
+        "id": "cue-0004",
+        "startMs": 6000,
+        "endMs": 8000,
+        "text": "关键词用强调色*点亮*。",
+        "translation": "Keywords light up in the accent colour."
+      },
+      {
+        "id": "cue-0005",
+        "startMs": 8000,
+        "endMs": 10000,
+        "text": "空档时间不显示字幕。",
+        "translation": "Nothing is drawn between cues."
+      },
+      {
+        "id": "cue-0006",
+        "startMs": 10000,
+        "endMs": 12000,
+        "text": "结尾保留一行*收束*句。",
+        "translation": "The last line closes the track."
+      }
+    ]
+  },
+  "optionDefaults": {
+    "size": 1,
+    "position": {
+      "x": 0.5,
+      "y": 1
+    },
+    "variant": "BILINGUAL",
+    "stroke": false,
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 0,
+    "durationInFrames": 360
+  },
+  "accents": {
+    "SOURCE": {
+      "keyword": "#5fa0fa"
+    },
+    "BLUE": {
+      "keyword": "#5fa0fa"
+    },
+    "ORANGE": {
+      "keyword": "#f0a24f"
+    },
+    "RED": {
+      "keyword": "#e88686"
+    },
+    "PURPLE": {
+      "keyword": "#8f86ea"
+    }
+  },
+  "surfaceTokens": null,
+  "variants": [
+    "BILINGUAL",
+    "ZH_ONLY"
+  ],
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

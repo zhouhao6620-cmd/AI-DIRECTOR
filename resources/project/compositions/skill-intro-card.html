@@ -1,0 +1,594 @@
+<!doctype html>
+<!--
+  CMP-SKL-001 技能介绍卡 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 冒烟 / 内壳复刻件，不是基线）
+  事实源：workbench-v0/platform/components/skill-intro-card/**（只读复制，未改动原文件）
+          · 文案与卡结构：model.js createContent()
+          · 版式常量：layout.js SOURCE_GEOMETRY
+          · 配色：model.js SURFACE_TOKENS / ACCENTS
+          · 实例契约：definition.json（2–4 张卡；技能名 ≤20、钩子 ≤24、说明 ≤51、胶囊 ≤18）
+
+  与 Remotion 版的对应关系：
+    Remotion 组件渲染一帧  →  这里是一条可 Seek 的 GSAP Timeline
+    props.content          →  data-composition-variables + 宿主的 data-variable-values
+    durationInFrames       →  duration 变量（秒），再均分给每张卡
+    实例时长均分给每张卡    →  每个卡槽一个 clip（data-start / data-duration 动态写入）
+
+  两个补丁（相对冒烟版第一版）：
+    1. 卡槽动态化：子合成固定声明 4 个卡槽，按当前卡数写 data-start/data-duration，
+       未使用的槽位写 data-duration="0"（运行时按此跳过，实测会实时生效）。
+    2. 配置补丁通道：宿主（工作台内壳）通过 postMessage 发送同一份 variables，
+       合成原地重绑文字、重算版式、clear() 复用同一条 Timeline —— 右侧 Inspector 才能实时滑动。
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.8,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"accent-1","type":"color","label":"第 1 张强调色","default":"#538BFE"},
+  {"id":"accent-2","type":"color","label":"第 2 张强调色","default":"#F0A24F"},
+  {"id":"accent-3","type":"color","label":"第 3 张强调色","default":"#8F86EA"},
+  {"id":"accent-4","type":"color","label":"第 4 张强调色","default":"#E88686"},
+  {"id":"card1_skill","type":"string","label":"卡 1 技能名","default":"find-skills"},
+  {"id":"card1_hook","type":"string","label":"卡 1 钩子观点","default":"不知道装什么？直接说你想干嘛"},
+  {"id":"card1_body","type":"string","label":"卡 1 说明","default":"几万个技能里，它帮你挑最合适的那个。把需求说出来，它给你答案。"},
+  {"id":"card1_badge","type":"string","label":"卡 1 数据胶囊","default":"全网 300 万+ 安装"},
+  {"id":"card2_skill","type":"string","label":"卡 2 技能名","default":"video-dubbing"},
+  {"id":"card2_hook","type":"string","label":"卡 2 钩子观点","default":"一条片子，讲给所有人听"},
+  {"id":"card2_body","type":"string","label":"卡 2 说明","default":"保留原来的音色，把口播换成另一种语言，字幕和口型一起对齐。"},
+  {"id":"card2_badge","type":"string","label":"卡 2 数据胶囊","default":"覆盖 12 种语言"},
+  {"id":"card3_skill","type":"string","label":"卡 3 技能名","default":"skill-authoring"},
+  {"id":"card3_hook","type":"string","label":"卡 3 钩子观点","default":"从一张参考图，到一个能用的组件"},
+  {"id":"card3_body","type":"string","label":"卡 3 说明","default":"读懂参考里的版式与动效，产出能预览、能编辑、能导出的真实组件。"},
+  {"id":"card3_badge","type":"string","label":"卡 3 数据胶囊","default":"已产出 21 个组件"},
+  {"id":"card4_skill","type":"string","label":"卡 4 技能名","default":""},
+  {"id":"card4_hook","type":"string","label":"卡 4 钩子观点","default":""},
+  {"id":"card4_body","type":"string","label":"卡 4 说明","default":""},
+  {"id":"card4_badge","type":"string","label":"卡 4 数据胶囊","default":""}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-SKL-001 技能介绍卡 · HyperFrames</title>
+  <style>
+    /* ── 版式常量：逐项对应 layout.js SOURCE_GEOMETRY（数值未改动） ───────────────── */
+    [data-composition-id="cmp-skl-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --card-width: 700px;          /* 620 内容宽 + 40 × 2 左右内边距 */
+      --content-width: 620px;
+      --pad-x: 40px;
+      --pad-y: 40px;
+      --radius: 26px;
+      --grid-size: 46px;
+      --highlight-height: 4px;
+      --highlight-ratio: 0.6;
+      --skill-size: 58px;
+      --skill-line: 1.16;
+      --skill-ls: -0.01em;
+      --bar-height: 7px;
+      --bar-width: 341px;           /* 内容宽的 0.55 */
+      --bar-radius: 3.5px;
+      --bar-mt: 22px;
+      --bar-mb: 30px;
+      --hook-size: 47px;
+      --hook-line: 1.36;
+      --divider-height: 1px;
+      --divider-mt: 34px;
+      --divider-mb: 32px;
+      --body-size: 34px;
+      --body-line: 1.6;
+      --badge-mt: 38px;
+      --badge-size: 27px;
+      --badge-line: 1.25;
+      --badge-px: 26px;
+      --badge-py: 15px;
+      --badge-dot: 10px;
+      --badge-gap: 12px;
+      /* 深浅底 token 由合成脚本按 surface 变量覆盖（默认深色，与参考图一致） */
+      --ink: #F4F8FF;
+      --body-ink: #C7CDDF;
+      --card-bg: linear-gradient(155deg, #26334F 0%, #1A2338 46%, #101728 100%);
+      --card-border: rgba(122,160,255,0.18);
+      --card-shadow: 0 34px 80px rgba(4,8,20,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+      --grid-color: rgba(255,255,255,0.022);
+      --divider-color: rgba(199,205,223,0.16);
+    }
+
+    /* ── 舞台 ──────────────────────────────────────────────────────────────── */
+    [data-composition-id="cmp-skl-001"] {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      /* 组件 transparent = true：画布底色交给外壳，Composition 自身不铺底 */
+      background: transparent;
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sic-clip { position: absolute; inset: 0; visibility: hidden; }
+    .sic-anchor { position: absolute; transform-origin: top left; }
+    .sic-card {
+      position: relative;
+      box-sizing: border-box;
+      width: var(--card-width);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      transform-origin: center center;
+    }
+    .sic-grid {
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(90deg, var(--grid-color) 0 1px, transparent 1px var(--grid-size)),
+        repeating-linear-gradient(0deg, var(--grid-color) 0 1px, transparent 1px var(--grid-size));
+    }
+    .sic-highlight {
+      position: absolute; left: 0; top: 0;
+      width: calc(var(--card-width) * var(--highlight-ratio));
+      height: var(--highlight-height);
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-36) 45%, transparent 100%);
+    }
+    .sic-content { position: relative; padding: var(--pad-y) var(--pad-x); }
+
+    .sic-skill {
+      font-family: var(--font-mono);
+      font-size: var(--skill-size);
+      font-weight: 700;
+      line-height: var(--skill-line);
+      letter-spacing: var(--skill-ls);
+      color: var(--ink);
+    }
+    .sic-bar-track { height: var(--bar-height); margin-top: var(--bar-mt); margin-bottom: var(--bar-mb); }
+    .sic-bar {
+      width: var(--bar-width); height: var(--bar-height); border-radius: var(--bar-radius);
+      background: var(--accent); transform-origin: left center;
+    }
+    .sic-hook {
+      color: var(--accent);
+      font-size: var(--hook-size);
+      font-weight: 700;
+      line-height: var(--hook-line);
+    }
+    .sic-hook-line { display: block; overflow: hidden; }
+    .sic-hook-line > span { display: block; will-change: transform; }
+    .sic-divider {
+      height: var(--divider-height);
+      margin-top: var(--divider-mt); margin-bottom: var(--divider-mb);
+      background: var(--divider-color);
+      transform-origin: left center;
+    }
+    .sic-body {
+      font-size: var(--body-size); line-height: var(--body-line); font-weight: 400;
+      color: var(--body-ink);
+    }
+    .sic-badge-row { display: flex; margin-top: var(--badge-mt); }
+    .sic-badge {
+      display: inline-flex; align-items: center; gap: var(--badge-gap);
+      padding: var(--badge-py) var(--badge-px); border-radius: 999px;
+      border: 1px solid var(--accent-38);
+      background: var(--accent-14);
+      color: var(--accent);
+      font-size: var(--badge-size); font-weight: 500; line-height: var(--badge-line);
+      transform-origin: left center; white-space: nowrap;
+    }
+    .sic-badge-dot { width: var(--badge-dot); height: var(--badge-dot); border-radius: 50%; background: var(--accent); flex: none; }
+    /* 胶囊清空即收起，不留空位（与实验页行为一致） */
+    .sic-badge-row.is-empty { display: none; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-skl-001" data-width="1920" data-height="1080" data-card-count="3">
+    <!-- 四个卡槽都静态声明：按当前卡数写时间，未使用的槽位 duration = 0（运行时跳过） -->
+    <div id="sic-card-1" class="sic-clip clip" data-card-index="1" data-start="0" data-duration="4" data-track-index="1">
+      <div class="sic-anchor" data-anchor>
+        <div class="sic-card" data-card>
+          <div class="sic-grid" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-highlight" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-content">
+            <div class="sic-skill" data-slot="skill"></div>
+            <div class="sic-bar-track"><div class="sic-bar" data-part="bar"></div></div>
+            <!-- data-layout-allow-overflow：钩子观点用「行遮罩」入场，行内文字在入场前位于遮罩下方，
+                 属于刻意溢出；不标记会被布局巡检当成文字跑出容器。 -->
+            <div class="sic-hook" data-slot="hook" data-layout-allow-overflow></div>
+            <div class="sic-divider" data-part="divider"></div>
+            <div class="sic-body" data-slot="body"></div>
+            <div class="sic-badge-row" data-part="badgeRow">
+              <div class="sic-badge" data-part="badge">
+                <span class="sic-badge-dot" data-layout-ignore aria-hidden="true"></span>
+                <span data-slot="badge"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sic-card-2" class="sic-clip clip" data-card-index="2" data-start="4" data-duration="4" data-track-index="2">
+      <div class="sic-anchor" data-anchor>
+        <div class="sic-card" data-card>
+          <div class="sic-grid" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-highlight" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-content">
+            <div class="sic-skill" data-slot="skill"></div>
+            <div class="sic-bar-track"><div class="sic-bar" data-part="bar"></div></div>
+            <div class="sic-hook" data-slot="hook" data-layout-allow-overflow></div>
+            <div class="sic-divider" data-part="divider"></div>
+            <div class="sic-body" data-slot="body"></div>
+            <div class="sic-badge-row" data-part="badgeRow">
+              <div class="sic-badge" data-part="badge">
+                <span class="sic-badge-dot" data-layout-ignore aria-hidden="true"></span>
+                <span data-slot="badge"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sic-card-3" class="sic-clip clip" data-card-index="3" data-start="8" data-duration="4" data-track-index="3">
+      <div class="sic-anchor" data-anchor>
+        <div class="sic-card" data-card>
+          <div class="sic-grid" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-highlight" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-content">
+            <div class="sic-skill" data-slot="skill"></div>
+            <div class="sic-bar-track"><div class="sic-bar" data-part="bar"></div></div>
+            <div class="sic-hook" data-slot="hook" data-layout-allow-overflow></div>
+            <div class="sic-divider" data-part="divider"></div>
+            <div class="sic-body" data-slot="body"></div>
+            <div class="sic-badge-row" data-part="badgeRow">
+              <div class="sic-badge" data-part="badge">
+                <span class="sic-badge-dot" data-layout-ignore aria-hidden="true"></span>
+                <span data-slot="badge"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sic-card-4" class="sic-clip clip" data-card-index="4" data-start="12" data-duration="0" data-track-index="4">
+      <div class="sic-anchor" data-anchor>
+        <div class="sic-card" data-card>
+          <div class="sic-grid" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-highlight" data-layout-ignore aria-hidden="true"></div>
+          <div class="sic-content">
+            <div class="sic-skill" data-slot="skill"></div>
+            <div class="sic-bar-track"><div class="sic-bar" data-part="bar"></div></div>
+            <div class="sic-hook" data-slot="hook" data-layout-allow-overflow></div>
+            <div class="sic-divider" data-part="divider"></div>
+            <div class="sic-body" data-slot="body"></div>
+            <div class="sic-badge-row" data-part="badgeRow">
+              <div class="sic-badge" data-part="badge">
+                <span class="sic-badge-dot" data-layout-ignore aria-hidden="true"></span>
+                <span data-slot="badge"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GSAP 随项目自带（project/vendor/gsap.min.js），不依赖 CDN，离线与渲染都可用。
+         写根绝对路径的原因：运行时会把这个子合成**内联进宿主文档**，相对路径是按宿主文档所在目录解析的，
+         写在 fixtures/ 下的宿主会解析到 fixtures/vendor/ 而 404。根绝对路径在
+         「项目根 = 服务根」（CLI check/render）与「我们的静态服务把 /vendor 映射到 project/vendor」下都成立。 -->
+    <script src="/vendor/gsap.min.js"></script>
+    <script>
+      /* CMP-SKL-001 → HyperFrames：同步构建 DOM 绑定、布局与 Timeline。
+         捕获引擎在页面加载后同步读取 window.__timelines，因此这里不允许出现 async / 定时器。 */
+      (function () {
+        const COMPOSITION_ID = "cmp-skl-001";
+        const MAX_CARDS = 4;
+        const root = document.querySelector('[data-composition-id="' + COMPOSITION_ID + '"]');
+        const hf = window.__hyperframes || {};
+
+        // 参考图实测色（与 model.js SURFACE_TOKENS 同源）
+        const SURFACE_TOKENS = {
+          DARK: {
+            ink: "#F4F8FF", body: "#C7CDDF",
+            card: "linear-gradient(155deg, #26334F 0%, #1A2338 46%, #101728 100%)",
+            grid: "rgba(255,255,255,0.022)",
+            cardBorder: "rgba(122,160,255,0.18)",
+            divider: "rgba(199,205,223,0.16)",
+            cardShadow: "0 34px 80px rgba(4,8,20,0.55), inset 0 1px 0 rgba(255,255,255,0.06)",
+          },
+          LIGHT: {
+            ink: "#16203A", body: "rgba(22,32,58,0.78)",
+            card: "linear-gradient(155deg, #FFFFFF 0%, #F2F5FC 46%, #E6EBF7 100%)",
+            grid: "rgba(22,32,58,0.05)",
+            cardBorder: "rgba(30,99,216,0.20)",
+            divider: "rgba(22,32,58,0.14)",
+            cardShadow: "0 24px 60px rgba(88,110,160,0.20), inset 0 1px 0 rgba(255,255,255,0.90)",
+          },
+        };
+        // 安全区与布局（与 layout.js calculateSkillIntroCardLayout 同源）
+        const SAFE_SIDE_RATIO = 0.0625;
+        const SAFE_VERTICAL_RATIO = 0.08;
+        const MIN_SCALE = 0.62;
+        const CARD_WIDTH = 700;
+        const MIN_SLOT_MS = 2600;
+        const MIN_SIZE = 0.8;
+        const MAX_SIZE = 2;
+        // 动效节拍（与 layout.js SOURCE_GEOMETRY 同源，单位：秒）
+        const BEAT = {
+          enter: 0.42, enterOffsetY: 24, enterScaleFrom: 0.985,
+          lineTypingDelay: 0.2, lineTyping: 0.46,
+          hookDelay: 0.62, hookReveal: 0.52, hookStagger: 0.11,
+          dividerDelay: 0.56, dividerReveal: 0.42,
+          bodyDelay: 0.76, bodyReveal: 0.42,
+          badgeDelay: 0.98, badgeReveal: 0.32,
+          exit: 0.32, exitOffsetY: -14,
+        };
+        const ENTER_EASE = "power3.out";   // ← cubic-bezier(0.22, 1, 0.36, 1)
+        const SHARP_EASE = "power2.out";   // ← cubic-bezier(0.16, 1, 0.3, 1)
+        const EXIT_EASE = "power2.in";
+        const ACCENT_FALLBACK = ["#538BFE", "#F0A24F", "#8F86EA", "#E88686"];
+
+        const rgba = (hex, alpha) => {
+          const value = String(hex).replace("#", "");
+          const [r, g, b] = [0, 2, 4].map(offset => parseInt(value.slice(offset, offset + 2), 16));
+          return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        };
+        const number = (value, fallback) => {
+          const parsed = Number(value);
+          return Number.isFinite(parsed) ? parsed : fallback;
+        };
+
+        // 四个卡槽的 DOM 引用：一次取好，补丁只改文本与属性，不重建 DOM
+        const slots = Array.from(root.querySelectorAll(".sic-clip")).slice(0, MAX_CARDS).map(clip => ({
+          clip,
+          anchor: clip.querySelector("[data-anchor]"),
+          card: clip.querySelector("[data-card]"),
+          skill: clip.querySelector('[data-slot="skill"]'),
+          hook: clip.querySelector('[data-slot="hook"]'),
+          body: clip.querySelector('[data-slot="body"]'),
+          badgeText: clip.querySelector('[data-slot="badge"]'),
+          badgeRow: clip.querySelector('[data-part="badgeRow"]'),
+          badge: clip.querySelector('[data-part="badge"]'),
+          bar: clip.querySelector('[data-part="bar"]'),
+          divider: clip.querySelector("[data-part=divider]"),
+          hookLines: [],
+          start: 0,
+          slotSeconds: 0,
+          active: false,
+        }));
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const measureWidth = (text, font) => { ctx.font = font; return ctx.measureText(text).width; };
+        const wrap = (text, maxWidth, font) => {
+          const lines = [];
+          let line = "";
+          const graphemes = Array.from(new Intl.Segmenter("zh", {granularity: "grapheme"}).segment(text), item => item.segment);
+          for (const grapheme of graphemes) {
+            if (line && measureWidth(line + grapheme, font) > maxWidth) { lines.push(line); line = grapheme; }
+            else line += grapheme;
+          }
+          if (line) lines.push(line);
+          return lines;
+        };
+
+        // 变量 → 组件状态。宿主（工作台内壳）补丁用的是同一份变量表，所以两条入口共用这一个解析。
+        function readState(variables) {
+          const surface = String(variables.surface || "DARK").toUpperCase();
+          const cards = [];
+          for (let index = 1; index <= MAX_CARDS; index += 1) {
+            const skill = String(variables["card" + index + "_skill"] ?? "").trim();
+            const hook = String(variables["card" + index + "_hook"] ?? "").trim();
+            const body = String(variables["card" + index + "_body"] ?? "").trim();
+            if (!skill && !hook && !body) break;
+            cards.push({
+              skill, hook, body,
+              badge: String(variables["card" + index + "_badge"] ?? "").trim(),
+              accent: String(variables["accent-" + index] || ACCENT_FALLBACK[index - 1]),
+            });
+          }
+          if (!cards.length) throw new Error("技能介绍卡至少需要 1 张卡的内容。");
+          return {
+            surface,
+            cards,
+            duration: Math.max(1, number(variables.duration, 12)),
+            size: Math.min(MAX_SIZE, Math.max(MIN_SIZE, number(variables.size, 1))),
+            position: {
+              x: Math.min(1, Math.max(0, number(variables["position-x"], 0.5))),
+              y: Math.min(1, Math.max(0, number(variables["position-y"], 0.5))),
+            },
+          };
+        }
+
+        function paintSurface(surface) {
+          const tokens = SURFACE_TOKENS[surface] || SURFACE_TOKENS.DARK;
+          root.style.setProperty("--ink", tokens.ink);
+          root.style.setProperty("--body-ink", tokens.body);
+          root.style.setProperty("--card-bg", tokens.card);
+          root.style.setProperty("--card-border", tokens.cardBorder);
+          root.style.setProperty("--card-shadow", tokens.cardShadow);
+          root.style.setProperty("--grid-color", tokens.grid);
+          root.style.setProperty("--divider-color", tokens.divider);
+          root.setAttribute("data-surface", surface);
+        }
+
+        // 文字绑定 + 钩子观点按 620 px 内容宽做字素级换行（与 layout.js wrapText 同一套规则），
+        // 每行一个遮罩容器，入场时逐行升入 —— 这是 Remotion 版 hookStagger 的对应实现。
+        function bindContent(state) {
+          const contentWidth = parseFloat(window.getComputedStyle(root).getPropertyValue("--content-width")) || 620;
+          slots.forEach((slot, index) => {
+            const card = state.cards[index];
+            if (!card) {
+              slot.skill.textContent = "";
+              slot.body.textContent = "";
+              slot.badgeText.textContent = "";
+              slot.hook.textContent = "";
+              slot.hookLines = [];
+              slot.badgeRow.classList.add("is-empty");
+              return;
+            }
+            slot.skill.textContent = card.skill;
+            slot.body.textContent = card.body;
+            slot.badgeText.textContent = card.badge;
+            slot.badgeRow.classList.toggle("is-empty", !card.badge);
+            slot.clip.style.setProperty("--accent", card.accent);
+            slot.clip.style.setProperty("--accent-36", rgba(card.accent, 0.36));
+            slot.clip.style.setProperty("--accent-14", rgba(card.accent, 0.14));
+            slot.clip.style.setProperty("--accent-38", rgba(card.accent, 0.38));
+
+            const style = window.getComputedStyle(slot.hook);
+            const font = style.font || `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            const lines = wrap(card.hook, contentWidth, font);
+            slot.hook.textContent = "";
+            slot.hookLines = lines.map(text => {
+              const line = document.createElement("div");
+              line.className = "sic-hook-line";
+              const inner = document.createElement("span");
+              inner.textContent = text;
+              line.appendChild(inner);
+              slot.hook.appendChild(line);
+              return inner;
+            });
+          });
+        }
+
+        // 实例时长均分给每张卡：写回 clip 的 data-start / data-duration；未使用的槽位 duration = 0。
+        function applySlotTiming(state) {
+          const slotSeconds = state.duration / state.cards.length;
+          slots.forEach((slot, index) => {
+            const active = index < state.cards.length;
+            slot.active = active;
+            slot.start = active ? index * slotSeconds : state.duration;
+            slot.slotSeconds = slotSeconds;
+            // 只在真的变化时写属性：无谓的属性写入会让运行时的时间线状态失效，白掉一帧。
+            const start = String(slot.start);
+            const duration = active ? String(slotSeconds) : "0";
+            if (slot.clip.getAttribute("data-start") !== start) slot.clip.setAttribute("data-start", start);
+            if (slot.clip.getAttribute("data-duration") !== duration) slot.clip.setAttribute("data-duration", duration);
+          });
+          root.setAttribute("data-card-count", String(state.cards.length));
+          root.setAttribute("data-slot-seconds", slotSeconds.toFixed(3));
+        }
+
+        // 所有卡共用一个卡盒高度（取最高的那张），再按安全区缩放并落位。
+        function applyLayout(state) {
+          const blockHeight = Math.max.apply(null, slots.filter(slot => slot.active).map(slot => slot.card.offsetHeight).concat([0]));
+          slots.forEach(slot => { slot.card.style.height = blockHeight + "px"; });
+
+          const stageWidth = root.clientWidth || 1920;
+          const stageHeight = root.clientHeight || 1080;
+          const safeX = stageWidth * SAFE_SIDE_RATIO;
+          const safeY = stageHeight * SAFE_VERTICAL_RATIO;
+          const availableWidth = stageWidth - safeX * 2;
+          const availableHeight = stageHeight - safeY * 2;
+          const rawScale = Math.min(state.size, availableWidth / CARD_WIDTH, availableHeight / Math.max(1, blockHeight));
+          // 低于可读下限时，Remotion 版直接拒绝渲染；这里由适配层在数据层拒绝，
+          // 合成内保底收紧到 MIN_SCALE，避免出现不可读的自动缩小。
+          const scale = Math.max(MIN_SCALE, Number.isFinite(rawScale) ? rawScale : state.size);
+          const x = safeX + (availableWidth - CARD_WIDTH * scale) * state.position.x;
+          const y = safeY + (availableHeight - blockHeight * scale) * state.position.y;
+          slots.forEach(slot => {
+            slot.anchor.style.left = x + "px";
+            slot.anchor.style.top = y + "px";
+            slot.anchor.style.transform = "scale(" + scale + ")";
+          });
+          root.setAttribute("data-layout-scale", scale.toFixed(3));
+          root.setAttribute("data-block-height", String(blockHeight));
+          return {blockHeight, scale};
+        }
+
+        // Timeline 复用同一个对象（clear 再重建）：内核可能缓存了它的引用，换对象会让动效停住。
+        function timelineInstance() {
+          window.__timelines = window.__timelines || {};
+          if (!window.__timelines[COMPOSITION_ID]) window.__timelines[COMPOSITION_ID] = gsap.timeline({paused: true});
+          return window.__timelines[COMPOSITION_ID];
+        }
+
+        function buildTimeline(state) {
+          const timeline = timelineInstance();
+          timeline.clear();
+          const active = slots.filter(slot => slot.active);
+          active.forEach((slot, index) => {
+            const isLast = index === active.length - 1;
+            const at = slot.start;
+            const slotSeconds = slot.slotSeconds;
+            if (slotSeconds * 1000 < MIN_SLOT_MS) return;   // 槽位过短的组合由适配层提前拒绝
+            timeline.from(slot.card, {
+              y: BEAT.enterOffsetY, scale: BEAT.enterScaleFrom, opacity: 0,
+              duration: BEAT.enter, ease: ENTER_EASE,
+            }, at);
+            timeline.fromTo(slot.bar, {scaleX: 0}, {
+              scaleX: 1, duration: BEAT.lineTyping, ease: SHARP_EASE,
+            }, at + BEAT.lineTypingDelay);
+            slot.hookLines.forEach((line, lineIndex) => {
+              timeline.from(line, {
+                yPercent: 112, opacity: 0, duration: BEAT.hookReveal, ease: ENTER_EASE,
+              }, at + BEAT.hookDelay + lineIndex * BEAT.hookStagger);
+            });
+            timeline.fromTo(slot.divider, {scaleX: 0}, {
+              scaleX: 1, duration: BEAT.dividerReveal, ease: SHARP_EASE,
+            }, at + BEAT.dividerDelay);
+            timeline.from(slot.body, {
+              opacity: 0, y: 10, duration: BEAT.bodyReveal, ease: ENTER_EASE,
+            }, at + BEAT.bodyDelay);
+            if (!slot.badgeRow.classList.contains("is-empty")) {
+              timeline.from(slot.badge, {
+                opacity: 0, scale: 0.92, duration: BEAT.badgeReveal, ease: SHARP_EASE,
+              }, at + BEAT.badgeDelay);
+            }
+            if (!isLast) {
+              timeline.to(slot.card, {
+                opacity: 0, y: BEAT.exitOffsetY, scale: 0.99, duration: BEAT.exit, ease: EXIT_EASE,
+              }, at + slotSeconds - BEAT.exit);
+            }
+          });
+          return timeline;
+        }
+
+        // 一次渲染 = 变量 → 状态 → 文字/底色/时间/版式/Timeline
+        function render(variables) {
+          const state = readState(variables);
+          paintSurface(state.surface);
+          bindContent(state);
+          applySlotTiming(state);
+          const geometry = applyLayout(state);
+          buildTimeline(state);
+          // Timeline 是原地 clear 重建的，运行时需要一次「重新绑定」才会按当前时间重算
+          // clip 可见性与画面（这是运行时自己暴露的钩子，不是绕过它改 DOM）。
+          if (typeof window.__hfForceTimelineRebind === "function") window.__hfForceTimelineRebind();
+          root.setAttribute("data-rendered-cards", String(state.cards.length));
+          return {state, geometry};
+        }
+
+        const boot = render(typeof hf.getVariables === "function" ? hf.getVariables() : {});
+
+        // 配置补丁通道：宿主（工作台内壳）发同一份 variables，合成原地重绑并复用 Timeline。
+        // 说明：官方 player 的 setRuntimeData 在 0.8.46 上同一通道只有首次投递生效（见 SMOKE_TEST_REPORT F2），
+        // 所以这里用一条显式的壳 ↔ 合成协议，语义与「改 Variables」一致，只是可重复投递。
+        window.addEventListener("message", event => {
+          const message = event.data;
+          if (!message || message.type !== "hyperframes:patch" || message.compositionId !== COMPOSITION_ID) return;
+          let result = {ok: true};
+          try {
+            const applied = render(message.variables || {});
+            result = {ok: true, cards: applied.state.cards.length, scale: applied.geometry.scale};
+          } catch (error) {
+            result = {ok: false, reason: error.message};
+          }
+          root.setAttribute("data-patch-revision", String(message.revision ?? 0));
+          if (event.source && typeof event.source.postMessage === "function") {
+            event.source.postMessage({
+              type: "hyperframes:patched", compositionId: COMPOSITION_ID,
+              revision: message.revision ?? 0, ...result,
+            }, "*");
+          }
+        });
+
+        root.setAttribute("data-ready-cards", String(boot.state.cards.length));
+      })();
+    </script>
+  </div>
+</body>
+</html>

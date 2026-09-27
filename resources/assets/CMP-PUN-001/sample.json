@@ -1,0 +1,61 @@
+{
+  "componentId": "CMP-PUN-001",
+  "folder": "punch-pill",
+  "content": {
+    "text": "一句金句，定格三秒"
+  },
+  "optionDefaults": {
+    "position": {
+      "x": 0.5,
+      "y": 1
+    },
+    "size": 1,
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 0,
+    "durationInFrames": 150
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "ink": "#ffffff",
+      "node": "#12121a",
+      "cardShadow": "0 30px 70px rgba(0,0,0,0.38)"
+    },
+    "LIGHT": {
+      "ink": "#1a2540",
+      "node": "#ece6e0",
+      "cardShadow": "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08)"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

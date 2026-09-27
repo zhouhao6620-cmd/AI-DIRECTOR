@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "LogicNodeGraphContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["center", "branches"],
+  "properties": {
+    "center": {
+      "type": "object", "additionalProperties": false, "required": ["label"],
+      "properties": {
+        "label": {
+          "type": "string", "minLength": 1, "maxLength": 12,
+          "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+        }
+      }
+    },
+    "branches": {
+      "type": "array", "minItems": 2, "maxItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "label", "children"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {
+            "type": "string", "minLength": 1, "maxLength": 12,
+            "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+          },
+          "children": {
+            "type": "array", "maxItems": 2,
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["id", "label"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+                "label": {
+                  "type": "string", "minLength": 1, "maxLength": 10,
+                  "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

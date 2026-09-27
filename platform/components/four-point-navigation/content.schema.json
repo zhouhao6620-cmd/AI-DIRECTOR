@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "FourPointNavigationContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "items"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1, "maxLength": 40, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+    "items": {
+      "type": "array", "minItems": 3, "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "label"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 48, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+        }
+      }
+    }
+  }
+}

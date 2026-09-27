@@ -1,0 +1,169 @@
+<!doctype html>
+<!--
+  CMP-VRS-001 双项对比 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 组件库改造，不是基线）
+  事实源：workbench-v0/platform/components/versus-card/**（只读复制）
+          · 版式：卡宽 520 / 内边距 40×44 / 圆角 24 / 描边 2 / 卡间距 18；VS 徽标 84、
+            重叠 42、描边 5、字 28·800·0.04em；眉题 19·700·0.16em；标题 48·800·-0.01em；副题 24·400·1.5
+          · 动效：两侧 560ms 从 ±48px 滑入（第二侧 +140ms）；VS 徽标 500ms 后 420ms 淡入 + 460ms 从 0.5 倍弹入
+          · 内容：{a{kicker,title,sub}, b{...}, emphasis: "A"|"B"}
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-VRS-001 双项对比 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-vrs-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --node: #12121a; --accent: #5fa0fa;
+      --glass: linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+      --glass-border: rgba(255,255,255,0.22);
+      --glass-shadow: 0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .vs-block { position: absolute; display: flex; align-items: center; }
+    .vs-card { box-sizing: border-box; border-radius: 24px; border-style: solid; border-width: 2px;
+      background: var(--glass); box-shadow: var(--glass-shadow); }
+    .vs-kicker { font-weight: 700; text-transform: uppercase; white-space: pre; }
+    .vs-title { color: var(--ink); font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; white-space: pre; }
+    .vs-sub { color: var(--muted); font-weight: 400; line-height: 1.5; white-space: pre; }
+    .vs-badge { border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--accent); color: #fff;
+      font-weight: 800; border-style: solid; border-color: var(--node); z-index: 2; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-vrs-001" data-width="1920" data-height="1080">
+    <div class="vs-block" data-block>
+      <div class="vs-card" data-card-a>
+        <div class="vs-kicker" data-kicker-a></div>
+        <div class="vs-title" data-title-a></div>
+        <div class="vs-sub" data-sub-a></div>
+      </div>
+      <div class="vs-badge" data-badge>VS</div>
+      <div class="vs-card" data-card-b>
+        <div class="vs-kicker" data-kicker-b></div>
+        <div class="vs-title" data-title-b></div>
+        <div class="vs-sub" data-sub-b></div>
+      </div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"a": {"kicker": "主推 · 会点亮", "title": "选项 A", "sub": "胜出的一边高亮"}, "b": {"kicker": "对照 · 会变灰", "title": "选项 B", "sub": "落败的一边压暗"}, "emphasis": "A"}
+    </script>
+
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/canvas-backdrop.js"></script>
+    <script src="/vendor/hf-component-kit.js"></script>
+    <script>
+      (function () {
+        const GEO = {cardWidth: 520, cardPaddingX: 40, cardPaddingY: 44, cardRadius: 24, cardBorder: 2, cardGap: 18,
+          badgeSize: 84, badgeOverlap: 42, badgeBorder: 5, badgeFontSize: 28, badgeLetterSpacingEm: 0.04,
+          kickerFontSize: 19, kickerLetterSpacingEm: 0.16, titleFontSize: 48, subFontSize: 24,
+          sideEnterOffset: 48, sideEnterMs: 560, secondSideDelayMs: 140, badgeOpacityMs: 420, badgeScaleMs: 460, badgeDelayMs: 500};
+        const SAFE_SIDE_RATIO = 0.0625;
+        const SAFE_VERTICAL_RATIO = 0.08;
+        const MIN_SCALE = 0.62;
+        const DIM_OPACITY = 0.58;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", node: "#12121a", glassBorder: "rgba(255,255,255,0.22)",
+            glass: "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+            shadow: "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", node: "#ece6e0", glassBorder: "rgba(255,255,255,0.85)",
+            glass: "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+            shadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-vrs-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--node", tokens.node);
+            ctx.root.style.setProperty("--glass", tokens.glass);
+            ctx.root.style.setProperty("--glass-border", tokens.glassBorder);
+            ctx.root.style.setProperty("--glass-shadow", tokens.shadow);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, timeline} = ctx;
+            const block = root.querySelector("[data-block]");
+            const cardA = root.querySelector("[data-card-a]");
+            const cardB = root.querySelector("[data-card-b]");
+            const badge = root.querySelector("[data-badge]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_SIDE_RATIO;
+            const safeY = stage.height * SAFE_VERTICAL_RATIO;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const emphasis = String(content.emphasis || "A").toUpperCase() === "B" ? "B" : "A";
+            const side = key => ({
+              kicker: String(content[key]?.kicker ?? ""),
+              title: String(content[key]?.title ?? ""),
+              sub: String(content[key]?.sub ?? ""),
+            });
+            const a = side("a");
+            const b = side("b");
+            const cardWidth = GEO.cardWidth * scale;
+            const requiredWidth = cardWidth * 2 + GEO.cardGap * scale * 2 - GEO.badgeOverlap * 2 * scale + GEO.badgeSize * scale;
+            const requiredHeight = GEO.cardPaddingY * 2 * scale + (GEO.kickerFontSize * 1.2 + GEO.titleFontSize * 1.2 + GEO.subFontSize * 1.5) * scale + 40 * scale;
+            const layoutScale = Math.min(1, availableWidth / requiredWidth, availableHeight / requiredHeight);
+            if (layoutScale < MIN_SCALE) ctx.reject(`双项对比超出安全区：需要缩到 ${(layoutScale * 100).toFixed(0)}%，低于 ${(MIN_SCALE * 100).toFixed(0)}% 可读下限。`);
+            const factor = scale * layoutScale;
+            const finalCardWidth = GEO.cardWidth * factor;
+
+            const paintSide = (card, data, dim) => {
+              card.style.cssText = `width:${finalCardWidth}px;padding:${GEO.cardPaddingY * factor}px ${GEO.cardPaddingX * factor}px;`
+                + `border-radius:${GEO.cardRadius * factor}px;border-width:${GEO.cardBorder * factor}px;`
+                + `border-color:${dim ? "var(--glass-border)" : "var(--accent)"};opacity:${dim ? DIM_OPACITY : 1};`;
+              card.querySelector(".vs-kicker").style.cssText = `font-size:${GEO.kickerFontSize * factor}px;`
+                + `letter-spacing:${GEO.kickerFontSize * GEO.kickerLetterSpacingEm * factor}px;color:${dim ? "var(--muted)" : "var(--accent)"};`;
+              card.querySelector(".vs-kicker").textContent = data.kicker;
+              card.querySelector(".vs-title").style.fontSize = `${GEO.titleFontSize * factor}px`;
+              card.querySelector(".vs-title").textContent = data.title;
+              card.querySelector(".vs-sub").style.cssText = `font-size:${GEO.subFontSize * factor}px;margin-top:${10 * factor}px;`;
+              card.querySelector(".vs-sub").textContent = data.sub;
+            };
+            paintSide(cardA, a, emphasis === "B");
+            paintSide(cardB, b, emphasis === "A");
+            badge.style.cssText = `width:${GEO.badgeSize * factor}px;height:${GEO.badgeSize * factor}px;`
+              + `margin:0 ${-GEO.badgeOverlap * factor}px;font-size:${GEO.badgeFontSize * factor}px;`
+              + `letter-spacing:${GEO.badgeFontSize * GEO.badgeLetterSpacingEm * factor}px;border-width:${GEO.badgeBorder * factor}px;`;
+
+            const box = block.getBoundingClientRect();
+            block.style.left = `${safeX + (availableWidth - box.width) * options.position.x}px`;
+            block.style.top = `${safeY + (availableHeight - box.height) * options.position.y}px`;
+
+            timeline.from(cardA, {opacity: 0, x: -GEO.sideEnterOffset * factor, duration: GEO.sideEnterMs / 1000, ease: "power3.out"}, 0);
+            timeline.from(cardB, {opacity: 0, x: GEO.sideEnterOffset * factor, duration: GEO.sideEnterMs / 1000, ease: "power3.out"}, GEO.secondSideDelayMs / 1000);
+            timeline.from(badge, {opacity: 0, duration: GEO.badgeOpacityMs / 1000, ease: "power2.out"}, GEO.badgeDelayMs / 1000);
+            timeline.from(badge, {scale: 0.5, duration: GEO.badgeScaleMs / 1000, ease: "back.out(2)"}, GEO.badgeDelayMs / 1000);
+            ctx.setAttr(root, "data-emphasis", emphasis);
+            ctx.meta = {emphasis, scale: Number(factor.toFixed(3))};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

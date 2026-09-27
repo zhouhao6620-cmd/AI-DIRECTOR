@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RankBarsContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rows"],
+  "properties": {
+    "title": {
+      "type": "string", "maxLength": 24, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "rows": {
+      "type": "array", "minItems": 2, "maxItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "name", "value"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "name": {"type": "string", "minLength": 1, "maxLength": 16, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "value": {"type": "number", "minimum": 0, "maximum": 1000000000}
+        }
+      }
+    },
+    "suffix": {
+      "type": "string", "maxLength": 6, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

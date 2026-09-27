@@ -1,0 +1,181 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-017",
+    "name": "MultiDeviceLineup｜多设备排列",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "MEDIA_SHOWCASE",
+    "pattern": "RESPONSIVE_DEVICE_LINEUP",
+    "useCases": [
+      "「一套设计，三档宽度」：手机 → 平板 → 笔记本依次落位，屏幕里是同一份设计",
+      "讲跨端适配、响应式布局、全端可用时给一个画面证据",
+      "硬件外观（边框、圆角、听筒、摄像头、笔记本底座与铰链）由组件自己画，屏幕内容可编辑"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 3,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/multi-device-lineup/content.schema.json",
+    "requiredFields": [
+      "screen.title",
+      "devices[]"
+    ],
+    "optionalFields": [
+      "screen.rows[]"
+    ],
+    "nodeShape": "一级：一份屏幕设计（1–7 字标题 + 0–4 条 8 字以内的行）；二级：三台设备（phone / tablet / laptop 各一台 + 8 字以内标签）",
+    "primaryLine": "screen.title",
+    "secondaryLine": "screen.rows[].text",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": false,
+    "minCardinality": 3,
+    "maxCardinality": 3,
+    "titleMaxLength": 7,
+    "rowMaxLength": 8,
+    "rowRange": {
+      "min": 0,
+      "max": 4
+    },
+    "labelMaxLength": 8,
+    "capacityNote": "屏幕里的文字按最窄的一台校验：手机屏宽 148 px − 左右各 12 px 内边距 = 124 px 净宽。标题 16 px 最多 7 个汉字（112 px），行文本 12 px 最多 8 个汉字（96 px）+ 前缀「· 」（约 18 px）。设备标签 12 px 加 0.08 em 字距，手机机身宽 164 px 足够 8 个汉字。超限拒绝并给出需要 / 可用宽度，不缩字、不裁切。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 1,
+      "max": 2
+    },
+    "sizeNote": "来源没有固定画布，三台设备按来源机身尺寸排开（总宽 888 px、总高约 372 px）= 默认大小（1.0）。下限取 1.0：来源的设备标签是 12 px，缩小就会低于本项目 12 px 可读下限。缩放为整组件等比缩放，默认大小与落位不变。",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "屏幕内容是组件自己渲染的合成版式（标题 + 行），内容树里没有图片或视频素材位；需要真实截屏素材请用媒体类组件。",
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "device-rise",
+      "composableParameter": "来源固定 delay 4 帧、错峰 9 帧、上浮 26 px、0.94 → 1 的 perceptual-scale 弹簧；本批不开放参数"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK"
+    ],
+    "surfaceDefault": "DARK",
+    "surfaceNote": "设备外观是深色硬件（机身 #15171D、屏幕 #0B0C11），浅底会让「屏幕」和背景糊在一起，因此只提供 DARK 一套。",
+    "excludedSourceOptions": [
+      "children / phone.content / tablet.content / laptop.content｜来源逐台传入 ReactNode：本项目改为「一份共享屏幕内容 + 每台设备一个标签」，这才对得上「一套设计三档宽度」的表达",
+      "exitAtInFrames / exitInFrames｜来源退场：本项目由实例时长决定",
+      "bezelColor / screenColor / labelColor｜来源逐项取色：改为固定硬件令牌 + 主题色强调条"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/multi-device-lineup/MultiDeviceLineup.jsx",
+    "export": "MultiDeviceLineup",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Stagger",
+        "Spring Rise",
+        "Emphasis"
+      ],
+      "description": "手机 → 平板 → 笔记本依次到位：delay 4 帧、错峰 9 帧，每台用 spring(阻尼 17 / 刚度 150 / 质量 0.75 / 不过冲) 从下方 26 px 上浮，scale 从 0.94 长到 1（output: perceptual-scale），同一条弹簧驱动；10 帧淡入。落定后保持不动。",
+      "implementationNote": "按技能 V1.4 §4.1 自持规范：结构用 Interactive.* + name，动效用内联 spring() / interpolate()，位移与缩放用 CSS 的独立属性 translate / scale。取舍：版式尺寸是计算值，Studio 里这些 style 灰显（与 stage-flow 相同）。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "复制式来源 `multi-device-lineup`（registry/bases/default/primitives/multi-device-lineup.tsx，MIT · commit 802a637）：三台设备的机身尺寸 / 边框 / 圆角、手机上听筒与平板上摄像头、笔记本底座与铰链、设备间距 26、标签间距 10、弹簧参数与上浮距离、错峰顺序全部保留。",
+      "elements": "零件私有副本：motion-tokens（EASING）、timing（EASING_ENTER / EASING_EXIT）。本组件不使用 chart-utils（没有坐标轴或数据几何）。"
+    },
+    "knownDifferences": [
+      "来源是容器组件（屏幕内容由调用方传入 ReactNode），本项目落成可编辑内容树：一份共享屏幕设计 + 每台设备的标签；屏幕里的文字按最窄的手机屏校验容量。",
+      "来源的画布尺寸由内容决定；本项目把「来源三台设备按来源间距排开」定为默认大小（888 × 372），并落到安全区 0–1 比例。",
+      "来源的 device 参数是 phone / tablet / laptop 三个可选 prop，本项目改为 devices 数组（必须各一台），便于在实验页做结构化编辑。",
+      "配色：来源只有硬件灰，本项目增加主题色强调条（屏幕里唯一的彩色元素），SOURCE 用来源色板第一位。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "multi-device-lineup",
+    "sourceRegistryUrl": "https://remotionui.com/r/multi-device-lineup.json",
+    "sourcePath": "RemotionGit/registry/multi-device-lineup.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/multi-device-lineup.tsx（riaz37/remotion-ui）",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "802a63708cc5c13936bcccb47f091a0b14325cb5（2026-09-11）",
+    "sourceLicense": "MIT（RemotionGit/repo/LICENSE）",
+    "sourceRole": "来源设计优先：硬件外观、排布尺寸与间距、弹簧节奏、错峰顺序全部保留；只改可编辑内容、容量校验、画幅、安全区定位、主题映射与透明输出。",
+    "reuseAnalysis": "三级复用查完的结论：① 已注册 23 项里 CMP-MED-001 FreeMedia 是「自由放置图片 / 录屏 / Logo」的素材位，不能画设备外观，也没有「一套设计三档宽度」的表达；其余组件都不涉及设备；且已注册目录本卡不可修改 → 不复用（但请总控按 05 §7.5 复核归类，见 classificationReview）；② 组件内元素登记表尚未正式登记，无现成片段可拆 → 不拆；③ 元素零件工厂命中 2 个零件：motion-tokens（EASING）、timing（motion-tokens 的 registry 依赖）→ 取这 2 个零件（组件私有副本）；设备外观与弹簧节奏属来源组件本体，随源码适配。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/components/multi-device-lineup/elements/motion-tokens/",
+        "status": "Adapted",
+        "usedFor": "EASING.enter（淡入曲线）、EASING.exit"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "timing",
+        "source": "RemotionGit/registry/timing.json",
+        "localPath": "platform/components/multi-device-lineup/elements/timing/",
+        "status": "Adapted",
+        "usedFor": "motion-tokens 的 registry 依赖"
+      }
+    ],
+    "elementPromotionNeeded": "motion-tokens / timing 在本批被复制 6 次，按技能 V1.4 护栏第 12 条必须先提升为 platform/elements/ 共享零件；本窗口按任务卡第 6 节边界未自行提升，等待总控执行。",
+    "classificationReview": "任务卡已标注「归类待复核」：本组件不是数据图表，而是媒体 / 跨端演示形态。按 05 基线 §7.2 / §7.5，建议归到「动画组件 → 媒体自由组件（Media）」，或按 §7.5 的场景类处理规则等首个场景类组件（Code & Terminal）建成时一并决定；本组件已按任务卡要求实现并留待总控改归类，不占用「数据图表」入口的位置。",
+    "rawEvidence": "dev-control-panel/tasks/CMP-06_DATA_CHARTS_TASK.md",
+    "adaptationRef": "docs/component-assets/CMP-06_MULTI_DEVICE_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_MULTI_DEVICE_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.4 草稿通道：componentId = DRAFT-multi-device、status = DRAFT；不占正式 CMP- 编号、不进能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-multi-device → CMP-DATA-017，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-017/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "多设备展示",
+    "description": "依次展示同一画面在手机、平板和笔记本上的样子。",
+    "tags": [
+      "媒体",
+      "证据"
+    ],
+    "aliases": [
+      "跨端展示",
+      "设备排列"
+    ]
+  }
+}

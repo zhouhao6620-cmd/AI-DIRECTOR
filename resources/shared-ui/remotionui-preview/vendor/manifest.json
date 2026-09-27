@@ -1,0 +1,3525 @@
+{
+  "generatedAt": "2026-09-16T04:54:28.206Z",
+  "note": "预览沙箱：从 RemotionUI 来源库 vendor 进来的可本地渲染条目。不是正式组件注册，不进能力索引。",
+  "counts": {
+    "vendored": 217,
+    "skipped": 7,
+    "total": 224
+  },
+  "vendored": [
+    {
+      "name": "timing",
+      "label": "时序工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Frame timing helpers and enter easing",
+      "docsUrl": "https://remotionui.com/docs/components/timing",
+      "entryFile": "lib/timing.ts",
+      "exportName": "DEFAULT_FPS",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "springs",
+      "label": "弹簧参数",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Default spring configurations",
+      "docsUrl": "https://remotionui.com/docs/components/springs",
+      "entryFile": "lib/springs.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "transition-timing",
+      "label": "转场时序",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Shared TransitionSeries timing helpers and layered progress curves",
+      "docsUrl": "https://remotionui.com/docs/components/transition-timing",
+      "entryFile": "lib/transition-timing.ts",
+      "exportName": null,
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "ai-composer-utils",
+      "label": "AI 编辑器工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Shared typewriter, caret, morph, and intro helpers for AI composer scenes",
+      "docsUrl": "https://remotionui.com/docs/components/ai-composer-utils",
+      "entryFile": "lib/ai-composer-utils.tsx",
+      "exportName": "AI_TYPING_START",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "code-syntax",
+      "label": "代码高亮",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Syntax tokenizer, editor palettes, and revealable code line renderer for the code scenes",
+      "docsUrl": "https://remotionui.com/docs/components/code-syntax",
+      "entryFile": "lib/code-syntax.tsx",
+      "exportName": "MONO_ADVANCE",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "text-emphasis",
+      "label": "文字强调",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Word-level phrase matching and marker geometry for scenes that sweep emphasis across text",
+      "docsUrl": "https://remotionui.com/docs/components/text-emphasis",
+      "entryFile": "lib/text-emphasis.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "motion-tokens",
+      "label": "动效令牌",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Named motion duration and stagger tokens",
+      "docsUrl": "https://remotionui.com/docs/components/motion-tokens",
+      "entryFile": "lib/motion-tokens.ts",
+      "exportName": "DURATION",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/timing",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "gpu",
+      "label": "GPU 加速",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "WebGL2 fragment-shader effect factory for GPU primitives",
+      "docsUrl": "https://remotionui.com/docs/components/gpu",
+      "entryFile": "lib/gpu.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "layout",
+      "label": "布局工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Format-agnostic layout helpers",
+      "docsUrl": "https://remotionui.com/docs/components/layout",
+      "entryFile": "lib/layout.ts",
+      "exportName": "PREVIEW_LANDSCAPE",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "motion-wrapper",
+      "label": "动效包装器",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Inline wrapper for enter/exit animations (avoids AbsoluteFill overlap)",
+      "docsUrl": "https://remotionui.com/docs/components/motion-wrapper",
+      "entryFile": "lib/motion-wrapper.tsx",
+      "exportName": "MotionWrapper",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "motion-primitive",
+      "label": "动效基元",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Enter/exit motion contract shared by the animation primitives — opacity leads, exits are shorter, and a bounded Sequence times the exit itself",
+      "docsUrl": "https://remotionui.com/docs/components/motion-primitive",
+      "entryFile": "lib/motion-primitive.ts",
+      "exportName": "DEFAULT_ENTER_FRAMES",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/springs",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "use-stagger",
+      "label": "错峰 Hook",
+      "category": "utility",
+      "type": "registry:hook",
+      "previewable": false,
+      "description": "Hook for staggered child delays",
+      "docsUrl": "https://remotionui.com/docs/components/use-stagger",
+      "entryFile": "hooks/use-stagger.ts",
+      "exportName": null,
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "fade-in",
+      "label": "淡入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Opacity-only entrance, with an exit that lands on the end of its sequence",
+      "docsUrl": "https://remotionui.com/docs/components/fade-in",
+      "entryFile": "primitives/fade-in.tsx",
+      "exportName": "FadeIn",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "fade-out",
+      "label": "淡出",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Held exit that accelerates away, timed to the last frame of its sequence by default",
+      "docsUrl": "https://remotionui.com/docs/components/fade-out",
+      "entryFile": "primitives/fade-out.tsx",
+      "exportName": "FadeOut",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/motion-wrapper",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "slide-up",
+      "label": "上滑进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Rise into place, with an optional mask reveal and automatic exit",
+      "docsUrl": "https://remotionui.com/docs/components/slide-up",
+      "entryFile": "primitives/slide-up.tsx",
+      "exportName": "SlideUp",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "slide-left",
+      "label": "左滑进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Slide in from either side, with an optional mask reveal and automatic exit",
+      "docsUrl": "https://remotionui.com/docs/components/slide-left",
+      "entryFile": "primitives/slide-left.tsx",
+      "exportName": "SlideLeft",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "scale-in",
+      "label": "放大进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Grow into place from just under full size, with an optional spring and exit",
+      "docsUrl": "https://remotionui.com/docs/components/scale-in",
+      "entryFile": "primitives/scale-in.tsx",
+      "exportName": "ScaleIn",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "typewriter",
+      "label": "打字机",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Typewriter reveal with rhythm, pauses, looping, and a caret that only blinks at rest",
+      "docsUrl": "https://remotionui.com/docs/components/typewriter",
+      "entryFile": "primitives/typewriter.tsx",
+      "exportName": "Typewriter",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "counter",
+      "label": "数字滚动",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Animated number with grouping, decimals, odometer digit roll and a reserved width",
+      "docsUrl": "https://remotionui.com/docs/components/counter",
+      "entryFile": "primitives/counter.tsx",
+      "exportName": "Counter",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/timing",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "blur-in",
+      "label": "模糊进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Resolve out of a defocus — blur clears before the move lands",
+      "docsUrl": "https://remotionui.com/docs/components/blur-in",
+      "entryFile": "primitives/blur-in.tsx",
+      "exportName": "BlurIn",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "spring-in",
+      "label": "弹性进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Spring-driven scale and rise, with snappy, smooth and bouncy presets",
+      "docsUrl": "https://remotionui.com/docs/components/spring-in",
+      "entryFile": "primitives/spring-in.tsx",
+      "exportName": "SpringIn",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "stagger-children",
+      "label": "子项错峰",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Offset children onto their own sequences, in forward, reverse, centre or edge order, in and out",
+      "docsUrl": "https://remotionui.com/docs/components/stagger-children",
+      "entryFile": "primitives/stagger-children.tsx",
+      "exportName": "StaggerChildren",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "marker-highlight",
+      "label": "荧光笔高亮",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Highlighter stroke swept word by word across a phrase, with marker, knockout, underline and box variants",
+      "docsUrl": "https://remotionui.com/docs/components/marker-highlight",
+      "entryFile": "primitives/marker-highlight.tsx",
+      "exportName": "MarkerHighlight",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-emphasis"
+      ]
+    },
+    {
+      "name": "progress-bar",
+      "label": "进度条",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Inline progress bar with determinate and indeterminate modes, segments and a value readout",
+      "docsUrl": "https://remotionui.com/docs/components/progress-bar",
+      "entryFile": "primitives/progress-bar.tsx",
+      "exportName": "ProgressBar",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-tokens",
+        "@remotionui/timing",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "rotate-in",
+      "label": "旋转进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Swing into place in plane or hinged in depth on the x/y axis",
+      "docsUrl": "https://remotionui.com/docs/components/rotate-in",
+      "entryFile": "primitives/rotate-in.tsx",
+      "exportName": "RotateIn",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "transition-fade",
+      "label": "转场·淡入淡出",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Crossfade between scenes, or dip the cut through a colour",
+      "docsUrl": "https://remotionui.com/docs/components/transition-fade",
+      "entryFile": "primitives/transition-fade.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-slide",
+      "label": "转场·滑动",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Slide transition helper for TransitionSeries",
+      "docsUrl": "https://remotionui.com/docs/components/transition-slide",
+      "entryFile": "primitives/transition-slide.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "lower-third",
+      "label": "下方字幕条",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Name plate that plays its whole life: wipes out from the frame edge, settles, holds, then retreats the way it came",
+      "docsUrl": "https://remotionui.com/docs/components/lower-third",
+      "entryFile": "scenes/lower-third/index.tsx",
+      "exportName": "LowerThird",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "title-card",
+      "label": "标题卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Opening card where each headline line rises out of its own mask and one sweep of light crosses it as it stands",
+      "docsUrl": "https://remotionui.com/docs/components/title-card",
+      "entryFile": "scenes/title-card/index.tsx",
+      "exportName": "TitleCard",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "feature-list",
+      "label": "要点列表",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "List being ticked off: each row arrives in turn, its rule draws across, and its check strokes in behind it",
+      "docsUrl": "https://remotionui.com/docs/components/feature-list",
+      "entryFile": "scenes/feature-list/index.tsx",
+      "exportName": "FeatureList",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "stat-card",
+      "label": "数据卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "A number landing: the ring fills while the counter rolls, then the label and the change against the last period settle",
+      "docsUrl": "https://remotionui.com/docs/components/stat-card",
+      "entryFile": "scenes/stat-card/index.tsx",
+      "exportName": "StatCard",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "quote-card",
+      "label": "引语卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Pull quote read aloud: the mark draws, the quote rises line by line, a marker sweeps the phrase, the attribution lands last",
+      "docsUrl": "https://remotionui.com/docs/components/quote-card",
+      "entryFile": "scenes/quote-card/index.tsx",
+      "exportName": "QuoteCard",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-emphasis"
+      ]
+    },
+    {
+      "name": "end-card",
+      "label": "结尾卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Outro built in the order a viewer acts on it: title, button assembling under its label, address typing, channels, one pulse",
+      "docsUrl": "https://remotionui.com/docs/components/end-card",
+      "entryFile": "scenes/end-card/index.tsx",
+      "exportName": "EndCard",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "intro",
+      "label": "开场片",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "5-second branded intro: chapter marker, headline, topic rail",
+      "docsUrl": "https://remotionui.com/docs/components/intro",
+      "entryFile": "compositions/intro/index.tsx",
+      "exportName": "Intro",
+      "dependencyCount": 8,
+      "registryDependencies": [
+        "@remotionui/title-card",
+        "@remotionui/fade-out",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "showcase",
+      "label": "综合展示片",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Full demo reel with TransitionSeries",
+      "docsUrl": "https://remotionui.com/docs/components/showcase",
+      "entryFile": "compositions/showcase/index.tsx",
+      "exportName": "Showcase",
+      "dependencyCount": 12,
+      "registryDependencies": [
+        "@remotionui/transition-fade",
+        "@remotionui/title-card",
+        "@remotionui/feature-list",
+        "@remotionui/stat-card",
+        "@remotionui/end-card",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "caption-utils",
+      "label": "字幕工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Caption page grouping and word-active helpers",
+      "docsUrl": "https://remotionui.com/docs/components/caption-utils",
+      "entryFile": "lib/caption-utils.ts",
+      "exportName": "DEFAULT_CAPTION_PAGE_MS",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "audio-viz-utils",
+      "label": "音频可视化工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Windowed audio spectrum helpers",
+      "docsUrl": "https://remotionui.com/docs/components/audio-viz-utils",
+      "entryFile": "lib/audio-viz-utils.ts",
+      "exportName": "DEFAULT_AUDIO_WINDOW_SECONDS",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "path-utils",
+      "label": "path-utils",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "SVG path measuring, sampling, auto-fit and waypoint helpers",
+      "docsUrl": "https://remotionui.com/docs/components/path-utils",
+      "entryFile": "lib/path-utils.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "caption-highlight",
+      "label": "字幕高亮",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "TikTok-style word-by-word caption highlight",
+      "docsUrl": "https://remotionui.com/docs/components/caption-highlight",
+      "entryFile": "primitives/caption-highlight.tsx",
+      "exportName": "CaptionHighlight",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "audiogram-bars",
+      "label": "声波条",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Audio-reactive spectrum bar visualization",
+      "docsUrl": "https://remotionui.com/docs/components/audiogram-bars",
+      "entryFile": "primitives/audiogram-bars.tsx",
+      "exportName": "AudiogramBars",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "path-draw",
+      "label": "路径描绘",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "SVG stroke reveal with auto-fit framing, multi-path stagger and a drawing head",
+      "docsUrl": "https://remotionui.com/docs/components/path-draw",
+      "entryFile": "primitives/path-draw.tsx",
+      "exportName": "PathDraw",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/path-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "transition-wipe",
+      "label": "转场·擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Wipe transition helper for TransitionSeries",
+      "docsUrl": "https://remotionui.com/docs/components/transition-wipe",
+      "entryFile": "primitives/transition-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-clock-wipe",
+      "label": "转场·时钟擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Clock sweep that reads the composition size itself",
+      "docsUrl": "https://remotionui.com/docs/components/transition-clock-wipe",
+      "entryFile": "primitives/transition-clock-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-light-leak",
+      "label": "转场·漏光",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Film flare overlay that peaks on the cut and hides the seam under it",
+      "docsUrl": "https://remotionui.com/docs/components/transition-light-leak",
+      "entryFile": "primitives/transition-light-leak.tsx",
+      "exportName": "TransitionLightLeak",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "blur-reveal",
+      "label": "模糊揭示",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Cut where the outgoing scene softens away and the incoming one resolves out of blur",
+      "docsUrl": "https://remotionui.com/docs/components/blur-reveal",
+      "entryFile": "primitives/blur-reveal.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "grid-pixelate-wipe",
+      "label": "网格像素化擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Reveal where the next scene arrives one grid cell at a time",
+      "docsUrl": "https://remotionui.com/docs/components/grid-pixelate-wipe",
+      "entryFile": "primitives/grid-pixelate-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/transition-timing",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "frosted-glass-wipe",
+      "label": "磨砂玻璃擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "A pane of frosted glass crosses the frame and leaves the next scene behind it",
+      "docsUrl": "https://remotionui.com/docs/components/frosted-glass-wipe",
+      "entryFile": "primitives/frosted-glass-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "directional-wipe",
+      "label": "方向擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Soft-edged wipe that uncovers the next scene without exposing the background",
+      "docsUrl": "https://remotionui.com/docs/components/directional-wipe",
+      "entryFile": "primitives/directional-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "spatial-push",
+      "label": "空间推进",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Push where both scenes travel locked edge to edge across the frame",
+      "docsUrl": "https://remotionui.com/docs/components/spatial-push",
+      "entryFile": "primitives/spatial-push.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "chromatic-aberration-wipe",
+      "label": "色差擦除",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Slide that pulls the colour channels apart at its fastest point and recombines them on landing",
+      "docsUrl": "https://remotionui.com/docs/components/chromatic-aberration-wipe",
+      "entryFile": "primitives/chromatic-aberration-wipe.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "zoom-through",
+      "label": "穿越式推镜",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Camera push-through: one scene drives past the lens, the next lands out of the same move",
+      "docsUrl": "https://remotionui.com/docs/components/zoom-through",
+      "entryFile": "primitives/zoom-through.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "mesh-gradient-bg",
+      "label": "网格渐变背景",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Living mesh gradient blob background",
+      "docsUrl": "https://remotionui.com/docs/components/mesh-gradient-bg",
+      "entryFile": "primitives/mesh-gradient-bg.tsx",
+      "exportName": "MeshGradientBg",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-tokens",
+        "@remotionui/gpu"
+      ]
+    },
+    {
+      "name": "dynamic-grid",
+      "label": "动态网格",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Subtle drifting dot and line grid background",
+      "docsUrl": "https://remotionui.com/docs/components/dynamic-grid",
+      "entryFile": "primitives/dynamic-grid.tsx",
+      "exportName": "DynamicGrid",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "simulated-cursor",
+      "label": "模拟光标",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Frame-timed cursor with press, click ripples, hit targets and labels",
+      "docsUrl": "https://remotionui.com/docs/components/simulated-cursor",
+      "entryFile": "primitives/simulated-cursor.tsx",
+      "exportName": "SimulatedCursor",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "confetti-burst",
+      "label": "彩带迸发",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Frame-driven confetti burst overlay",
+      "docsUrl": "https://remotionui.com/docs/components/confetti-burst",
+      "entryFile": "primitives/confetti-burst.tsx",
+      "exportName": "ConfettiBurst",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "device-mockup-zoom",
+      "label": "设备样机推镜",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Cinematic laptop, phone, or browser mockup with staged UI and slow camera pullback",
+      "docsUrl": "https://remotionui.com/docs/components/device-mockup-zoom",
+      "entryFile": "scenes/device-mockup-zoom/index.tsx",
+      "exportName": "DeviceMockupZoom",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "caption-scene",
+      "label": "字幕场景",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Lower-third TikTok-style captions synced to audio",
+      "docsUrl": "https://remotionui.com/docs/components/caption-scene",
+      "entryFile": "scenes/caption-scene/index.tsx",
+      "exportName": "CaptionScene",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/caption-highlight",
+        "@remotionui/caption-utils",
+        "@remotionui/layout",
+        "@remotionui/karaoke-captions",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "audiogram-scene",
+      "label": "声波场景",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Podcast audiogram layout with spectrum bars",
+      "docsUrl": "https://remotionui.com/docs/components/audiogram-scene",
+      "entryFile": "scenes/audiogram-scene/index.tsx",
+      "exportName": "AudiogramScene",
+      "dependencyCount": 10,
+      "registryDependencies": [
+        "@remotionui/audiogram-bars",
+        "@remotionui/fade-in",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "logo-reveal",
+      "label": "标识揭示",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Logo mark draw-on with wordmark and tagline beats",
+      "docsUrl": "https://remotionui.com/docs/components/logo-reveal",
+      "entryFile": "scenes/logo-reveal/index.tsx",
+      "exportName": "LogoReveal",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/path-draw",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "auto-fit-title",
+      "label": "自适应标题",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Headline sized to the frame it is given, then assembled word by word so any length lands the same way",
+      "docsUrl": "https://remotionui.com/docs/components/auto-fit-title",
+      "entryFile": "scenes/auto-fit-title/index.tsx",
+      "exportName": "AutoFitTitle",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-fit-utils"
+      ]
+    },
+    {
+      "name": "social-clip",
+      "label": "社交短片",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "9:16 social clip with hook, captions, and CTA",
+      "docsUrl": "https://remotionui.com/docs/components/social-clip",
+      "entryFile": "compositions/social-clip/index.tsx",
+      "exportName": "SocialClip",
+      "dependencyCount": 22,
+      "registryDependencies": [
+        "@remotionui/transition-fade",
+        "@remotionui/auto-fit-title",
+        "@remotionui/audiogram-scene",
+        "@remotionui/caption-scene",
+        "@remotionui/end-card",
+        "@remotionui/motion-tokens",
+        "@remotionui/sample-media"
+      ]
+    },
+    {
+      "name": "media-utils",
+      "label": "媒体工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Media item timing and fit helpers",
+      "docsUrl": "https://remotionui.com/docs/components/media-utils",
+      "entryFile": "lib/media-utils.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "chart-utils",
+      "label": "图表工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Chart scaling and SVG path helpers",
+      "docsUrl": "https://remotionui.com/docs/components/chart-utils",
+      "entryFile": "lib/chart-utils.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "text-fit-utils",
+      "label": "文字适配工具",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Safe headline fitting helpers",
+      "docsUrl": "https://remotionui.com/docs/components/text-fit-utils",
+      "entryFile": "lib/text-fit-utils.ts",
+      "exportName": null,
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "waveform-line",
+      "label": "波形线",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Audio waveform line visualization",
+      "docsUrl": "https://remotionui.com/docs/components/waveform-line",
+      "entryFile": "primitives/waveform-line.tsx",
+      "exportName": "WaveformLine",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "audio-pulse",
+      "label": "音频脉冲",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Audio-reactive pulse rings",
+      "docsUrl": "https://remotionui.com/docs/components/audio-pulse",
+      "entryFile": "primitives/audio-pulse.tsx",
+      "exportName": "AudioPulse",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "karaoke-captions",
+      "label": "卡拉OK 字幕",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Active-word karaoke caption styling",
+      "docsUrl": "https://remotionui.com/docs/components/karaoke-captions",
+      "entryFile": "primitives/karaoke-captions.tsx",
+      "exportName": "KaraokeCaptions",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "line-chart-draw",
+      "label": "折线图描绘",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "SVG line chart that draws itself on",
+      "docsUrl": "https://remotionui.com/docs/components/line-chart-draw",
+      "entryFile": "primitives/line-chart-draw.tsx",
+      "exportName": "LineChartDraw",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/path-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "cursor-path",
+      "label": "光标路径",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Cursor travelling a path with drawn trail and click ripples",
+      "docsUrl": "https://remotionui.com/docs/components/cursor-path",
+      "entryFile": "primitives/cursor-path.tsx",
+      "exportName": "CursorPath",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/path-utils",
+        "@remotionui/motion-tokens",
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "media-frame",
+      "label": "媒体框",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "One piece of media presented: the frame opens like a shutter under a slow push, then the title masks up and the caption settles",
+      "docsUrl": "https://remotionui.com/docs/components/media-frame",
+      "entryFile": "scenes/media-frame/index.tsx",
+      "exportName": "MediaFrame",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "media-sequence",
+      "label": "媒体序列",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Edited run of shots pushed on one after another, with a chapter strip that fills through the item playing",
+      "docsUrl": "https://remotionui.com/docs/components/media-sequence",
+      "entryFile": "scenes/media-sequence/index.tsx",
+      "exportName": "MediaSequence",
+      "dependencyCount": 11,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens",
+        "@remotionui/media-frame",
+        "@remotionui/transition-fade",
+        "@remotionui/transition-slide"
+      ]
+    },
+    {
+      "name": "split-screen",
+      "label": "分屏",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Before/after that is actually made: panels meet at the divider, labels land, and the divider can travel across to leave one side whole",
+      "docsUrl": "https://remotionui.com/docs/components/split-screen",
+      "entryFile": "scenes/split-screen/index.tsx",
+      "exportName": "SplitScreen",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "b-roll-stack",
+      "label": "空镜堆叠",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Deck of supporting shots dealt one at a time: each rides to the front with its label while the last slides back into the stack",
+      "docsUrl": "https://remotionui.com/docs/components/b-roll-stack",
+      "entryFile": "scenes/b-roll-stack/index.tsx",
+      "exportName": "BRollStack",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "caption-bumper",
+      "label": "字幕片头",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Between-beats card that punches its line in word by word, draws a rule under it, and wipes out when its hold is over",
+      "docsUrl": "https://remotionui.com/docs/components/caption-bumper",
+      "entryFile": "scenes/caption-bumper/index.tsx",
+      "exportName": "CaptionBumper",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-fit-utils"
+      ]
+    },
+    {
+      "name": "animated-bar-chart",
+      "label": "动态柱状图",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Ranked bar chart scene with a value axis",
+      "docsUrl": "https://remotionui.com/docs/components/animated-bar-chart",
+      "entryFile": "scenes/animated-bar-chart/index.tsx",
+      "exportName": "AnimatedBarChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "metric-ticker",
+      "label": "指标走马灯",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "KPI cards that count themselves in",
+      "docsUrl": "https://remotionui.com/docs/components/metric-ticker",
+      "entryFile": "scenes/metric-ticker/index.tsx",
+      "exportName": "MetricTicker",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/line-chart-draw",
+        "@remotionui/chart-utils",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "timeline-steps",
+      "label": "步骤时间线",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Process walked step by step: the rail draws ahead of a travelling head that lands on each step, works it through a closing ring, then checks it off",
+      "docsUrl": "https://remotionui.com/docs/components/timeline-steps",
+      "entryFile": "scenes/timeline-steps/index.tsx",
+      "exportName": "TimelineSteps",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "callout-spotlight",
+      "label": "聚光标注",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Spotlight that is aimed: the mask closes from the whole frame onto the target, a ring pings it, then a connector draws out to the callout",
+      "docsUrl": "https://remotionui.com/docs/components/callout-spotlight",
+      "entryFile": "scenes/callout-spotlight/index.tsx",
+      "exportName": "CalloutSpotlight",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "zoom-pan-frame",
+      "label": "推拉取景",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Camera move on a still driven by focal points, settling before the cut, with an optional label chip",
+      "docsUrl": "https://remotionui.com/docs/components/zoom-pan-frame",
+      "entryFile": "scenes/zoom-pan-frame/index.tsx",
+      "exportName": "ZoomPanFrame",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "code-reveal",
+      "label": "代码揭示",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Editor window that writes a syntax-highlighted file character by character, then focuses the lines that matter",
+      "docsUrl": "https://remotionui.com/docs/components/code-reveal",
+      "entryFile": "scenes/code-reveal/index.tsx",
+      "exportName": "Explainer",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils",
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "hook-card",
+      "label": "钩子卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Short-form opener where the hook rises line by line out of its mask and an underline draws under the promise",
+      "docsUrl": "https://remotionui.com/docs/components/hook-card",
+      "entryFile": "scenes/hook-card/index.tsx",
+      "exportName": "HookCard",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-emphasis"
+      ]
+    },
+    {
+      "name": "talking-head-layout",
+      "label": "口播布局",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Talking-head clip frame that opens on the speaker, slides a name plate out from behind it, and plays the spoken lines in a reserved caption zone with the waveform reacting",
+      "docsUrl": "https://remotionui.com/docs/components/talking-head-layout",
+      "entryFile": "scenes/talking-head-layout/index.tsx",
+      "exportName": "TalkingHeadLayout",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/media-utils",
+        "@remotionui/motion-tokens",
+        "@remotionui/waveform-line"
+      ]
+    },
+    {
+      "name": "comment-callout",
+      "label": "评论标注",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Viewer comment answered on screen: it lands from the feed, the ask is marked up, the creator hearts it, and the reply is typed and sent",
+      "docsUrl": "https://remotionui.com/docs/components/comment-callout",
+      "entryFile": "scenes/comment-callout/index.tsx",
+      "exportName": "CommentCallout",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils",
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens",
+        "@remotionui/text-emphasis"
+      ]
+    },
+    {
+      "name": "tutorial-clip",
+      "label": "教程短片",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Tutorial clip composition for demos and explainers",
+      "docsUrl": "https://remotionui.com/docs/components/tutorial-clip",
+      "entryFile": "compositions/tutorial-clip/index.tsx",
+      "exportName": "TutorialClip",
+      "dependencyCount": 17,
+      "registryDependencies": [
+        "@remotionui/auto-fit-title",
+        "@remotionui/media-frame",
+        "@remotionui/callout-spotlight",
+        "@remotionui/code-reveal",
+        "@remotionui/end-card",
+        "@remotionui/transition-fade",
+        "@remotionui/motion-tokens",
+        "@remotionui/sample-media"
+      ]
+    },
+    {
+      "name": "data-story",
+      "label": "数据故事",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Data storytelling composition template",
+      "docsUrl": "https://remotionui.com/docs/components/data-story",
+      "entryFile": "compositions/data-story/index.tsx",
+      "exportName": "DataStory",
+      "dependencyCount": 18,
+      "registryDependencies": [
+        "@remotionui/auto-fit-title",
+        "@remotionui/animated-bar-chart",
+        "@remotionui/metric-ticker",
+        "@remotionui/timeline-steps",
+        "@remotionui/caption-bumper",
+        "@remotionui/end-card",
+        "@remotionui/transition-fade",
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "creator-reel",
+      "label": "创作者短片",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Vertical creator media composition template",
+      "docsUrl": "https://remotionui.com/docs/components/creator-reel",
+      "entryFile": "compositions/creator-reel/index.tsx",
+      "exportName": "CreatorReel",
+      "dependencyCount": 23,
+      "registryDependencies": [
+        "@remotionui/auto-fit-title",
+        "@remotionui/talking-head-layout",
+        "@remotionui/comment-callout",
+        "@remotionui/caption-scene",
+        "@remotionui/b-roll-stack",
+        "@remotionui/end-card",
+        "@remotionui/transition-fade",
+        "@remotionui/motion-tokens",
+        "@remotionui/sample-media"
+      ]
+    },
+    {
+      "name": "podcast-clip",
+      "label": "播客片段",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Podcast clip composition with audio visuals and captions",
+      "docsUrl": "https://remotionui.com/docs/components/podcast-clip",
+      "entryFile": "compositions/podcast-clip/index.tsx",
+      "exportName": "PodcastClip",
+      "dependencyCount": 23,
+      "registryDependencies": [
+        "@remotionui/audio-pulse",
+        "@remotionui/waveform-line",
+        "@remotionui/audiogram-scene",
+        "@remotionui/auto-fit-title",
+        "@remotionui/caption-scene",
+        "@remotionui/end-card",
+        "@remotionui/transition-fade",
+        "@remotionui/fade-in",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "blur-focus-in",
+      "label": "模糊聚焦",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Text fades from heavy blur into sharp focus",
+      "docsUrl": "https://remotionui.com/docs/components/blur-focus-in",
+      "entryFile": "primitives/blur-focus-in.tsx",
+      "exportName": "BlurFocusIn",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "staggered-fade-up",
+      "label": "错峰上浮淡入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Words rise with cascading fade-up stagger",
+      "docsUrl": "https://remotionui.com/docs/components/staggered-fade-up",
+      "entryFile": "primitives/staggered-fade-up.tsx",
+      "exportName": "StaggeredFadeUp",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "masked-slide-reveal",
+      "label": "遮罩滑动揭示",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Words slide up through a horizontal mask",
+      "docsUrl": "https://remotionui.com/docs/components/masked-slide-reveal",
+      "entryFile": "primitives/masked-slide-reveal.tsx",
+      "exportName": "MaskedSlideReveal",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "tracking-in",
+      "label": "字距收拢",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Letter-spacing collapses with spring snap",
+      "docsUrl": "https://remotionui.com/docs/components/tracking-in",
+      "entryFile": "primitives/tracking-in.tsx",
+      "exportName": "TrackingIn",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/springs"
+      ]
+    },
+    {
+      "name": "light-sweep-text",
+      "label": "扫光文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Light gradient sweeps across dim text",
+      "docsUrl": "https://remotionui.com/docs/components/light-sweep-text",
+      "entryFile": "primitives/light-sweep-text.tsx",
+      "exportName": "LightSweepText",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "slot-roll",
+      "label": "老虎机滚字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Characters roll like a slot reel into place",
+      "docsUrl": "https://remotionui.com/docs/components/slot-roll",
+      "entryFile": "primitives/slot-roll.tsx",
+      "exportName": "SlotRoll",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "matrix-decode",
+      "label": "矩阵解码",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Scramble resolves left-to-right into target text",
+      "docsUrl": "https://remotionui.com/docs/components/matrix-decode",
+      "entryFile": "primitives/matrix-decode.tsx",
+      "exportName": "MatrixDecode",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "rgb-glitch-text",
+      "label": "彩阶故障文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Signal-lock RGB glitch text with channel splits, slices, and scanlines",
+      "docsUrl": "https://remotionui.com/docs/components/rgb-glitch-text",
+      "entryFile": "primitives/rgb-glitch-text.tsx",
+      "exportName": "RgbGlitchText",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "infinite-marquee",
+      "label": "无限跑马灯",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Endlessly scrolling horizontal text band",
+      "docsUrl": "https://remotionui.com/docs/components/infinite-marquee",
+      "entryFile": "primitives/infinite-marquee.tsx",
+      "exportName": "InfiniteMarquee",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "perspective-marquee",
+      "label": "透视跑马灯",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Marquee tilted in 3D with depth fade",
+      "docsUrl": "https://remotionui.com/docs/components/perspective-marquee",
+      "entryFile": "primitives/perspective-marquee.tsx",
+      "exportName": "PerspectiveMarquee",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "strikethrough-replace",
+      "label": "划掉替换",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Strikes out one phrase and puts another in its place, on a three-beat correction timeline",
+      "docsUrl": "https://remotionui.com/docs/components/strikethrough-replace",
+      "entryFile": "primitives/strikethrough-replace.tsx",
+      "exportName": "StrikethroughReplace",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "terminal-simulator",
+      "label": "终端模拟器",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Terminal window that types a command, streams spinner-to-check build steps with timings, then returns the prompt",
+      "docsUrl": "https://remotionui.com/docs/components/terminal-simulator",
+      "entryFile": "scenes/terminal-simulator/index.tsx",
+      "exportName": "TerminalSimulator",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "code-accordion",
+      "label": "代码折叠",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Stepped walkthrough where each section opens, writes its code, is checked off, and closes behind the next",
+      "docsUrl": "https://remotionui.com/docs/components/code-accordion",
+      "entryFile": "scenes/code-accordion/index.tsx",
+      "exportName": "CodeAccordion",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils",
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "code-diff-wipe",
+      "label": "代码差异擦除",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Diff patch landing line by line: an apply front travels the file, removals collapse, additions open and write in",
+      "docsUrl": "https://remotionui.com/docs/components/code-diff-wipe",
+      "entryFile": "scenes/code-diff-wipe/index.tsx",
+      "exportName": "CodeDiffWipe",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils",
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "data-flow-pipes",
+      "label": "数据流管道",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Pipeline running end to end: stages come up in order, pipes draw between them, and a stream of payloads hops through, lighting each stage and ticking its tally",
+      "docsUrl": "https://remotionui.com/docs/components/data-flow-pipes",
+      "entryFile": "scenes/data-flow-pipes/index.tsx",
+      "exportName": "DataFlowPipes",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/path-utils"
+      ]
+    },
+    {
+      "name": "drag-drop-flow",
+      "label": "拖拽流程",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Cursor drags a file out of a media library into a drop zone that arms, catches it, and uploads it to completion",
+      "docsUrl": "https://remotionui.com/docs/components/drag-drop-flow",
+      "entryFile": "scenes/drag-drop-flow/index.tsx",
+      "exportName": "DragDropFlow",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens",
+        "@remotionui/path-utils"
+      ]
+    },
+    {
+      "name": "chat-to-preview",
+      "label": "对话转预览",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Prompt-to-render loop: the ask types into the composer and sends into the thread, the answer streams back, and the preview assembles from wireframe to rendered scene",
+      "docsUrl": "https://remotionui.com/docs/components/chat-to-preview",
+      "entryFile": "scenes/chat-to-preview/index.tsx",
+      "exportName": "ChatToPreview",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "hero-device-assemble",
+      "label": "主视觉设备组装",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Device layers assemble hero",
+      "docsUrl": "https://remotionui.com/docs/components/hero-device-assemble",
+      "entryFile": "compositions/hero-device-assemble/index.tsx",
+      "exportName": "HeroDeviceAssemble",
+      "dependencyCount": 11,
+      "registryDependencies": [
+        "@remotionui/title-card",
+        "@remotionui/device-mockup-zoom",
+        "@remotionui/multi-device-lineup",
+        "@remotionui/transition-fade",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "ecosystem-orbit",
+      "label": "生态环绕",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Logo with orbiting satellites",
+      "docsUrl": "https://remotionui.com/docs/components/ecosystem-orbit",
+      "entryFile": "compositions/ecosystem-orbit/index.tsx",
+      "exportName": "EcosystemOrbit",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "bento-pan",
+      "label": "便当格平移",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Camera pan across a bento grid of metric cards",
+      "docsUrl": "https://remotionui.com/docs/components/bento-pan",
+      "entryFile": "compositions/bento-pan/index.tsx",
+      "exportName": "BentoPan",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "browser-flow",
+      "label": "浏览器流程",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "URL to browser preview flow",
+      "docsUrl": "https://remotionui.com/docs/components/browser-flow",
+      "entryFile": "compositions/browser-flow/index.tsx",
+      "exportName": "BrowserFlow",
+      "dependencyCount": 10,
+      "registryDependencies": [
+        "@remotionui/title-card",
+        "@remotionui/chat-to-preview",
+        "@remotionui/transition-fade",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "ai-generation-canvas",
+      "label": "AI 生成画布",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Prompt-to-dashboard generation with morphing input, skeleton shimmer, and card flips",
+      "docsUrl": "https://remotionui.com/docs/components/ai-generation-canvas",
+      "entryFile": "compositions/ai-generation-canvas/index.tsx",
+      "exportName": "AiGenerationCanvas",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "ai-composer-showcase",
+      "label": "AI 编辑器展示",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Showcase reel cutting through five AI composer interfaces with title and end cards",
+      "docsUrl": "https://remotionui.com/docs/components/ai-composer-showcase",
+      "entryFile": "compositions/ai-composer-showcase/index.tsx",
+      "exportName": "AiComposerShowcase",
+      "dependencyCount": 11,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/transition-fade",
+        "@remotionui/chat-gpt",
+        "@remotionui/claude-chat",
+        "@remotionui/v0",
+        "@remotionui/claude-code",
+        "@remotionui/opencode"
+      ]
+    },
+    {
+      "name": "live-code-split",
+      "label": "实况代码分屏",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Editor on the left, its rendered output live on the right",
+      "docsUrl": "https://remotionui.com/docs/components/live-code-split",
+      "entryFile": "compositions/live-code-split/index.tsx",
+      "exportName": "Clip",
+      "dependencyCount": 8,
+      "registryDependencies": [
+        "@remotionui/code-reveal",
+        "@remotionui/title-card",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "deploy-reveal",
+      "label": "部署揭示",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Terminal deploy to browser",
+      "docsUrl": "https://remotionui.com/docs/components/deploy-reveal",
+      "entryFile": "compositions/deploy-reveal/index.tsx",
+      "exportName": "DeployReveal",
+      "dependencyCount": 10,
+      "registryDependencies": [
+        "@remotionui/terminal-simulator",
+        "@remotionui/device-mockup-zoom",
+        "@remotionui/transition-fade",
+        "@remotionui/motion-tokens",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "dashboard-populate",
+      "label": "看板填充",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Dashboard metrics populate",
+      "docsUrl": "https://remotionui.com/docs/components/dashboard-populate",
+      "entryFile": "compositions/dashboard-populate/index.tsx",
+      "exportName": "DashboardPopulate",
+      "dependencyCount": 12,
+      "registryDependencies": [
+        "@remotionui/metric-ticker",
+        "@remotionui/animated-bar-chart",
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens",
+        "@remotionui/directional-wipe"
+      ]
+    },
+    {
+      "name": "pricing-focus",
+      "label": "定价聚焦",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Pricing tier focus animation",
+      "docsUrl": "https://remotionui.com/docs/components/pricing-focus",
+      "entryFile": "compositions/pricing-focus/index.tsx",
+      "exportName": "PricingFocus",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "landing-code-showcase",
+      "label": "落地页代码展示",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Landing with install commands",
+      "docsUrl": "https://remotionui.com/docs/components/landing-code-showcase",
+      "entryFile": "compositions/landing-code-showcase/index.tsx",
+      "exportName": "LandingCodeShowcase",
+      "dependencyCount": 11,
+      "registryDependencies": [
+        "@remotionui/title-card",
+        "@remotionui/code-reveal",
+        "@remotionui/motion-tokens",
+        "@remotionui/transition-fade"
+      ]
+    },
+    {
+      "name": "tool-menu-slide",
+      "label": "工具菜单滑入",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Tool menu slide-in",
+      "docsUrl": "https://remotionui.com/docs/components/tool-menu-slide",
+      "entryFile": "compositions/tool-menu-slide/index.tsx",
+      "exportName": "ToolMenuSlide",
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "image-expand",
+      "label": "图片展开",
+      "category": "composition",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "A still opens from a card to full frame, then takes its caption",
+      "docsUrl": "https://remotionui.com/docs/components/image-expand",
+      "entryFile": "compositions/image-expand/index.tsx",
+      "exportName": "ImageExpand",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "claude-chat",
+      "label": "Claude 对话",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Claude composer card with typed prompt and waveform-to-send morph",
+      "docsUrl": "https://remotionui.com/docs/components/claude-chat",
+      "entryFile": "scenes/claude-chat/index.tsx",
+      "exportName": "THEMES",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils"
+      ]
+    },
+    {
+      "name": "chat-gpt",
+      "label": "ChatGPT 对话",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "ChatGPT composer pill with greeting, suggestion chips, and voice-to-send morph",
+      "docsUrl": "https://remotionui.com/docs/components/chat-gpt",
+      "entryFile": "scenes/chat-gpt/index.tsx",
+      "exportName": "THEMES",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils"
+      ]
+    },
+    {
+      "name": "v0",
+      "label": "v0 生成界面",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "v0 composer with greeting, model chip, project selector, and mic-to-send morph",
+      "docsUrl": "https://remotionui.com/docs/components/v0",
+      "entryFile": "scenes/v0/index.tsx",
+      "exportName": "THEMES",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils"
+      ]
+    },
+    {
+      "name": "claude-code",
+      "label": "Claude Code 终端",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Claude Code terminal welcome screen with CLI prompt typing",
+      "docsUrl": "https://remotionui.com/docs/components/claude-code",
+      "entryFile": "scenes/claude-code/index.tsx",
+      "exportName": "THEMES",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils"
+      ]
+    },
+    {
+      "name": "opencode",
+      "label": "OpenCode 终端",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "OpenCode TUI composer with agent and model status",
+      "docsUrl": "https://remotionui.com/docs/components/opencode",
+      "entryFile": "scenes/opencode/index.tsx",
+      "exportName": "THEMES",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/ai-composer-utils"
+      ]
+    },
+    {
+      "name": "text-split",
+      "label": "文字拆分",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Split a string into chars, words or lines with staggered per-unit timing",
+      "docsUrl": "https://remotionui.com/docs/components/text-split",
+      "entryFile": "lib/text-split.ts",
+      "exportName": "SPLIT_STAGGER_DEFAULTS",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "path-morph",
+      "label": "路径变形",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Cached SVG path morphing with winding alignment and box fitting",
+      "docsUrl": "https://remotionui.com/docs/components/path-morph",
+      "entryFile": "lib/path-morph.ts",
+      "exportName": "MORPH_SHAPES",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "displacement-transition",
+      "label": "置换贴图转场",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Frame maths for displacement-map and shape-mask transitions",
+      "docsUrl": "https://remotionui.com/docs/components/displacement-transition",
+      "entryFile": "lib/displacement-transition.ts",
+      "exportName": "DISPLACEMENT_DEFAULTS",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/path-morph"
+      ]
+    },
+    {
+      "name": "displacement-presentation",
+      "label": "置换贴图展示",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Shared TransitionSeries presentation for warp and shape-mask cuts",
+      "docsUrl": "https://remotionui.com/docs/components/displacement-presentation",
+      "entryFile": "lib/displacement-presentation.tsx",
+      "exportName": null,
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/displacement-transition",
+        "@remotionui/path-morph",
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "sample-media",
+      "label": "示例媒体",
+      "category": "utility",
+      "type": "registry:lib",
+      "previewable": false,
+      "description": "Placeholder stills, captions, and audio for composition defaults",
+      "docsUrl": "https://remotionui.com/docs/components/sample-media",
+      "entryFile": "lib/sample-media.ts",
+      "exportName": "SAMPLE_AUDIO_SRC",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "split-text-chars",
+      "label": "文字逐字拆分",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Split text into chars, words or lines and stagger them in",
+      "docsUrl": "https://remotionui.com/docs/components/split-text-chars",
+      "entryFile": "primitives/split-text-chars.tsx",
+      "exportName": "SplitTextChars",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/text-split",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "audio-reactive-scale",
+      "label": "音频联动缩放",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Scales any child by per-frame audio amplitude",
+      "docsUrl": "https://remotionui.com/docs/components/audio-reactive-scale",
+      "entryFile": "primitives/audio-reactive-scale.tsx",
+      "exportName": "AudioReactiveScale",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "srt-caption-track",
+      "label": "SRT 字幕轨",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Renders a caption track straight from an SRT or WebVTT file",
+      "docsUrl": "https://remotionui.com/docs/components/srt-caption-track",
+      "entryFile": "primitives/srt-caption-track.tsx",
+      "exportName": "SrtCaptionTrack",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/caption-highlight"
+      ]
+    },
+    {
+      "name": "transition-circle-reveal",
+      "label": "转场·圆形揭示",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Circular mask that opens from any point onto the next scene",
+      "docsUrl": "https://remotionui.com/docs/components/transition-circle-reveal",
+      "entryFile": "primitives/transition-circle-reveal.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-card-flip",
+      "label": "转场·翻卡",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Whole-frame 3D flip that hands off on backface culling",
+      "docsUrl": "https://remotionui.com/docs/components/transition-card-flip",
+      "entryFile": "primitives/transition-card-flip.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-blinds",
+      "label": "转场·百叶窗",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Staggered slats sweeping open to reveal the next scene",
+      "docsUrl": "https://remotionui.com/docs/components/transition-blinds",
+      "entryFile": "primitives/transition-blinds.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-whip-pan",
+      "label": "转场·甩镜",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": false,
+      "description": "Fast pan with directional motion blur along the travel axis",
+      "docsUrl": "https://remotionui.com/docs/components/transition-whip-pan",
+      "entryFile": "primitives/transition-whip-pan.tsx",
+      "exportName": null,
+      "dependencyCount": 3,
+      "registryDependencies": [
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-morph-shape",
+      "label": "转场·形状变形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Reveal through a shape that morphs as it grows across the frame",
+      "docsUrl": "https://remotionui.com/docs/components/transition-morph-shape",
+      "entryFile": "primitives/transition-morph-shape.tsx",
+      "exportName": "SHAPE_OVERSHOOT",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/displacement-presentation",
+        "@remotionui/displacement-transition",
+        "@remotionui/path-morph",
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "transition-liquid-warp",
+      "label": "转场·液态扭曲",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Liquid displacement warp that stirs one scene into the next",
+      "docsUrl": "https://remotionui.com/docs/components/transition-liquid-warp",
+      "entryFile": "primitives/transition-liquid-warp.tsx",
+      "exportName": "LIQUID_WARP_DEFAULTS",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/displacement-presentation",
+        "@remotionui/displacement-transition",
+        "@remotionui/transition-timing"
+      ]
+    },
+    {
+      "name": "skew-in",
+      "label": "斜切进入",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Skew + translate, editorial feel",
+      "docsUrl": "https://remotionui.com/docs/components/skew-in",
+      "entryFile": "primitives/skew-in.tsx",
+      "exportName": "SkewIn",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-primitive",
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "scramble-text",
+      "label": "乱码文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Random-glyph scramble resolving per character",
+      "docsUrl": "https://remotionui.com/docs/components/scramble-text",
+      "entryFile": "primitives/scramble-text.tsx",
+      "exportName": "ScrambleText",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split"
+      ]
+    },
+    {
+      "name": "text-mask-video",
+      "label": "文字遮罩视频",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Video or gradient showing through letterforms",
+      "docsUrl": "https://remotionui.com/docs/components/text-mask-video",
+      "entryFile": "primitives/text-mask-video.tsx",
+      "exportName": "TextMaskVideo",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-primitive"
+      ]
+    },
+    {
+      "name": "handwriting-text",
+      "label": "手写文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Takes a string and strokes it on",
+      "docsUrl": "https://remotionui.com/docs/components/handwriting-text",
+      "entryFile": "primitives/handwriting-text.tsx",
+      "exportName": "HandwritingText",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split"
+      ]
+    },
+    {
+      "name": "stroke-to-fill-text",
+      "label": "描边转填充",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Outline text filling solid",
+      "docsUrl": "https://remotionui.com/docs/components/stroke-to-fill-text",
+      "entryFile": "primitives/stroke-to-fill-text.tsx",
+      "exportName": "StrokeToFillText",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split",
+        "@remotionui/timing"
+      ]
+    },
+    {
+      "name": "variable-font-morph",
+      "label": "可变字体变形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Animates weight/width axes of a variable font",
+      "docsUrl": "https://remotionui.com/docs/components/variable-font-morph",
+      "entryFile": "primitives/variable-font-morph.tsx",
+      "exportName": "VariableFontMorph",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split"
+      ]
+    },
+    {
+      "name": "liquid-text-morph",
+      "label": "液态文字变形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Letterforms morphing between two words",
+      "docsUrl": "https://remotionui.com/docs/components/liquid-text-morph",
+      "entryFile": "primitives/liquid-text-morph.tsx",
+      "exportName": "LiquidTextMorph",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split",
+        "@remotionui/layout"
+      ]
+    },
+    {
+      "name": "wave-text",
+      "label": "波浪文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Per-character sine displacement",
+      "docsUrl": "https://remotionui.com/docs/components/wave-text",
+      "entryFile": "primitives/wave-text.tsx",
+      "exportName": "WaveText",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split"
+      ]
+    },
+    {
+      "name": "neon-flicker-text",
+      "label": "霓虹闪烁文字",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Neon sign flicker and settle",
+      "docsUrl": "https://remotionui.com/docs/components/neon-flicker-text",
+      "entryFile": "primitives/neon-flicker-text.tsx",
+      "exportName": "NeonFlickerText",
+      "dependencyCount": 7,
+      "registryDependencies": [
+        "@remotionui/split-text-chars",
+        "@remotionui/text-split"
+      ]
+    },
+    {
+      "name": "aurora-bg",
+      "label": "极光背景",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Drifting light ribbons",
+      "docsUrl": "https://remotionui.com/docs/components/aurora-bg",
+      "entryFile": "primitives/aurora-bg.tsx",
+      "exportName": "AuroraBg",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "particle-field",
+      "label": "粒子场",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Ambient drifting particles with depth",
+      "docsUrl": "https://remotionui.com/docs/components/particle-field",
+      "entryFile": "primitives/particle-field.tsx",
+      "exportName": "ParticleField",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "topographic-lines-bg",
+      "label": "等高线背景",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Contour lines drifting",
+      "docsUrl": "https://remotionui.com/docs/components/topographic-lines-bg",
+      "entryFile": "primitives/topographic-lines-bg.tsx",
+      "exportName": "TopographicLinesBg",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "caustics-bg",
+      "label": "焦散背景",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Underwater light caustics",
+      "docsUrl": "https://remotionui.com/docs/components/caustics-bg",
+      "entryFile": "primitives/caustics-bg.tsx",
+      "exportName": "CausticsBg",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "animated-noise-grain",
+      "label": "动态噪点颗粒",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Film grain overlay",
+      "docsUrl": "https://remotionui.com/docs/components/animated-noise-grain",
+      "entryFile": "primitives/animated-noise-grain.tsx",
+      "exportName": "AnimatedNoiseGrain",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "light-rays",
+      "label": "光束",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Volumetric god rays drifting across the stage",
+      "docsUrl": "https://remotionui.com/docs/components/light-rays",
+      "entryFile": "primitives/light-rays.tsx",
+      "exportName": "LightRays",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/gpu"
+      ]
+    },
+    {
+      "name": "parallax-layers",
+      "label": "视差图层",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Depth-offset layers on one driver",
+      "docsUrl": "https://remotionui.com/docs/components/parallax-layers",
+      "entryFile": "primitives/parallax-layers.tsx",
+      "exportName": "ParallaxLayers",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "shake-emphasis",
+      "label": "抖动强调",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Short impact shake",
+      "docsUrl": "https://remotionui.com/docs/components/shake-emphasis",
+      "entryFile": "primitives/shake-emphasis.tsx",
+      "exportName": "ShakeEmphasis",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "glow-pulse",
+      "label": "辉光脉冲",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Rhythmic glow for CTAs and live indicators",
+      "docsUrl": "https://remotionui.com/docs/components/glow-pulse",
+      "entryFile": "primitives/glow-pulse.tsx",
+      "exportName": "GlowPulse",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "motion-trail",
+      "label": "运动拖尾",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Echo trails behind a moving element",
+      "docsUrl": "https://remotionui.com/docs/components/motion-trail",
+      "entryFile": "primitives/motion-trail.tsx",
+      "exportName": "MotionTrail",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "squash-stretch",
+      "label": "挤压拉伸",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "The animation principle as a primitive",
+      "docsUrl": "https://remotionui.com/docs/components/squash-stretch",
+      "entryFile": "primitives/squash-stretch.tsx",
+      "exportName": "SquashStretch",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/motion-wrapper"
+      ]
+    },
+    {
+      "name": "orbit-motion",
+      "label": "环绕运动",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Element orbiting a center point",
+      "docsUrl": "https://remotionui.com/docs/components/orbit-motion",
+      "entryFile": "primitives/orbit-motion.tsx",
+      "exportName": "OrbitMotion",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "depth-of-field-blur",
+      "label": "景深模糊",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Rack focus between layers",
+      "docsUrl": "https://remotionui.com/docs/components/depth-of-field-blur",
+      "entryFile": "primitives/depth-of-field-blur.tsx",
+      "exportName": "DepthOfFieldBlur",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "scanline-crt",
+      "label": "CRT 扫描线",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "CRT scanlines and curvature overlay",
+      "docsUrl": "https://remotionui.com/docs/components/scanline-crt",
+      "entryFile": "primitives/scanline-crt.tsx",
+      "exportName": "ScanlineCrt",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "bar-chart-race",
+      "label": "柱状竞速图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Ranked bars reorder over time",
+      "docsUrl": "https://remotionui.com/docs/components/bar-chart-race",
+      "entryFile": "primitives/bar-chart-race.tsx",
+      "exportName": "BarChartRace",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "donut-chart",
+      "label": "环形图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Multi-segment donut with labels",
+      "docsUrl": "https://remotionui.com/docs/components/donut-chart",
+      "entryFile": "primitives/donut-chart.tsx",
+      "exportName": "DonutChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "pie-slice-reveal",
+      "label": "饼图切片揭示",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Slices sweep in sequentially",
+      "docsUrl": "https://remotionui.com/docs/components/pie-slice-reveal",
+      "entryFile": "primitives/pie-slice-reveal.tsx",
+      "exportName": "PieSliceReveal",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "scatter-plot-pop",
+      "label": "散点图弹出",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Points pop in on stagger, optional trend line",
+      "docsUrl": "https://remotionui.com/docs/components/scatter-plot-pop",
+      "entryFile": "primitives/scatter-plot-pop.tsx",
+      "exportName": "ScatterPlotPop",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "bubble-chart-pack",
+      "label": "气泡图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Circle-packed values settling into place",
+      "docsUrl": "https://remotionui.com/docs/components/bubble-chart-pack",
+      "entryFile": "primitives/bubble-chart-pack.tsx",
+      "exportName": "BubbleChartPack",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "gauge-dial",
+      "label": "仪表盘",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Needle sweeps to target",
+      "docsUrl": "https://remotionui.com/docs/components/gauge-dial",
+      "entryFile": "primitives/gauge-dial.tsx",
+      "exportName": "GaugeDial",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "sparkline-row",
+      "label": "迷你折线组",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Compact trend lines that read at small sizes",
+      "docsUrl": "https://remotionui.com/docs/components/sparkline-row",
+      "entryFile": "primitives/sparkline-row.tsx",
+      "exportName": "SparklineRow",
+      "dependencyCount": 6,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens",
+        "@remotionui/path-utils"
+      ]
+    },
+    {
+      "name": "heatmap-grid",
+      "label": "热力图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Cell grid filling by intensity, contribution-graph style",
+      "docsUrl": "https://remotionui.com/docs/components/heatmap-grid",
+      "entryFile": "primitives/heatmap-grid.tsx",
+      "exportName": "HeatmapGrid",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "comparison-bars",
+      "label": "对比条形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Two-series before/after with delta callout",
+      "docsUrl": "https://remotionui.com/docs/components/comparison-bars",
+      "entryFile": "primitives/comparison-bars.tsx",
+      "exportName": "ComparisonBars",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "funnel-chart",
+      "label": "漏斗图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Stage bars narrowing with drop-off percentages",
+      "docsUrl": "https://remotionui.com/docs/components/funnel-chart",
+      "entryFile": "primitives/funnel-chart.tsx",
+      "exportName": "FunnelChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "radar-chart",
+      "label": "雷达图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Multi-axis spider chart drawing its polygon",
+      "docsUrl": "https://remotionui.com/docs/components/radar-chart",
+      "entryFile": "primitives/radar-chart.tsx",
+      "exportName": "RadarChart",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "treemap-blocks",
+      "label": "矩形树图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Nested rectangles sized by value",
+      "docsUrl": "https://remotionui.com/docs/components/treemap-blocks",
+      "entryFile": "primitives/treemap-blocks.tsx",
+      "exportName": "TreemapBlocks",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "waterfall-chart",
+      "label": "瀑布图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Cumulative bridge with positive/negative steps",
+      "docsUrl": "https://remotionui.com/docs/components/waterfall-chart",
+      "entryFile": "primitives/waterfall-chart.tsx",
+      "exportName": "WaterfallChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "stacked-area-chart",
+      "label": "堆叠面积图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Multiple series stacking as they draw on",
+      "docsUrl": "https://remotionui.com/docs/components/stacked-area-chart",
+      "entryFile": "primitives/stacked-area-chart.tsx",
+      "exportName": "StackedAreaChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "candlestick-chart",
+      "label": "K 线图",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "OHLC financial series",
+      "docsUrl": "https://remotionui.com/docs/components/candlestick-chart",
+      "entryFile": "primitives/candlestick-chart.tsx",
+      "exportName": "CandlestickChart",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/chart-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "gantt-timeline",
+      "label": "甘特时间线",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Date-scaled schedule bars",
+      "docsUrl": "https://remotionui.com/docs/components/gantt-timeline",
+      "entryFile": "primitives/gantt-timeline.tsx",
+      "exportName": "GanttTimeline",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "word-pop-captions",
+      "label": "逐词弹出字幕",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Narrowed: one word at a time, alone on frame",
+      "docsUrl": "https://remotionui.com/docs/components/word-pop-captions",
+      "entryFile": "primitives/word-pop-captions.tsx",
+      "exportName": "WordPopCaptions",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "caption-emoji-beat",
+      "label": "字幕表情节拍",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Emoji punctuation landing on beats",
+      "docsUrl": "https://remotionui.com/docs/components/caption-emoji-beat",
+      "entryFile": "primitives/caption-emoji-beat.tsx",
+      "exportName": "CaptionEmojiBeat",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "speaker-label-captions",
+      "label": "说话人标签字幕",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Narrowed: multi-speaker caption track with name tags and color coding",
+      "docsUrl": "https://remotionui.com/docs/components/speaker-label-captions",
+      "entryFile": "primitives/speaker-label-captions.tsx",
+      "exportName": "SpeakerLabelCaptions",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "transcript-scroll",
+      "label": "逐字稿滚动",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Full readable transcript scrolling with the active line marked",
+      "docsUrl": "https://remotionui.com/docs/components/transcript-scroll",
+      "entryFile": "primitives/transcript-scroll.tsx",
+      "exportName": "TranscriptScroll",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "subtitle-translate",
+      "label": "双语字幕",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Dual-language stacked subtitles",
+      "docsUrl": "https://remotionui.com/docs/components/subtitle-translate",
+      "entryFile": "primitives/subtitle-translate.tsx",
+      "exportName": "SubtitleTranslate",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/caption-utils",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "waveform-bars-radial",
+      "label": "放射波形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Circular bars around a center element",
+      "docsUrl": "https://remotionui.com/docs/components/waveform-bars-radial",
+      "entryFile": "primitives/waveform-bars-radial.tsx",
+      "exportName": "WaveformBarsRadial",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "vu-meter",
+      "label": "音量表",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Segmented level meter with peak hold",
+      "docsUrl": "https://remotionui.com/docs/components/vu-meter",
+      "entryFile": "primitives/vu-meter.tsx",
+      "exportName": "VuMeter",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "voice-note-bubble",
+      "label": "语音气泡",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Chat-style audio message with waveform and playhead",
+      "docsUrl": "https://remotionui.com/docs/components/voice-note-bubble",
+      "entryFile": "primitives/voice-note-bubble.tsx",
+      "exportName": "VoiceNoteBubble",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "beat-pulse-grid",
+      "label": "节拍脉冲网格",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Grid cells pulsing on detected beats",
+      "docsUrl": "https://remotionui.com/docs/components/beat-pulse-grid",
+      "entryFile": "primitives/beat-pulse-grid.tsx",
+      "exportName": "BeatPulseGrid",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/audio-viz-utils"
+      ]
+    },
+    {
+      "name": "audio-scrubber",
+      "label": "音频滑杆",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Waveform with traveling playhead and time labels",
+      "docsUrl": "https://remotionui.com/docs/components/audio-scrubber",
+      "entryFile": "primitives/audio-scrubber.tsx",
+      "exportName": "AudioScrubber",
+      "dependencyCount": 1,
+      "registryDependencies": []
+    },
+    {
+      "name": "poll-overlay",
+      "label": "投票浮层",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Question with bars filling to results",
+      "docsUrl": "https://remotionui.com/docs/components/poll-overlay",
+      "entryFile": "scenes/poll-overlay/index.tsx",
+      "exportName": "PollOverlay",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "reaction-burst",
+      "label": "反应迸发",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Narrowed: hearts/likes rising continuously",
+      "docsUrl": "https://remotionui.com/docs/components/reaction-burst",
+      "entryFile": "scenes/reaction-burst/index.tsx",
+      "exportName": "ReactionBurst",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "countdown-timer",
+      "label": "倒计时",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Numeric or ring countdown to zero",
+      "docsUrl": "https://remotionui.com/docs/components/countdown-timer",
+      "entryFile": "scenes/countdown-timer/index.tsx",
+      "exportName": "CountdownTimer",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "sports-scorebug",
+      "label": "体育比分牌",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Broadcast score furniture with clock",
+      "docsUrl": "https://remotionui.com/docs/components/sports-scorebug",
+      "entryFile": "scenes/sports-scorebug/index.tsx",
+      "exportName": "SportsScorebug",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "news-ticker-bar",
+      "label": "新闻滚动条",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Broadcast lower ticker with headlines",
+      "docsUrl": "https://remotionui.com/docs/components/news-ticker-bar",
+      "entryFile": "scenes/news-ticker-bar/index.tsx",
+      "exportName": "NewsTickerBar",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "form-fill-sequence",
+      "label": "表单填写序列",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Fields typing and validating in order",
+      "docsUrl": "https://remotionui.com/docs/components/form-fill-sequence",
+      "entryFile": "scenes/form-fill-sequence/index.tsx",
+      "exportName": "FormFillSequence",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "notification-stack",
+      "label": "通知堆叠",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Toasts stacking and dismissing",
+      "docsUrl": "https://remotionui.com/docs/components/notification-stack",
+      "entryFile": "scenes/notification-stack/index.tsx",
+      "exportName": "NotificationStack",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "tab-switch-panel",
+      "label": "标签页切换",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Tab bar with cross-fading panels",
+      "docsUrl": "https://remotionui.com/docs/components/tab-switch-panel",
+      "entryFile": "scenes/tab-switch-panel/index.tsx",
+      "exportName": "TabSwitchPanel",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "search-results-populate",
+      "label": "搜索结果填充",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Query typed, results streaming in and ranking",
+      "docsUrl": "https://remotionui.com/docs/components/search-results-populate",
+      "entryFile": "scenes/search-results-populate/index.tsx",
+      "exportName": "SearchResultsPopulate",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "file-tree-reveal",
+      "label": "文件树展开",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Directory tree expanding node by node",
+      "docsUrl": "https://remotionui.com/docs/components/file-tree-reveal",
+      "entryFile": "scenes/file-tree-reveal/index.tsx",
+      "exportName": "FileTreeReveal",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "kanban-move",
+      "label": "看板移动",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Cards moving across columns",
+      "docsUrl": "https://remotionui.com/docs/components/kanban-move",
+      "entryFile": "scenes/kanban-move/index.tsx",
+      "exportName": "KanbanMove",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "commit-graph",
+      "label": "提交图谱",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Branch/merge graph drawing itself",
+      "docsUrl": "https://remotionui.com/docs/components/commit-graph",
+      "entryFile": "scenes/commit-graph/index.tsx",
+      "exportName": "CommitGraph",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "comparison-table",
+      "label": "对比表格",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Multi-column feature matrix",
+      "docsUrl": "https://remotionui.com/docs/components/comparison-table",
+      "entryFile": "scenes/comparison-table/index.tsx",
+      "exportName": "ComparisonTable",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "pricing-card",
+      "label": "定价卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Tier card with price roll and features",
+      "docsUrl": "https://remotionui.com/docs/components/pricing-card",
+      "entryFile": "scenes/pricing-card/index.tsx",
+      "exportName": "PricingCard",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "faq-accordion",
+      "label": "常见问题折叠",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Narrowed: Q/A text rows expanding",
+      "docsUrl": "https://remotionui.com/docs/components/faq-accordion",
+      "entryFile": "scenes/faq-accordion/index.tsx",
+      "exportName": "FaqAccordion",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "team-grid",
+      "label": "团队网格",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Avatar grid with role labels on stagger",
+      "docsUrl": "https://remotionui.com/docs/components/team-grid",
+      "entryFile": "scenes/team-grid/index.tsx",
+      "exportName": "TeamGrid",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "logo-wall",
+      "label": "客户标识墙",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Client logo grid, grayscale to color",
+      "docsUrl": "https://remotionui.com/docs/components/logo-wall",
+      "entryFile": "scenes/logo-wall/index.tsx",
+      "exportName": "LogoWall",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "changelog-entry",
+      "label": "更新日志条目",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Version header with categorized change rows",
+      "docsUrl": "https://remotionui.com/docs/components/changelog-entry",
+      "entryFile": "scenes/changelog-entry/index.tsx",
+      "exportName": "ChangelogEntry",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "roadmap-lanes",
+      "label": "路线图泳道",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Swimlanes of shipped/building/planned",
+      "docsUrl": "https://remotionui.com/docs/components/roadmap-lanes",
+      "entryFile": "scenes/roadmap-lanes/index.tsx",
+      "exportName": "RoadmapLanes",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "org-chart-build",
+      "label": "组织架构图",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Hierarchy assembling top-down",
+      "docsUrl": "https://remotionui.com/docs/components/org-chart-build",
+      "entryFile": "scenes/org-chart-build/index.tsx",
+      "exportName": "OrgChartBuild",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "quiz-question",
+      "label": "测验题",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Question, options, correct-answer reveal",
+      "docsUrl": "https://remotionui.com/docs/components/quiz-question",
+      "entryFile": "scenes/quiz-question/index.tsx",
+      "exportName": "QuizQuestion",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "weather-card",
+      "label": "天气卡",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Conditions with animated iconography",
+      "docsUrl": "https://remotionui.com/docs/components/weather-card",
+      "entryFile": "scenes/weather-card/index.tsx",
+      "exportName": "WeatherCard",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "calendar-month-fill",
+      "label": "月历填充",
+      "category": "scene",
+      "type": "registry:block",
+      "previewable": true,
+      "description": "Month grid populating with events",
+      "docsUrl": "https://remotionui.com/docs/components/calendar-month-fill",
+      "entryFile": "scenes/calendar-month-fill/index.tsx",
+      "exportName": "CalendarMonthFill",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/code-syntax",
+        "@remotionui/layout",
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "arrow-annotate",
+      "label": "箭头标注",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Hand-drawn arrow pointing at a target",
+      "docsUrl": "https://remotionui.com/docs/components/arrow-annotate",
+      "entryFile": "primitives/arrow-annotate.tsx",
+      "exportName": "ArrowAnnotate",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "badge-stamp",
+      "label": "徽章盖章",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Stamp/seal impact with rotation settle",
+      "docsUrl": "https://remotionui.com/docs/components/badge-stamp",
+      "entryFile": "primitives/badge-stamp.tsx",
+      "exportName": "BadgeStamp",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "shape-morph",
+      "label": "形状变形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Path interpolation between two shapes",
+      "docsUrl": "https://remotionui.com/docs/components/shape-morph",
+      "entryFile": "primitives/shape-morph.tsx",
+      "exportName": "ShapeMorph",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-tokens",
+        "@remotionui/path-morph"
+      ]
+    },
+    {
+      "name": "blob-morph",
+      "label": "团块变形",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Organic blob continuously morphing",
+      "docsUrl": "https://remotionui.com/docs/components/blob-morph",
+      "entryFile": "primitives/blob-morph.tsx",
+      "exportName": "BlobMorph",
+      "dependencyCount": 2,
+      "registryDependencies": [
+        "@remotionui/path-morph"
+      ]
+    },
+    {
+      "name": "dashed-path-travel",
+      "label": "虚线行进",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Narrowed: any element traveling any path with a dashed trail",
+      "docsUrl": "https://remotionui.com/docs/components/dashed-path-travel",
+      "entryFile": "primitives/dashed-path-travel.tsx",
+      "exportName": "DashedPathTravel",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-tokens",
+        "@remotionui/path-utils"
+      ]
+    },
+    {
+      "name": "connector-lines",
+      "label": "连接线",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Narrowed: primitive that draws edges between anchored elements",
+      "docsUrl": "https://remotionui.com/docs/components/connector-lines",
+      "entryFile": "primitives/connector-lines.tsx",
+      "exportName": "ConnectorLines",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "svg-mask-reveal",
+      "label": "SVG 遮罩揭示",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Arbitrary SVG shape as a reveal mask",
+      "docsUrl": "https://remotionui.com/docs/components/svg-mask-reveal",
+      "entryFile": "primitives/svg-mask-reveal.tsx",
+      "exportName": "SvgMaskReveal",
+      "dependencyCount": 5,
+      "registryDependencies": [
+        "@remotionui/motion-tokens",
+        "@remotionui/path-morph"
+      ]
+    },
+    {
+      "name": "globe-arc",
+      "label": "地球弧线",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Arcs between points on a globe",
+      "docsUrl": "https://remotionui.com/docs/components/globe-arc",
+      "entryFile": "primitives/globe-arc.tsx",
+      "exportName": "GlobeArc",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    },
+    {
+      "name": "multi-device-lineup",
+      "label": "多设备排列",
+      "category": "primitive",
+      "type": "registry:ui",
+      "previewable": true,
+      "description": "Phone + tablet + laptop showing one responsive design",
+      "docsUrl": "https://remotionui.com/docs/components/multi-device-lineup",
+      "entryFile": "primitives/multi-device-lineup.tsx",
+      "exportName": "MultiDeviceLineup",
+      "dependencyCount": 4,
+      "registryDependencies": [
+        "@remotionui/motion-tokens"
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "name": "hero-loop",
+      "reason": "依赖项目未安装的包：leaving"
+    },
+    {
+      "name": "map-utils",
+      "reason": "依赖项目未安装的包：@turf/turf、geojson、maplibre-gl"
+    },
+    {
+      "name": "map-canvas",
+      "reason": "依赖项目未安装的包：maplibre-gl、@turf/turf、geojson"
+    },
+    {
+      "name": "map-route",
+      "reason": "依赖项目未安装的包：geojson、maplibre-gl、@turf/turf"
+    },
+    {
+      "name": "map-markers",
+      "reason": "依赖项目未安装的包：geojson、maplibre-gl、@turf/turf"
+    },
+    {
+      "name": "map-flight",
+      "reason": "依赖项目未安装的包：maplibre-gl、geojson、@turf/turf"
+    },
+    {
+      "name": "map-heat-overlay",
+      "reason": "依赖项目未安装的包：geojson、maplibre-gl、@turf/turf"
+    }
+  ]
+}

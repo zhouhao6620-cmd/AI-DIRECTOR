@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "WaterfallChartContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["steps"],
+  "properties": {
+    "steps": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "value"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 6, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "value": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "isTotal": {"type": "boolean"}
+        }
+      }
+    },
+    "unit": {"type": "string", "maxLength": 4, "pattern": "^[^\\r\\n\\t]*$"}
+  }
+}

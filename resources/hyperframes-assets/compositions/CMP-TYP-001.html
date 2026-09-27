@@ -1,0 +1,180 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"background","type":"enum","label":"底板","default":"NONE","options":[{"value":"NONE","label":"无底"},{"value":"GLASS","label":"玻璃底"}]},
+  {"id":"glassAlpha","type":"number","label":"底板不透明度","default":0.6,"min":0,"max":1,"step":0.01},
+  {"id":"shiftAtMs","type":"number","label":"重排时刻（毫秒）","default":1600,"min":800,"max":4000,"step":50},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-TYP-001 文字重排 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-typ-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --accent: #5fa0fa;
+      --glass: linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+      --glass-border: rgba(255,255,255,0.22);
+      --glass-shadow: 0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .ts-block { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .ts-glass { position: absolute; inset: 0; border-radius: 20px; background: var(--glass); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); }
+    .ts-line { display: flex; align-items: center; justify-content: center; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-typ-001" data-width="1920" data-height="1080">
+    <div class="ts-block" data-block><div class="ts-glass" data-glass hidden></div></div>
+
+    <script type="application/json" data-hf-content>
+      {"lines": ["把结尾的升华放在这里", "它会一行一行铺开", "*停在最重的那一句", "— 小字署名收尾"]}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {baseFontSize: 40, baseFontWeight: 500, baseLineHeight: 1.6,
+          heroFontSize: 84, heroFontWeight: 800, heroLineHeight: 1.3, heroLetterSpacingEm: -0.01,
+          midFontSize: 44, midFontWeight: 600, midLineHeight: 1.6, midLetterSpacingEm: 0,
+          smallFontSize: 28, smallFontWeight: 400, smallLineHeight: 1.6, smallLetterSpacingEm: 0.16,
+          rags: [-180, 40, -80, 120, -30], lineRevealMs: 420, lineRevealBaseMs: 150, lineRevealStepMs: 160,
+          reflowMs: 620, reflowStepMs: 70, glassRadius: 20};
+        const SAFE_SIDE_RATIO = 0.0625;
+        const SAFE_VERTICAL_RATIO = 0.08;
+        const MIN_SCALE = 0.62;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", glass: "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+            glassBorder: "rgba(255,255,255,0.22)", shadow: "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", glass: "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+            glassBorder: "rgba(255,255,255,0.85)", shadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"},
+        };
+        const roleMetrics = role => role === "HERO"
+          ? {fontSize: GEO.heroFontSize, fontWeight: GEO.heroFontWeight, lineHeight: GEO.heroLineHeight, letterSpacingEm: GEO.heroLetterSpacingEm}
+          : role === "SMALL"
+            ? {fontSize: GEO.smallFontSize, fontWeight: GEO.smallFontWeight, lineHeight: GEO.smallLineHeight, letterSpacingEm: GEO.smallLetterSpacingEm}
+            : {fontSize: GEO.midFontSize, fontWeight: GEO.midFontWeight, lineHeight: GEO.midLineHeight, letterSpacingEm: GEO.midLetterSpacingEm};
+        const parseLines = lines => lines.map(raw => {
+          const text = String(raw ?? "");
+          if (text.startsWith("*")) return {role: "HERO", text: text.slice(1).trim()};
+          if (text.startsWith("—") || text.startsWith("-")) return {role: "SMALL", text};
+          return {role: "MID", text};
+        }).filter(line => line.text.length);
+
+        hfComponentKit.mount({
+          id: "cmp-typ-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            background: String(variables.background || "NONE").toUpperCase() === "GLASS" ? "GLASS" : "NONE",
+            glassAlpha: Math.min(1, Math.max(0, Number(variables.glassAlpha ?? 0.6))),
+            shiftAtMs: Math.min(4000, Math.max(800, Number(variables.shiftAtMs) || 1600)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--glass", tokens.glass);
+            ctx.root.style.setProperty("--glass-border", tokens.glassBorder);
+            ctx.root.style.setProperty("--glass-shadow", tokens.shadow);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const block = root.querySelector("[data-block]");
+            const glass = root.querySelector("[data-glass]");
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_SIDE_RATIO;
+            const safeY = stage.height * SAFE_VERTICAL_RATIO;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const parsed = parseLines(Array.isArray(content.lines) ? content.lines : []);
+            if (!parsed.length) ctx.reject("文字重排至少需要一行文字。");
+
+            const lines = parsed.map((line, index) => {
+              const metrics = roleMetrics(line.role);
+              const pAWidth = measure.width(line.text, GEO.baseFontSize, GEO.baseFontWeight, 0);
+              const pBWidth = measure.width(line.text, metrics.fontSize, metrics.fontWeight, metrics.fontSize * metrics.letterSpacingEm);
+              return {...line, index, ...metrics, pAWidth, pBWidth,
+                pAHeight: GEO.baseFontSize * GEO.baseLineHeight, pBHeight: metrics.fontSize * metrics.lineHeight,
+                rag: GEO.rags[index % GEO.rags.length]};
+            });
+            const requiredWidth = Math.max(...lines.flatMap(line => [line.pAWidth, line.pBWidth]));
+            const requiredHeight = Math.max(lines.length * GEO.baseFontSize * GEO.baseLineHeight, lines.reduce((sum, line) => sum + line.pBHeight, 0));
+            const scale = Math.min(options.size, availableWidth / requiredWidth, availableHeight / requiredHeight);
+            if (scale < MIN_SCALE) ctx.reject(`文字切换超出安全区：需要缩到 ${(scale * 100).toFixed(0)}%，低于 ${(MIN_SCALE * 100).toFixed(0)}% 可读下限。请缩短行文字或减少行数。`);
+
+            const blockWidth = requiredWidth * scale;
+            const blockHeight = requiredHeight * scale;
+            block.style.cssText = `left:${safeX + (availableWidth - blockWidth) * options.position.x}px;`
+              + `top:${safeY + (availableHeight - blockHeight) * options.position.y}px;`
+              + `width:${blockWidth}px;height:${blockHeight}px;`;
+            glass.hidden = options.background !== "GLASS";
+            glass.style.opacity = String(options.glassAlpha);
+            glass.style.borderRadius = `${GEO.glassRadius * scale}px`;
+
+            const nodes = lines.map(line => {
+              const node = document.createElement("div");
+              node.className = "ts-line";
+              node.setAttribute("data-ts-line", "");
+              node.setAttribute("data-role", line.role);
+              node.setAttribute("data-index", String(line.index));
+              node.textContent = line.text;
+              node.style.width = `${blockWidth}px`;
+              node.style.height = `${line.pAHeight * scale}px`;
+              node.style.fontSize = `${GEO.baseFontSize * scale}px`;
+              node.style.fontWeight = String(GEO.baseFontWeight);
+              node.style.lineHeight = `${line.pAHeight * scale}px`;
+              node.style.color = tokens.ink;
+              const leftP = safeX + (availableWidth - blockWidth) * options.position.x + (blockWidth - line.pAWidth * scale) / 2;
+              const shiftMin = safeX - leftP;
+              const shiftMax = stage.width - safeX - leftP - line.pAWidth * scale;
+              line.ragShift = Math.min(Math.max(line.rag * scale, Math.min(shiftMin, shiftMax)), Math.max(shiftMin, shiftMax));
+              node.style.transform = `translateX(${line.ragShift}px)`;
+              block.appendChild(node);
+              return node;
+            });
+
+            const roleColor = role => (role === "HERO" ? options.accent : role === "SMALL" ? tokens.muted : tokens.ink);
+            nodes.forEach((node, index) => {
+              const line = lines[index];
+              const revealAt = (GEO.lineRevealBaseMs + line.index * GEO.lineRevealStepMs) / 1000;
+              timeline.fromTo(node, {opacity: 0}, {opacity: 1, duration: GEO.lineRevealMs / 1000, ease: "power2.out"}, revealAt);
+              const reflowAt = options.shiftAtMs / 1000 + (line.index * GEO.reflowStepMs) / 1000;
+              timeline.to(node, {
+                fontSize: line.fontSize * scale,
+                fontWeight: line.fontWeight,
+                lineHeight: line.pBHeight * scale,
+                height: line.pBHeight * scale,
+                letterSpacing: line.fontSize * line.letterSpacingEm * scale,
+                color: roleColor(line.role),
+                x: 0,
+                duration: GEO.reflowMs / 1000, ease: "power3.inOut",
+              }, reflowAt);
+            });
+            ctx.setAttr(root, "data-lines", lines.length);
+            ctx.setAttr(root, "data-background", options.background);
+            ctx.meta = {lines: lines.length, scale: Number(scale.toFixed(3))};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

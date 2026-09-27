@@ -1,0 +1,97 @@
+{
+  "componentId": "CMP-CHP-001",
+  "folder": "chapter-progress",
+  "content": {
+    "chapters": [
+      {
+        "id": "chapter-1",
+        "label": "开场说明",
+        "startMs": 0,
+        "endMs": 3000
+      },
+      {
+        "id": "chapter-2",
+        "label": "问题背景",
+        "startMs": 3000,
+        "endMs": 6000
+      },
+      {
+        "id": "chapter-3",
+        "label": "解决过程",
+        "startMs": 6000,
+        "endMs": 9000
+      },
+      {
+        "id": "chapter-4",
+        "label": "结果回顾",
+        "startMs": 9000,
+        "endMs": 12000
+      }
+    ]
+  },
+  "optionDefaults": {
+    "size": 1,
+    "position": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "variant": "FILL",
+    "showProgress": true,
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 0,
+    "durationInFrames": 360
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "node": "#12121a",
+      "barAlpha": 0.88,
+      "ink": "#ffffff",
+      "muted": "rgba(255,255,255,0.70)",
+      "faint": "rgba(255,255,255,0.44)",
+      "rule": "rgba(255,255,255,0.22)"
+    },
+    "LIGHT": {
+      "node": "#ece6e0",
+      "barAlpha": 0.88,
+      "ink": "#1a2540",
+      "muted": "rgba(26,37,64,0.66)",
+      "faint": "rgba(26,37,64,0.42)",
+      "rule": "rgba(255,255,255,0.85)"
+    }
+  },
+  "variants": [
+    "FILL",
+    "LINE"
+  ],
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

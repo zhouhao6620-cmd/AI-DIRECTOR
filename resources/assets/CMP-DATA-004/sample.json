@@ -1,0 +1,83 @@
+{
+  "componentId": "CMP-DATA-004",
+  "folder": "rank-bars",
+  "content": {
+    "title": "本机样例 · 对比排名",
+    "rows": [
+      {
+        "id": "row-1",
+        "name": "样本甲",
+        "value": 42
+      },
+      {
+        "id": "row-2",
+        "name": "样本乙",
+        "value": 21
+      },
+      {
+        "id": "row-3",
+        "name": "样本丙",
+        "value": 9.5
+      }
+    ],
+    "suffix": "%"
+  },
+  "optionDefaults": {
+    "position": {
+      "x": 0,
+      "y": 0.5
+    },
+    "size": 1,
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 15,
+    "durationInFrames": 210
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "node": "#12121a",
+      "ink": "#ffffff",
+      "muted": "rgba(255, 255, 255, 0.70)",
+      "track": "rgba(255, 255, 255, 0.16)",
+      "lav": "#b9b2ee"
+    },
+    "LIGHT": {
+      "node": "#ece6e0",
+      "ink": "#1a2540",
+      "muted": "rgba(26, 37, 64, 0.66)",
+      "track": "rgba(26, 37, 64, 0.13)",
+      "lav": "#837bc4"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

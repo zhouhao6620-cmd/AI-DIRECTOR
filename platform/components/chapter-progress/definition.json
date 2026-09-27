@@ -1,0 +1,132 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-CHP-001",
+    "name": "ChapterProgress｜章节进度条",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "CHAPTER_PROGRESS",
+    "pattern": "PERSISTENT_TIMELINE_MAP",
+    "useCases": [
+      "按真实章节区间展示全片地图",
+      "长视频中随时显示当前章节与章内进度"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 8,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/chapter-progress/content.schema.json",
+    "requiredFields": [
+      "chapters"
+    ],
+    "nodeShape": "章节：稳定 ID + 名称 + 真实起止区间（startMs / endMs）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 8,
+    "labelMaxLength": 12,
+    "labelCapacityNote": "12 字是内容上限；9:16 画幅放 8 个章节时，等分格内的有效容量约 7 字（字号下限 14 px）。无法容纳时明确拒绝并提示，不裁切文字。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": true,
+    "variants": [
+      "FILL",
+      "LINE"
+    ],
+    "variantDefault": "FILL",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "top-slide-in"
+    },
+    "positionSupport": "默认全宽贴顶；实例可调整水平与垂直位置，默认落位不变",
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "progressToggle": "showProgress 保留来源「显示进度」开关",
+    "variantLabels": {
+      "FILL": "填充进度",
+      "LINE": "线条进度"
+    }
+  },
+  "runtime": {
+    "module": "platform/components/chapter-progress/ChapterProgress.jsx",
+    "export": "ChapterProgress",
+    "props": [
+      "content",
+      "variant",
+      "showProgress",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "顶部常驻条从画面上边缘滑入（translateY −110% → 0，700 毫秒同一条三次贝塞尔缓动）；当前章节按真实区间高亮、已讲完章节降调，进度色带或章内进度线随播放逐帧推进，不加入来源不存在的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "globalLayer": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/ChapterBar.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一）；来源设计优先，保留顶部全宽条、等分章节格、分隔线、当前章高亮、进度色带、底色与强调色令牌和入场动画，仅适配真实章节区间、内容树、画幅、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-03_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-03_CHAPTER_PROGRESS_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "章节进度",
+    "description": "整片常驻显示当前章节和章内进度。",
+    "tags": [
+      "全局包装",
+      "进度"
+    ],
+    "aliases": [
+      "章节条",
+      "章节进度条"
+    ]
+  }
+}

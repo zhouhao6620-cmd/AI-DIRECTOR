@@ -1,0 +1,173 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-021",
+    "name": "SparklineRow｜迷你折线组",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_TREND",
+    "pattern": "STACKED_SPARKLINES",
+    "useCases": [
+      "1–5 行指标的形态对比（每行一条迷你趋势线）",
+      "每行各自归一，末尾给出当前值与变化幅度"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 5,
+    "depth": "ONE_LEVEL",
+    "density": "HIGH"
+  },
+  "content": {
+    "schemaRef": "platform/components/sparkline-row/content.schema.json",
+    "requiredFields": [
+      "rows"
+    ],
+    "optionalFields": [
+      "title",
+      "unit",
+      "caption",
+      "rows[].value",
+      "rows[].delta"
+    ],
+    "nodeShape": "指标行：稳定 ID + 1–8 字指标名 + 2–12 个数值（各 ±1,000,000,000）+ 可选自定当前值文本 + 可选幅度文本",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 5,
+    "titleMaxLength": 14,
+    "labelMaxLength": 8,
+    "pointCountRange": {
+      "min": 2,
+      "max": 12
+    },
+    "valueMaxLength": 8,
+    "deltaMaxLength": 6,
+    "unitMaxLength": 4,
+    "captionMaxLength": 28,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "720 px 行宽减去 3 个 21.6 px 间距、260 px 折线区、86 px 数值列与 65 px 幅度列后，指标名可用 244 px：8 个汉字在 23 px 下缩到 15 px 左右仍在 12 px 下限之上。数值列在自动格式化时按 138 px 测量（含单位），幅度列按 104 px 测量；放不下时明确拒绝——来源的指标名是 nowrap 且没有上限，长中文会被相邻列压住。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "sparkline-draw",
+      "composableParameter": "drawMs｜单行折线画完时长（来源 34 帧 ≈ 1133 ms，可编排范围 300–4000 ms）；行距错峰固定为来源的 12 帧（400 ms）；本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.4,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源的退场，本项目由编排层控制出点",
+      "width / rowHeight / sparkWidth｜来源的像素参数，本项目固定为来源默认值并整组件等比缩放",
+      "showArea｜来源开关，固定为开（形态靠渐变面积读得更快）",
+      "color / upColor / downColor / inkColor / labelColor｜来源的颜色参数，改为四套主题 + 明暗底色映射（来源原色为 SOURCE 默认）",
+      "valueFormatter｜来源接受函数，内容树不能存函数，固定为项目的中文紧凑格式"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/sparkline-row/SparklineRow.jsx",
+    "export": "SparklineRow",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "drawMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Stagger"
+      ],
+      "description": "每行折线按 12 帧（400 ms）逐行错峰，用 EASING.enter = cubic-bezier(0.16, 1, 0.3, 1) 沿自身弧长画出，行体同时从下方 21 px 上浮并淡入；末点圆点在 92% 处落下，变化幅度在 80% 处出现。每行用自己的 min/max 归一，行与行之间比的是形态，不是数值高低。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, PingFang SC, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTION_UI",
+    "sourceEffectId": "sparkline-row",
+    "sourcePath": "RemotionGit/registry/sparkline-row.json → registry/bases/default/primitives/sparkline-row.tsx",
+    "sourceRole": "RemotionUI 来源库（源码复制式，MIT，commit 802a637）；来源设计优先：保留 720 px 块宽 / 96 px 行高 / 260 px 折线区 / 每行独立值域的形态归一 / 行首上浮入场的节奏 / 末点 92% 与幅度 80% 的两段落地，仅适配块尺寸测量、安全区定位、整组件缩放、文本实测与容量、内容树、画幅、主题映射与透明输出",
+    "reuseAnalysis": "复用结论：① 已注册 23 项里 GrowthCurve 是单个大曲线的玻璃卡、RankBars 是条形排名，都不能承载「多行迷你趋势各自归一」的语义，也不允许在并行批次里改动；② 组件内元素尚未正式登记，本组件用不到；③ 取零件工厂的 chart-utils（行值域 + 曲线 + 中文紧凑数值）、path-utils（沿弧长描绘）、motion-tokens（曲线与错峰令牌）三个零件装配，无需补建。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/elements/chart-utils/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/elements/motion-tokens/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "path-utils",
+        "source": "RemotionGit/registry/path-utils.json",
+        "localPath": "platform/elements/path-utils/",
+        "status": "Adapted"
+      }
+    ],
+    "rawEvidence": "RemotionGit/README.md（来源与许可记录：MIT，commit 802a637）",
+    "adaptationRef": "docs/component-assets/CMP-06_DATA_CHARTS_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-06_SPARKLINE_ROW_QA_REPORT.md",
+    "draftLane": "本组件是 CMP-06 A 批草稿：componentId = DRAFT-sparkline-row、status = DRAFT，不占正式 CMP- 编号，不进能力索引，AI 导演不可见。",
+    "sourceNote": "来源条目已在本地可真实渲染（http://127.0.0.1:4174/remotionui-preview.html 左侧目录 179 项之一）；仓库 License 为 MIT（RemotionGit/repo/LICENSE）。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-sparkline-row → CMP-DATA-021，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-021/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "迷你趋势组",
+    "description": "并列展示多项指标各自的短趋势与当前值。",
+    "tags": [
+      "数据图表",
+      "趋势"
+    ],
+    "aliases": [
+      "迷你折线",
+      "小趋势图"
+    ]
+  }
+}

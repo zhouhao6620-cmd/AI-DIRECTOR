@@ -1,0 +1,262 @@
+/* 与配置面板一起复用；依赖宿主提供 --wb-* 主题变量。 */
+.library-controls-section[data-config-section] {
+  scroll-margin-top: 60px;
+}
+
+.library-controls-section {
+  padding: 0 0 20px;
+  border-bottom: 0;
+}
+
+.library-controls-section + .library-controls-section {
+  padding-top: 28px;
+}
+
+.library-controls-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  color: var(--wb-text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.library-controls-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 18px;
+  flex: 0 0 3px;
+  border-radius: 999px;
+  background: var(--wb-orange, #ff6a00);
+}
+
+.library-controls-section h2 small {
+  margin-left: auto;
+  color: var(--wb-text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.library-controls-section label {
+  display: block;
+  margin: 0 0 12px;
+  color: var(--wb-text-soft);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.library-controls-section input:not([type=range]),
+.library-controls-section select {
+  display: block;
+  width: 100%;
+  height: 36px;
+  min-width: 0;
+  margin-top: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--wb-text);
+  font-size: 14px;
+  outline: none;
+}
+
+.library-controls-section input:hover,
+.library-controls-section select:hover,
+.library-controls-section input:focus,
+.library-controls-section select:focus {
+  border-color: var(--wb-primary);
+}
+
+.library-controls-section input[type=range] {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin: 10px 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wb-primary) 0 var(--range-progress, 0%), var(--wb-border) var(--range-progress, 0%) 100%);
+  accent-color: var(--wb-primary);
+}
+
+.library-controls-section input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wb-primary) 0 var(--range-progress, 0%), var(--wb-border) var(--range-progress, 0%) 100%);
+}
+
+.library-controls-section input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--wb-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.library-controls-section input[type=range]::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--wb-border);
+}
+
+.library-controls-section input[type=range]::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--wb-primary);
+}
+
+.library-controls-section input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--wb-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.library-controls-section output {
+  float: right;
+  color: var(--wb-text-muted);
+  font-size: 12px;
+}
+
+.library-control-note {
+  margin: 8px 0 0;
+  padding: 9px 10px;
+  border-radius: 6px;
+  background: var(--wb-surface);
+  color: var(--wb-text-muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.library-control-note.is-warn {
+  background: var(--wb-primary-soft, #fff3ea);
+  color: var(--wb-warning, #d97706);
+}
+
+.library-array {
+  margin: 0;
+}
+
+.library-array-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--wb-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.library-array-head button,
+.library-array-item-head button {
+  border: 1px solid var(--wb-border-strong);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--wb-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.library-array-head button {
+  height: 30px;
+  padding: 0 12px;
+}
+
+.library-array-head button:hover:not(:disabled),
+.library-array-item-head button:hover:not(:disabled) {
+  border-color: var(--wb-primary);
+  color: var(--wb-primary-hover);
+}
+
+.library-array-head button:disabled,
+.library-array-item-head button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.library-array-item {
+  padding: 14px 0 2px;
+  border: 0;
+  border-top: 0;
+  background: transparent;
+  margin-bottom: 2px;
+}
+
+.library-array-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: var(--wb-text-soft);
+  font-size: 12px;
+}
+
+.library-array-item-head button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  line-height: 1;
+}
+
+.library-controls-section .library-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.library-controls-section .library-inline input[type=checkbox] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--wb-primary);
+}
+
+
+.config-choice { margin-bottom: 16px; }
+.config-choice > span { display: block; margin-bottom: 8px; color: var(--wb-text-soft); font-size: 14px; }
+.config-choice .segmented-control { width: 100%; }
+.config-choice .segmented-control button { flex: 1; min-width: 0; padding: 0 12px; font-size: 14px; }
+.config-editor-actions { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 8px; }
+.config-editor-actions button { padding: 4px 0; border: 0; background: transparent; color: var(--wb-text-soft); font-size: 12px; cursor: pointer; }
+.config-editor-actions button:hover { color: var(--wb-primary); }
+.config-markdown-editor textarea { display: block; width: 100%; min-height: 300px; padding: 12px; border: 1px solid var(--wb-border-strong); border-radius: 6px; background: var(--wb-canvas); color: var(--wb-text); font: 14px/1.7 ui-monospace, monospace; resize: vertical; white-space: pre-wrap; overflow-wrap: anywhere; outline: none; }
+.config-markdown-editor textarea:hover, .config-markdown-editor textarea:focus { border-color: var(--wb-primary); }
+.config-editor-status { margin: 8px 0 0; color: var(--wb-text-muted); font-size: 12px; line-height: 1.6; }
+.config-editor-status.is-warn { color: var(--wb-primary); }
+.config-editor-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--wb-surface); }
+.config-editor-dialog { width: min(760px, 90vw); max-height: 90vh; overflow: auto; padding: 24px; border-radius: 12px; background: var(--wb-canvas); }
+.config-editor-dialog textarea { min-height: 55vh; }
+
+.library-controls-section label { font-size: 14px; }
+
+/* Confirmed detail inspector: natural spacing, embedded editor actions. */
+.library-controls-section label { margin-bottom: 24px; font-weight: 600; }
+.config-choice { margin-bottom: 26px; }
+.config-choice > span, .config-theme-head > span { font-size: 14px; font-weight: 600; color: var(--wb-text-soft); }
+.config-choice .segmented-control button { padding-inline: 6px; }
+.config-editor-frame { position: relative; }
+.config-markdown-editor textarea { padding-bottom: 50px; border-style: dashed; background: var(--wb-surface); }
+.config-editor-actions { position: absolute; right: 16px; bottom: 12px; align-items: center; gap: 14px; margin: 0; background: var(--wb-surface); }
+.config-editor-actions button { display: inline-flex; align-items: center; gap: 5px; }
+.config-theme { margin-top: 24px; }
+.config-theme-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.config-theme-head button { padding: 0; border: 0; background: transparent; color: var(--wb-primary); font-size: 12px; cursor: pointer; }
+.config-theme-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.config-theme-tags button { padding: 7px 10px; border: 1px solid var(--wb-border-strong); border-radius: 4px; background: var(--wb-canvas); color: var(--wb-text-muted); font-size: 14px; cursor: pointer; }
+.config-theme-tags button:hover, .config-theme-tags button.is-active { border-color: var(--wb-primary); color: var(--wb-primary); background: var(--wb-primary-soft); }
+
+/* Every editor control follows the same fluid content width. */
+.library-controls-section, .config-choice, .config-theme, .config-markdown-editor, .config-editor-frame { width: 100%; min-width: 0; }
+.library-controls-section input, .library-controls-section select, .config-markdown-editor textarea, .config-choice .segmented-control, .config-theme-tags { width: 100%; box-sizing: border-box; }
+.config-theme-tags { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.config-theme-tags button { width: 100%; min-width: 0; padding-inline: 2px; white-space: nowrap; }

@@ -1,0 +1,152 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0.5,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-QTE-001 引用金句 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-qte-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --accent: #5fa0fa;
+      --glass: linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+      --glass-border: rgba(255,255,255,0.22);
+      --glass-shadow: 0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .ql-card { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start;
+      background: var(--glass); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); }
+    .ql-mark { font-family: var(--font-mono); line-height: 0.6; color: var(--accent); font-weight: 400; }
+    .ql-body { color: var(--ink); font-weight: 700; }
+    .ql-line { display: block; overflow: hidden; }
+    .ql-line > span { display: block; white-space: pre; }
+    .ql-rule { background: var(--accent); transform-origin: left center; }
+    .ql-author { color: var(--muted); font-weight: 400; text-transform: uppercase; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-qte-001" data-width="1920" data-height="1080">
+    <div class="ql-card" data-card>
+      <div class="ql-mark" data-mark>“</div>
+      <div class="ql-body" data-body></div>
+      <div class="ql-rule" data-rule></div>
+      <div class="ql-author" data-author></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"lines": ["把复杂的事情", "说成一句人话。"], "author": ["—", "产品工程笔记"]}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {cardContentWidth: 640, paddingX: 52, paddingTop: 42, paddingBottom: 44, radius: 20,
+          markFontSize: 110, markHeight: 52, bodyFontSize: 48, bodyFontWeight: 700, bodyLineHeight: 1.32, bodyLetterSpacingEm: -0.01,
+          ruleWidth: 92, ruleHeight: 4, ruleRadius: 3, ruleMarginTop: 30,
+          authorFontSize: 23, authorFontWeight: 400, authorLetterSpacingEm: 0.14, authorMarginTop: 18,
+          fadeMs: 640, fadeOffsetY: 14, lineRevealMs: 760, lineDelayBaseMs: 140, lineDelayStepMs: 150, ruleRevealMs: 700, ruleDelayMs: 260, authorDelayMs: 320};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", glass: "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+            glassBorder: "rgba(255,255,255,0.22)", shadow: "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", glass: "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+            glassBorder: "rgba(255,255,255,0.85)", shadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-qte-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0.5))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--glass", tokens.glass);
+            ctx.root.style.setProperty("--glass-border", tokens.glassBorder);
+            ctx.root.style.setProperty("--glass-shadow", tokens.shadow);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const mark = root.querySelector("[data-mark]");
+            const body = root.querySelector("[data-body]");
+            const rule = root.querySelector("[data-rule]");
+            const authorNode = root.querySelector("[data-author]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const lines = (Array.isArray(content.lines) ? content.lines : []).map(String).filter(Boolean);
+            const author = (Array.isArray(content.author) ? content.author : []).map(String).filter(Boolean);
+            if (!lines.length) ctx.reject("引用金句至少需要一行正文。");
+
+            const letterSpacing = GEO.bodyFontSize * GEO.bodyLetterSpacingEm;
+            const wrapped = lines.map(line => measure.wrap(line, GEO.cardContentWidth, GEO.bodyFontSize, GEO.bodyFontWeight, letterSpacing));
+            if (wrapped.some(item => item.length > 2)) ctx.reject("引用过长：单行超过 2 行折行，请缩短金句。");
+            body.textContent = "";
+            const lineNodes = wrapped.map(item => {
+              const outer = document.createElement("span");
+              outer.className = "ql-line";
+              const inner = document.createElement("span");
+              inner.textContent = item.join("\n");
+              outer.appendChild(inner);
+              body.appendChild(outer);
+              return inner;
+            });
+
+            card.style.cssText = `padding:${GEO.paddingTop * scale}px ${GEO.paddingX * scale}px ${GEO.paddingBottom * scale}px;`
+              + `border-radius:${GEO.radius * scale}px;`;
+            mark.style.cssText = `font-size:${GEO.markFontSize * scale}px;height:${GEO.markHeight * scale}px;`;
+            body.style.cssText = `font-size:${GEO.bodyFontSize * scale}px;line-height:${GEO.bodyLineHeight};`
+              + `letter-spacing:${letterSpacing * scale}px;width:${GEO.cardContentWidth * scale}px;`;
+            rule.style.cssText = `width:${GEO.ruleWidth * scale}px;height:${GEO.ruleHeight * scale}px;`
+              + `border-radius:${GEO.ruleRadius * scale}px;margin-top:${GEO.ruleMarginTop * scale}px;`;
+            authorNode.style.cssText = `font-size:${GEO.authorFontSize * scale}px;letter-spacing:${GEO.authorFontSize * GEO.authorLetterSpacingEm * scale}px;margin-top:${GEO.authorMarginTop * scale}px;`;
+            authorNode.textContent = author.join(" ");
+            authorNode.style.display = author.length ? "block" : "none";
+
+            const box = card.getBoundingClientRect();
+            card.style.left = `${safeX + (availableWidth - box.width) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - box.height) * options.position.y}px`;
+
+            timeline.from(mark, {opacity: 0, y: GEO.fadeOffsetY * scale, duration: GEO.fadeMs / 1000, ease: "power2.out"}, 0);
+            lineNodes.forEach((node, index) => {
+              timeline.from(node, {yPercent: 112, duration: GEO.lineRevealMs / 1000, ease: "power3.out"},
+                (GEO.lineDelayBaseMs + index * GEO.lineDelayStepMs) / 1000);
+            });
+            timeline.fromTo(rule, {scaleX: 0}, {scaleX: 1, duration: GEO.ruleRevealMs / 1000, ease: "power2.out"}, GEO.ruleDelayMs / 1000);
+            if (author.length) {
+              timeline.from(authorNode, {opacity: 0, y: GEO.fadeOffsetY * scale, duration: GEO.fadeMs / 1000, ease: "power2.out"}, GEO.authorDelayMs / 1000);
+            }
+            ctx.setAttr(root, "data-lines", lines.length);
+            ctx.meta = {lines: lines.length, author: author.join(" ")};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

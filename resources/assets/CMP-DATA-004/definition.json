@@ -1,0 +1,134 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-004",
+    "name": "RankBars｜排名条形图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_RANKING",
+    "pattern": "COMPARATIVE_BARS",
+    "useCases": [
+      "2–6 项数值的大小对比与排名",
+      "突出第一名，其余降调作陪衬"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/rank-bars/content.schema.json",
+    "requiredFields": [
+      "rows"
+    ],
+    "optionalFields": [
+      "title",
+      "suffix"
+    ],
+    "nodeShape": "数据条目：稳定 ID + 1–16 字名称 + 非负数值（最多 2 位小数）；名称与数值同一行左右对齐",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "titleMaxLength": 24,
+    "nameMaxLength": 16,
+    "suffixMaxLength": 6,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "名称与数值各占半行宽度，9:16 安全区内每半行约 430 px：8 个汉字的名称（27 px）或 13 位数字（32 px 等宽）仍可完整显示，超出会先缩小到 12 px 下限，再明确拒绝。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "bar-grow",
+      "composableParameter": "来源固定每条 140 ms 错峰、条形 900 ms 生长、数值 1400 ms 滚动；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "glass｜来源玻璃底",
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/rank-bars/RankBars.jsx",
+    "export": "RankBars",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "每条按 140 毫秒错峰上浮淡入（560 毫秒），条形从左向右在 900 毫秒内生长到该条占比，数值同步用 ease-out-expo 在 1400 毫秒内滚到目标值；第一名用强调色，其余降调。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourceEffectId": "rank-bars",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/RankBars.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一）；来源设计优先，保留 560 px 最小宽度、名称 + 等宽数值头行、6 px 轨道、第一名强调色与其余降调、140/900/1400 ms 动画节奏，仅适配小数显示边界、内容树、文字测量、画幅、安全区定位、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04A_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04A_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "排名条形图",
+    "description": "按数值展示多项排名，突出领先项。",
+    "tags": [
+      "数据图表",
+      "排名"
+    ],
+    "aliases": [
+      "排名图",
+      "排行榜"
+    ]
+  }
+}

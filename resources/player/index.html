@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  播放器外壳 · CMP-SKL-001 技能介绍卡（HyperFrames 冒烟版）
+
+  Role: Reference（冒烟测试件，不是基线）
+
+  这里刻意分成两层：
+    · 外壳（本页）：进度条、播放/暂停、时间、倍速、画幅、背景、安全区、音量、全屏
+      —— 逐条复用工作台预览内核的样式与交互（player-chrome.css）。
+    · 内核（<hyperframes-player>）：只负责载入 Composition、Seek、播放、时间事件。
+  外壳不 querySelector 内核内部的 DOM，只通过 adapter/hyper-player-adapter.js 的统一接口驱动。
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>播放器外壳 · CMP-SKL-001（HyperFrames）</title>
+  <link rel="stylesheet" href="./player-chrome.css">
+  <link rel="stylesheet" href="./player-page.css">
+  <script src="/engine/hyperframes/hyperframes-player.global.js"></script>
+</head>
+<body>
+  <header class="wb-header">
+    <strong>AI Director Workbench</strong>
+    <span>播放器外壳 · CMP-SKL-001 技能介绍卡（HyperFrames 冒烟）</span>
+    <em id="coreBadge">内核：HyperFrames</em>
+  </header>
+
+  <main class="player-main">
+    <!-- 预览外壳（画布 + 控制条 + 安全区）由 preview-chrome.js 装配，与组件库内壳页共用 -->
+    <div class="player-host" id="playerHost"></div>
+  </main>
+
+  <script type="module" src="./player-host.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "QuoteLockupContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lines"],
+  "properties": {
+    "lines": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": {"type": "string", "minLength": 1, "maxLength": 36, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+    },
+    "author": {"type": "string", "minLength": 1, "maxLength": 24, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+  }
+}

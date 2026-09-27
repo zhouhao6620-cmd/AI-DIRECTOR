@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="合成图片测试素材">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101826"/>
+      <stop offset="1" stop-color="#26365a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <circle cx="980" cy="180" r="110" fill="#f0a24f" opacity="0.9"/>
+  <path d="M0 560 L240 420 L460 520 L700 360 L980 500 L1280 380 L1280 720 L0 720 Z" fill="#5fa0fa" opacity="0.55"/>
+  <path d="M0 640 L300 520 L560 610 L860 470 L1280 590 L1280 720 L0 720 Z" fill="#8f86ea" opacity="0.5"/>
+  <text x="64" y="96" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="700" fill="#ffffff">SYNTHETIC IMAGE</text>
+  <text x="64" y="140" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#9aa3b2">项目内合成素材 · 1280 × 720</text>
+</svg>

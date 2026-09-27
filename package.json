@@ -1,0 +1,44 @@
+{
+  "name": "ai-video-director-workbench-r3",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:pages": "vite build --base /AI-DIRECTOR/ && node scripts/prepare-github-pages.mjs",
+    "test:core": "node --test tests/development-control-center/*.test.mjs tests/golden-smoke/*.test.mjs tests/hyperframes-foundation/contract/*.test.mjs tests/migration-acceptance/*.test.mjs",
+    "test:m0-c:contracts": "node --test tests/m0-c/*.test.mjs",
+    "test:m0-c": "pnpm run test:m0-c:contracts && pnpm run build && node tests/m0-c/release-package.acceptance.mjs",
+    "test:all": "pnpm run test:core && pnpm run test:development-control-center:browser && pnpm run test:m0-c && pnpm run test:hyperframes-foundation:integration",
+    "test:development-control-center": "node --test tests/development-control-center/project-state.test.mjs",
+    "test:development-control-center:browser": "node tests/development-control-center/browser-acceptance.mjs",
+    "test:hyperframes-foundation:contract": "node --test tests/hyperframes-foundation/contract/*.test.mjs",
+    "test:hyperframes-foundation:integration": "node tests/hyperframes-foundation/integration/foundation.integration.mjs",
+    "test:hyperframes-foundation": "node --test tests/hyperframes-foundation/contract/*.test.mjs && node tests/hyperframes-foundation/integration/foundation.integration.mjs"
+  },
+  "dependencies": {
+    "@remotion/captions": "4.0.524",
+    "@remotion/layout-utils": "4.0.524",
+    "@remotion/light-leaks": "4.0.524",
+    "@remotion/media": "4.0.524",
+    "@remotion/media-utils": "4.0.524",
+    "@remotion/paths": "4.0.524",
+    "@remotion/player": "4.0.524",
+    "@remotion/transitions": "4.0.524",
+    "ajv": "8.17.1",
+    "gsap": "3.15.0",
+    "hyperframes": "0.8.46",
+    "lucide-react": "1.45.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.524"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "5.0.4",
+    "puppeteer-core": "25.11.0",
+    "vite": "6.4.2"
+  }
+}

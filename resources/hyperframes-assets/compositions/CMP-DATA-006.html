@@ -1,0 +1,258 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"drawMs","type":"number","label":"绘制时长（毫秒）","default":1600,"min":600,"max":5000,"step":50},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-DATA-006 增长曲线 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-006"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --accent: #5fa0fa;
+      --glass: linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+      --glass-border: rgba(255,255,255,0.22);
+      --glass-shadow: 0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .gc-box { position: absolute; box-sizing: border-box; border-radius: 22px; border-style: solid; border-width: 1px;
+      background: var(--glass); border-color: var(--glass-border); box-shadow: var(--glass-shadow);
+      display: flex; flex-direction: column; }
+    .gc-head { display: flex; align-items: flex-start; justify-content: space-between; }
+    .gc-kicker { display: flex; align-items: center; font-family: var(--font-mono); font-weight: 600; text-transform: uppercase;
+      color: var(--accent); white-space: pre; }
+    .gc-kicker i { border-radius: 999px; background: var(--accent); flex: none; display: block; }
+    .gc-kicker-zh { color: var(--ink); font-weight: 800; white-space: pre; line-height: 1.2; }
+    .gc-peak { color: var(--accent); font-weight: 900; line-height: 1; white-space: pre; font-variant-numeric: tabular-nums; }
+    .gc-peak em { font-style: normal; color: var(--muted); font-weight: 700; }
+    .gc-svg { display: block; }
+    .gc-caption { color: var(--muted); white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-006" data-width="1920" data-height="1080">
+    <div class="gc-box" data-box>
+      <div class="gc-head">
+        <div>
+          <div class="gc-kicker" data-kicker><i data-kicker-bar></i><span data-kicker-text></span></div>
+          <div class="gc-kicker-zh" data-kicker-zh></div>
+        </div>
+        <div class="gc-peak" data-peak><span data-peak-value></span><em data-peak-unit></em></div>
+      </div>
+      <svg class="gc-svg" data-svg viewBox="0 0 640 310" aria-hidden="true"></svg>
+      <div class="gc-caption" data-caption></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"kicker": "GROWTH · 本机样例", "kickerZh": "本机合成样例", "points": [{"id": "point-1", "label": "一月", "value": 12}, {"id": "point-2", "label": "二月", "value": 26}, {"id": "point-3", "label": "三月", "value": 45}, {"id": "point-4", "label": "四月", "value": 66}], "unit": "件", "caption": "数值来自本机合成样例"}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {boxWidth: 640, boxPadTop: 26, boxPadX: 30, boxPadBottom: 20, boxRadius: 22, boxGap: 4,
+          svgWidth: 640, svgHeight: 310, padLeft: 40, padRight: 96, padTop: 30, padBottom: 52, lineWidth: 5, dotRadius: 7, dotStroke: 2,
+          kickerFontSize: 18, kickerLetterSpacingEm: 0.14, kickerBarWidth: 22, kickerBarHeight: 4,
+          kickerZhFontSize: 27, kickerZhMarginTop: 6, peakFontSize: 62, peakUnitFontSize: 26,
+          valueFontSize: 25, labelFontSize: 21, captionFontSize: 21, areaOpacity: 0.38, yMaxFactor: 1.14, yMinFactor: 0.82,
+          pointAtMax: 0.9};
+        const MOTION = {peakCountExtraMs: 300, pointLightWindow: 0.15, breathDelayMs: 1400, breathPeriodMs: 2800, breathMaxBrightness: 0.12, breathShadowPx: 9};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", glass: "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+            glassBorder: "rgba(255,255,255,0.22)", shadow: "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", glass: "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+            glassBorder: "rgba(255,255,255,0.85)", shadow: "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"},
+        };
+        const smoothPath = nodes => {
+          if (nodes.length < 2) return "";
+          let path = `M ${nodes[0].x.toFixed(1)} ${nodes[0].y.toFixed(1)}`;
+          for (let index = 0; index < nodes.length - 1; index += 1) {
+            const p0 = nodes[index - 1] ?? nodes[index];
+            const p1 = nodes[index];
+            const p2 = nodes[index + 1];
+            const p3 = nodes[index + 2] ?? p2;
+            path += ` C ${(p1.x + (p2.x - p0.x) / 6).toFixed(1)} ${(p1.y + (p2.y - p0.y) / 6).toFixed(1)},`
+              + ` ${(p2.x - (p3.x - p1.x) / 6).toFixed(1)} ${(p2.y - (p3.y - p1.y) / 6).toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+          }
+          return path;
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-data-006",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            drawMs: Math.min(5000, Math.max(600, Number(variables.drawMs) || 1600)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--glass", tokens.glass);
+            ctx.root.style.setProperty("--glass-border", tokens.glassBorder);
+            ctx.root.style.setProperty("--glass-shadow", tokens.shadow);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, timeline} = ctx;
+            const box = root.querySelector("[data-box]");
+            const svg = root.querySelector("[data-svg]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const points = (Array.isArray(content.points) ? content.points : []).slice(0, 8)
+              .map((point, index) => ({id: point.id ?? `p-${index}`, label: String(point.label ?? ""), value: Number(point.value) || 0}));
+            if (points.length < 2) ctx.reject("增长曲线至少需要 2 个数据点。");
+            const unit = String(content.unit ?? "");
+            const caption = String(content.caption ?? "");
+            const kicker = String(content.kicker ?? "");
+            const kickerZh = String(content.kickerZh ?? "");
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+
+            const values = points.map(point => point.value);
+            const peak = Math.max(...values, 0);
+            const yMax = Math.max(...values, 1) * GEO.yMaxFactor;
+            const yMin = Math.min(...values, 0) * GEO.yMinFactor;
+            const span = (yMax - yMin) || 1;
+            const xOf = index => GEO.padLeft + (index / Math.max(points.length - 1, 1)) * (GEO.svgWidth - GEO.padLeft - GEO.padRight);
+            const yOf = value => GEO.padTop + (1 - (value - yMin) / span) * (GEO.svgHeight - GEO.padTop - GEO.padBottom);
+            const nodes = points.map((point, index) => ({x: xOf(index), y: yOf(point.value)}));
+            const baseY = GEO.svgHeight - GEO.padBottom;
+            const linePath = smoothPath(nodes);
+            const areaPath = `${linePath} L ${nodes.at(-1).x.toFixed(1)} ${baseY} L ${nodes[0].x.toFixed(1)} ${baseY} Z`;
+
+            svg.setAttribute("viewBox", `0 0 ${GEO.svgWidth} ${GEO.svgHeight}`);
+            svg.style.width = `${GEO.svgWidth * scale}px`;
+            svg.style.height = `${GEO.svgHeight * scale}px`;
+            svg.textContent = "";
+            const ns = "http://www.w3.org/2000/svg";
+            const area = document.createElementNS(ns, "path");
+            area.setAttribute("d", areaPath);
+            area.setAttribute("fill", options.accent);
+            area.setAttribute("opacity", String(GEO.areaOpacity));
+            svg.appendChild(area);
+            const line = document.createElementNS(ns, "path");
+            line.setAttribute("d", linePath);
+            line.setAttribute("fill", "none");
+            line.setAttribute("stroke", options.accent);
+            line.setAttribute("stroke-width", String(GEO.lineWidth));
+            line.setAttribute("stroke-linecap", "round");
+            line.setAttribute("pathLength", "1");
+            line.setAttribute("stroke-dasharray", "1");
+            line.setAttribute("stroke-dashoffset", "1");
+            svg.appendChild(line);
+            const dotNodes = points.map((point, index) => {
+              const group = document.createElementNS(ns, "g");
+              const dot = document.createElementNS(ns, "circle");
+              dot.setAttribute("cx", nodes[index].x.toFixed(1));
+              dot.setAttribute("cy", nodes[index].y.toFixed(1));
+              dot.setAttribute("r", String(GEO.dotRadius));
+              dot.setAttribute("fill", tokens.ink);
+              dot.setAttribute("stroke", options.accent);
+              dot.setAttribute("stroke-width", String(GEO.dotStroke));
+              dot.setAttribute("opacity", "0");
+              const value = document.createElementNS(ns, "text");
+              value.setAttribute("x", nodes[index].x.toFixed(1));
+              value.setAttribute("y", (nodes[index].y - 16).toFixed(1));
+              value.setAttribute("text-anchor", "middle");
+              value.setAttribute("fill", tokens.ink);
+              value.setAttribute("font-size", String(GEO.valueFontSize));
+              value.setAttribute("font-weight", "800");
+              value.setAttribute("opacity", "0");
+              value.textContent = `${point.value}${unit}`;
+              const label = document.createElementNS(ns, "text");
+              label.setAttribute("x", nodes[index].x.toFixed(1));
+              label.setAttribute("y", String(GEO.svgHeight - 16));
+              label.setAttribute("text-anchor", "middle");
+              label.setAttribute("fill", tokens.muted);
+              label.setAttribute("font-size", String(GEO.labelFontSize));
+              label.setAttribute("font-weight", "600");
+              label.setAttribute("opacity", "0");
+              label.textContent = point.label;
+              group.append(dot, value, label);
+              svg.appendChild(group);
+              return {group, dot, value, label, threshold: (points.length > 1 ? index / (points.length - 1) : 0) * GEO.pointAtMax};
+            });
+
+            box.style.cssText = `padding:${GEO.boxPadTop * scale}px ${GEO.boxPadX * scale}px ${GEO.boxPadBottom * scale}px;`
+              + `border-radius:${GEO.boxRadius * scale}px;gap:${GEO.boxGap * scale}px;width:${GEO.boxWidth * scale}px;`;
+            const kickerNode = root.querySelector("[data-kicker]");
+            kickerNode.style.cssText = `gap:${10 * scale}px;font-size:${GEO.kickerFontSize * scale}px;`
+              + `letter-spacing:${GEO.kickerFontSize * GEO.kickerLetterSpacingEm * scale}px;display:${kicker ? "flex" : "none"};`;
+            root.querySelector("[data-kicker-bar]").style.cssText = `width:${GEO.kickerBarWidth * scale}px;height:${GEO.kickerBarHeight * scale}px;`;
+            root.querySelector("[data-kicker-text]").textContent = kicker;
+            const kickerZhNode = root.querySelector("[data-kicker-zh]");
+            kickerZhNode.style.cssText = `margin-top:${GEO.kickerZhMarginTop * scale}px;font-size:${GEO.kickerZhFontSize * scale}px;display:${kickerZh ? "block" : "none"};`;
+            kickerZhNode.textContent = kickerZh;
+            const peakNode = root.querySelector("[data-peak]");
+            peakNode.style.fontSize = `${GEO.peakFontSize * scale}px`;
+            const peakValue = root.querySelector("[data-peak-value]");
+            const peakUnit = root.querySelector("[data-peak-unit]");
+            peakUnit.style.cssText = `font-size:${GEO.peakUnitFontSize * scale}px;margin-left:${4 * scale}px;`;
+            peakUnit.textContent = unit;
+            peakValue.textContent = "0";
+            const captionNode = root.querySelector("[data-caption]");
+            captionNode.style.cssText = `font-size:${GEO.captionFontSize * scale}px;display:${caption ? "block" : "none"};`;
+            captionNode.textContent = caption;
+
+            const boxHeight = box.getBoundingClientRect().height;
+            box.style.left = `${safeX + (availableWidth - box.getBoundingClientRect().width) * options.position.x}px`;
+            box.style.top = `${safeY + (availableHeight - boxHeight) * options.position.y}px`;
+
+            const draw = {value: 0};
+            const drawSeconds = options.drawMs / 1000;
+            timeline.to(draw, {
+              value: 1, duration: drawSeconds, ease: "power3.out",
+              onUpdate: () => {
+                line.setAttribute("stroke-dashoffset", String(1 - draw.value));
+                area.setAttribute("opacity", String(GEO.areaOpacity * draw.value));
+                dotNodes.forEach(entry => {
+                  const local = Math.min(1, Math.max(0, (draw.value - entry.threshold) / MOTION.pointLightWindow));
+                  entry.dot.setAttribute("opacity", String(local));
+                  entry.value.setAttribute("opacity", String(local));
+                  entry.label.setAttribute("opacity", String(local * 0.9));
+                });
+              },
+            }, 0);
+            const counter = {value: 0};
+            timeline.to(counter, {
+              value: peak, duration: drawSeconds + MOTION.peakCountExtraMs / 1000, ease: "expo.out",
+              onUpdate: () => { peakValue.textContent = String(Math.round(counter.value)); },
+            }, 0);
+            const cycles = Math.max(1, Math.floor(Math.max(0, options.duration - MOTION.breathDelayMs / 1000) / (MOTION.breathPeriodMs / 1000)));
+            timeline.fromTo(peakNode, {filter: "brightness(1) drop-shadow(0 0 0px rgba(0,0,0,0))"},
+              {filter: `brightness(${1 + MOTION.breathMaxBrightness}) drop-shadow(0 0 ${MOTION.breathShadowPx}px ${options.accent})`,
+                duration: MOTION.breathPeriodMs / 1000, ease: "sine.inOut", yoyo: true, repeat: cycles * 2 - 1},
+              MOTION.breathDelayMs / 1000);
+            ctx.setAttr(root, "data-point-count", points.length);
+            ctx.setAttr(root, "data-peak", String(peak));
+            ctx.meta = {points: points.length, peak};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

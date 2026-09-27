@@ -1,0 +1,189 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-010",
+    "name": "CandlestickChart｜K 线图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_FINANCIAL",
+    "pattern": "OHLC_CANDLE_SERIES",
+    "useCases": [
+      "5–24 根 OHLC 的价格序列（例：走势、报价区间、开盘收盘对比）",
+      "K 线从左到右逐根印出来，影线略早于实体（极值先于收盘被知道）",
+      "可选均线（averageWindow）与最后价标签，用来给当前水位一个参照"
+    ],
+    "minCardinality": 5,
+    "maxCardinality": 24,
+    "depth": "ONE_LEVEL",
+    "density": "HIGH"
+  },
+  "content": {
+    "schemaRef": "platform/components/candlestick-chart/content.schema.json",
+    "requiredFields": [
+      "candles[].open",
+      "candles[].high",
+      "candles[].low",
+      "candles[].close"
+    ],
+    "optionalFields": [
+      "candles[].label",
+      "averageWindow",
+      "showLastPrice",
+      "unit"
+    ],
+    "nodeShape": "K 线：稳定 ID + open / high / low / close 四个价格（±1e9、最多 2 位小数，且 high ≥ max(open,close)、low ≤ min(open,close)）+ 可选 1–6 字标注；可选均线窗口（0–9，0 = 不画）、最后价开关、单位（最多 3 字）",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 5,
+    "maxCardinality": 24,
+    "labelMaxLength": 6,
+    "unitMaxLength": 3,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "每根 K 线的槽宽 pitch = plot 宽 / 根数（900 画布、左右留白后约 750 px）：24 根时 pitch ≈ 31 px、12 根 ≈ 62 px、6 根 ≈ 125 px。标注宽度上限 = pitch × 0.98，所以 24 根时不建议带标注（3 字即超限，会被拒绝并提示），12 根可带 3 字、6 根可带 6 字。y 轴刻度按左侧留白（2.8 × 字号 ≈ 55 px）校验。最后价标签按来源右侧色块净宽（3.6 × 字号 − 圆角 ≈ 63 px）校验：3 位价格可带 1 字单位，2 字单位只支持 2 位价格，超限拒绝。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.65,
+      "max": 2
+    },
+    "sizeNote": "来源 900 × 460 px = 默认大小（1.0）。下限取 0.65：来源刻度字号 19.7 px 再缩小就低于本项目 12 px 可读下限。缩放为整组件等比缩放，默认大小与落位不变。",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯图形组件，内容树里没有图片或视频素材位。",
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "candle-print",
+      "composableParameter": "来源固定每根 12 帧印完、错峰 3 帧、影线早 0.35 个时长、均线早 0.5 个时长；本批不开放参数"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源退场：本项目由实例时长决定",
+      "upColor / downColor / averageColor / gridColor / labelColor｜来源逐项取色：改为四套主题（涨 / 跌 / 均线角色位）+ 深 / 浅两套底色令牌",
+      "movingAverage｜来源固定 7：改为内容字段 averageWindow（0–9）",
+      "showAxis｜来源开关：恒定开启（价格轴是这张图的信息本身）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/candlestick-chart/CandlestickChart.jsx",
+    "export": "CandlestickChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Stagger",
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "K 线从左到右逐根印出：每根 12 帧、错峰 3 帧（EASING.enter）。每根以 open 为锚向左生长影线（早 0.35 个时长）、向右生长实体，十字星至少留 0.1 × 体宽；均线每个线段比自己那根早 0.5 个时长接上；最后价的虚线、色块与数值在最后一根印完后淡入。",
+      "implementationNote": "按技能 V1.4 §4.1 自持规范：内联 interpolate()、Interactive.* + name、SVG 坐标用独立属性；输出范围、easing、extrapolate 全部硬编码。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "复制式来源 `candlestick-chart`（registry/bases/default/primitives/candlestick-chart.tsx，MIT · commit 802a637）：OHLC 画法（以 open 为锚、影线略早于实体、十字星保底高度）、plot 内边距、pitch / bodyWidth 比例、均线只画窗口完整段、最后价虚线 + 右侧色块、错峰节奏与缓动全部保留。",
+      "elements": "零件私有副本：chart-utils（niceDomain / scaleValue / getPlotArea / formatAxisValue / formatCompactNumber）、motion-tokens（EASING）、timing（EASING_ENTER / EASING_EXIT）。"
+    },
+    "knownDifferences": [
+      "OHLC 不变量：来源不校验（high 低于收盘时会画出一根自相矛盾的蜡烛），本组件在内容层强制 high ≥ max(open, close)、low ≤ min(open, close)。",
+      "文字容量：来源直接画（根数多时标注会互相压住），本组件按 pitch 校验标注宽度，放不下就拒绝并给出需要 / 可用宽度。",
+      "均线窗口：来源固定 7，本组件开放为内容字段 0–9；来源只画窗口完整的段，本组件沿用（不足窗口时不出线）。",
+      "数值格式：来源的刻度用 formatAxisValue（紧凑），本组件沿用；最后价与单位按真实小数位显示到 2 位，不静默取整。",
+      "底色：来源只有深底浅字一套，本组件增加 LIGHT（浅底深字）。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "candlestick-chart",
+    "sourceRegistryUrl": "https://remotionui.com/r/candlestick-chart.json",
+    "sourcePath": "RemotionGit/registry/candlestick-chart.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/candlestick-chart.tsx（riaz37/remotion-ui）",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "802a63708cc5c13936bcccb47f091a0b14325cb5（2026-09-11）",
+    "sourceLicense": "MIT（RemotionGit/repo/LICENSE）",
+    "sourceRole": "来源设计优先：K 线画法与生长口径、均线段、最后价标签、节奏与缓动全部保留；只改可编辑内容（含 OHLC 校验）、中文字宽校验、画幅、安全区定位、主题与底色映射、透明输出。",
+    "reuseAnalysis": "三级复用查完的结论：① 已注册 23 项里没有 OHLC / 金融序列类组件（GrowthCurve 是单值时间序列），且已注册目录本卡不可修改 → 不复用；② 组件内元素登记表尚未正式登记，无现成片段可拆 → 不拆；③ 元素零件工厂命中 3 个零件：chart-utils（niceDomain / scaleValue / getPlotArea / formatAxisValue）、motion-tokens（EASING.enter）、timing（motion-tokens 的 registry 依赖）→ 取这 3 个零件（组件私有副本）；K 线画法属来源组件本体，随源码适配。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/components/candlestick-chart/elements/chart-utils/",
+        "status": "Adapted",
+        "usedFor": "niceDomain / scaleValue / getPlotArea / formatAxisValue / formatCompactNumber"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/components/candlestick-chart/elements/motion-tokens/",
+        "status": "Adapted",
+        "usedFor": "EASING.enter（K 线印出、均线接上）"
+      },
+      {
+        "elementId": "EL-UTIL-003",
+        "name": "timing",
+        "source": "RemotionGit/registry/timing.json",
+        "localPath": "platform/components/candlestick-chart/elements/timing/",
+        "status": "Adapted",
+        "usedFor": "motion-tokens 的 registry 依赖"
+      }
+    ],
+    "elementPromotionNeeded": "chart-utils / motion-tokens / timing 在本批被复制 5–6 次，按技能 V1.4 护栏第 12 条必须先提升为 platform/elements/ 共享零件；本窗口按任务卡第 6 节边界未自行提升，等待总控执行。",
+    "rawEvidence": "dev-control-panel/tasks/CMP-06_DATA_CHARTS_TASK.md",
+    "adaptationRef": "docs/component-assets/CMP-06_CANDLESTICK_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_CANDLESTICK_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.4 草稿通道：componentId = DRAFT-candlestick、status = DRAFT；不占正式 CMP- 编号、不进能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-candlestick → CMP-DATA-010，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-010/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "K线图",
+    "description": "逐根展示开高低收价格及走势。",
+    "tags": [
+      "数据图表",
+      "趋势"
+    ],
+    "aliases": [
+      "蜡烛图",
+      "价格走势"
+    ]
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-012",
+    "name": "DonutChart｜环形图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_COMPOSITION",
+    "pattern": "MULTI_SEGMENT_DONUT",
+    "useCases": [
+      "整体由 2–6 个部分构成，需要同时看到各段占比与合计",
+      "各段依次扫过成环，环内合计同步计数"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/donut-chart/content.schema.json",
+    "requiredFields": [
+      "segments"
+    ],
+    "optionalFields": [
+      "totalLabel",
+      "unit",
+      "showTotal",
+      "showLegend"
+    ],
+    "nodeShape": "分段：稳定 ID + 1–12 字名称 + 数值（最多 2 位小数，可单段覆盖颜色）；可选合计标签（≤12 字）、单位（≤6 字）与两个显示开关",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "segmentLabelMaxLength": 12,
+    "totalLabelMaxLength": 12,
+    "unitMaxLength": 6,
+    "valueRange": {
+      "min": 0,
+      "max": 1000000000
+    },
+    "labelCapacityNote": "图例名称槽 = 环径 × 0.42（默认 360 px 环径 → 151.2 px）：12 个全宽汉字缩到 12.6 px（≥12 px 下限）正好放得下，13 个汉字只剩 11.6 px、低于下限 → 明确拒绝。环内可用宽度 = (环径 − 2 × 46) × 0.86 ≈ 230.5 px，合计与合计标签都按这条宽度实测；6 段各 10 亿（紧凑写作 6B）加 6 字单位会缩到 32 px，仍在可读范围内。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "segment-sweep",
+      "composableParameter": "来源固定「每段 867 ms 扫过 + 段间 300 ms 错峰」（26 / 9 帧 @30 fps）；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.6,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE",
+      "note": "整组件等比缩放：环、图例、字号同乘一个系数。下限 0.6× 是图例中文（13.4 px）与环内合计（36.7 px）的可读下限；上限按 05 §1.4 统一为 2×。默认大小 1×、默认落位未改变。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "colors[]｜来源的分段调色板（改为组件级主题 + 单段可选覆盖色）",
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）",
+      "exitAtInFrames / exitInFrames｜来源退场（由片段时序决定，本组件落定后保持）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/donut-chart/DonutChart.jsx",
+    "export": "DonutChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "每段用 strokeDasharray 从零扫到自己占比的长度（0.16, 1, 0.3, 1 入场曲线，867 ms），段间错峰 300 ms；环内合计只累计已落定的分段，所以数字与环在每一帧一致；图例每行跟着自己那一段一起到位。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Noto Sans CJK SC\", sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceEntry": "donut-chart",
+    "sourceRegistryPath": "RemotionGit/registry/donut-chart.json",
+    "sourcePath": "RemotionGit/registry/bases/default/primitives/donut-chart.tsx",
+    "sourceRole": "RemotionUI 源码复制式来源（primitives/donut-chart.tsx）：保留 360 px 环、46 px 环宽、段间缺口 = min(周长 × 0.012, 环宽 × 0.22)、环内合计「只累计已落定分段」的口径、图例逐行跟扫过的节奏与 (0.16, 1, 0.3, 1) 入场曲线；仅适配中文排版、双画幅、四套主题、透明输出、安全区定位与内容树",
+    "license": "MIT",
+    "upstreamRepository": "https://github.com/riaz37/remotion-ui",
+    "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5",
+    "installCommand": "RemotionUI 为源码复制式库：不执行 npx remotion-ui add，直接从本地 registry/donut-chart.json 的 files[].content 取源，本组件不从 npm 包 import",
+    "dependencyEntries": [
+      "@remotionui/chart-utils",
+      "@remotionui/motion-tokens"
+    ],
+    "reuseAnalysis": "复用结论：① 无可用——已注册的 CMP-DATA-005 RingMetric 只覆盖「单比例圆环」（一个数值 / 一个满值），没有多分段、图例与环比计数，无法承载环形图；② 组件内元素尚未登记（REUSE_INDEX §② 仍为空）；③ 取 chart-utils + motion-tokens 两个零件装配；补建多分段环形几何、图例与「按已落定分段累计」的环内合计口径。",
+    "elements": [
+      {
+        "elementId": "EL-CHART-UTIL-001",
+        "name": "chart-utils",
+        "nameZh": "图表工具",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/chart-utils.json",
+          "path": "registry/bases/default/lib/chart-utils.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/donut-chart/elements/chart-utils/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-donut-chart"
+        ],
+        "notes": "只取来源里本组件真正用到的 formatCompactNumber（环内合计）；域 / 路径类函数留给线柱面积类组件按需取用。适配差异：小数位沿用来源默认 1。"
+      },
+      {
+        "elementId": "EL-MOTION-TOKENS-001",
+        "name": "motion-tokens",
+        "nameZh": "动效令牌",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/motion-tokens.json",
+          "path": "registry/bases/default/lib/motion-tokens.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/donut-chart/elements/motion-tokens/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-donut-chart"
+        ],
+        "notes": "取 EASING（enter / exit / editorial / pop）与 DURATION / DELAY / STAGGER / EMPHASIS；来源用 secondsToFrames() 运行时换算，本副本换成换算后的常量帧数（0.4 / 0.8 / 1.2 秒 → 12 / 24 / 36 帧），数值与来源一致。"
+      }
+    ],
+    "elementPromotion": "本批（CMP-06 B 批）6 个组件都取用了 motion-tokens、其中 3 个取用了 chart-utils，全部按「组件私有副本」放在各自 platform/components/<组件>/elements/ 下。按元素工厂护栏第 12 条（同一零件第二次被复制前必须先提升为共享零件）应提升为 platform/elements/motion-tokens/ 与 platform/elements/chart-utils/；提升动作留给总控执行——任务卡 §6 规定「公共零件提升为 platform/elements/ 前先回传总控」，以免三个批次窗口同时建同一个共享零件。",
+    "rawEvidence": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "adaptationRef": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_DONUT_CHART_QA_REPORT.md",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-donut-chart → CMP-DATA-012，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-012/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "环形构成图",
+    "description": "把整体拆成多个部分，同时显示占比与合计。",
+    "tags": [
+      "数据图表",
+      "构成"
+    ],
+    "aliases": [
+      "环形图",
+      "甜甜圈图"
+    ]
+  }
+}

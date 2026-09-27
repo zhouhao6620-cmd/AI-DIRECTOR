@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "CapabilityResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runId", "capabilityName", "status", "artifact", "issues", "metadata", "retry"],
+  "properties": {
+    "runId": {"type": "string"},
+    "capabilityName": {"type": "string"},
+    "status": {"type": "string", "enum": ["SUCCESS", "NEEDS_FIX", "BLOCKED", "FAILED"]},
+    "artifact": {"type": ["object", "null"]},
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "reason"],
+        "properties": {
+          "type": {"type": "string"},
+          "directorShotId": {"type": "string"},
+          "reason": {"type": "string"},
+          "recommendedAction": {"type": "string"}
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter", "skillVersion", "modelVersion", "inputRevision", "correctionAttempts"],
+      "properties": {
+        "adapter": {"type": "string"},
+        "skillVersion": {"type": "string"},
+        "modelVersion": {"type": ["string", "null"]},
+        "inputRevision": {"type": "string"},
+        "correctionAttempts": {"type": "integer", "minimum": 0, "maximum": 1}
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retryable", "attempt", "maxAttempts", "remainingAttempts"],
+      "properties": {
+        "retryable": {"type": "boolean"},
+        "attempt": {"type": "integer", "minimum": 1},
+        "maxAttempts": {"type": "integer", "minimum": 1},
+        "remainingAttempts": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

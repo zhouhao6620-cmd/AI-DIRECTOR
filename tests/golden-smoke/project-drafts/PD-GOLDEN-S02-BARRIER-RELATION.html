@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"accent","type":"color","label":"强调色","default":"#70c9bc"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":4.3,"min":3,"max":60,"step":0.1}
+]'>
+  <head>
+    <meta charset="utf-8" />
+    <title>PD-GOLDEN-S02-BARRIER-RELATION · HyperFrames Project Draft</title>
+    <style>
+      [data-composition-id="pd-golden-s02-barrier-relation"] {
+        --ink: #f8fafc;
+        --muted: rgba(248,250,252,.72);
+        --accent: #70c9bc;
+        --panel: rgba(9,20,28,.82);
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent;
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      }
+      .barrier-card { position: absolute; left: 120px; top: 114px; width: 1120px; padding: 50px 56px 54px; border: 1px solid rgba(112,201,188,.44); border-radius: 32px; background: linear-gradient(150deg, rgba(21,48,56,.94), var(--panel)); box-shadow: 0 34px 84px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.1); }
+      .qualifier { display: inline-flex; align-items: center; gap: 12px; padding: 10px 18px; border-radius: 999px; color: var(--accent); background: rgba(112,201,188,.12); font-size: 26px; font-weight: 800; letter-spacing: .05em; }
+      .qualifier::before { width: 10px; height: 10px; border-radius: 99px; background: var(--accent); box-shadow: 0 0 18px var(--accent); content: ""; }
+      .term { margin: 28px 0 10px; font-size: 72px; font-weight: 900; letter-spacing: -.035em; }
+      .metaphor { margin: 0; color: var(--muted); font-size: 34px; font-weight: 650; line-height: 1.45; }
+      .wall { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: 100%; margin-top: 38px; padding: 18px; border-radius: 22px; background: rgba(255,255,255,.055); }
+      .brick { height: 44px; border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 9px; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, #1e3138), rgba(255,255,255,.05)); }
+      .brick:nth-child(7n + 2), .brick:nth-child(7n + 6) { transform: translateX(18px); }
+      .wall-caption { margin-top: 18px; color: var(--accent); font-size: 25px; font-weight: 800; letter-spacing: .08em; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <main data-composition-id="pd-golden-s02-barrier-relation" data-width="1920" data-height="1080">
+      <section class="barrier-card" data-card>
+        <div class="qualifier" data-qualifier></div>
+        <h1 class="term" data-title></h1>
+        <p class="metaphor" data-metaphor></p>
+        <div class="wall" data-wall aria-hidden="true"></div>
+        <div class="wall-caption">一道“城墙”</div>
+      </section>
+      <script type="application/json" data-hf-content>
+        {"qualifier":"很可能跟肠道屏障有关","title":"肠道屏障","metaphor":"把它想成肠道里的一道“城墙”"}
+      </script>
+      <script src="__R3_GSAP_ENTRY__"></script>
+      <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+      <script>
+        (function () {
+          hfComponentKit.mount({
+            id: 'pd-golden-s02-barrier-relation',
+            mount: 'none',
+            options: variables => ({
+              accent: String(variables.accent || '#70c9bc'),
+              size: Math.min(2, Math.max(.5, Number(variables.size) || 1)),
+              duration: Math.max(3, Number(variables.duration) || 4.3),
+            }),
+            build(ctx) {
+              const { root, content, options, timeline } = ctx;
+              const card = root.querySelector('[data-card]');
+              const wall = root.querySelector('[data-wall]');
+              root.style.setProperty('--accent', options.accent);
+              card.style.scale = String(options.size);
+              root.querySelector('[data-qualifier]').textContent = String(content.qualifier || '');
+              root.querySelector('[data-title]').textContent = String(content.title || '');
+              root.querySelector('[data-metaphor]').textContent = String(content.metaphor || '');
+              wall.textContent = '';
+              for (let index = 0; index < 21; index += 1) {
+                const brick = document.createElement('span');
+                brick.className = 'brick';
+                brick.setAttribute('data-brick-index', String(index));
+                wall.appendChild(brick);
+              }
+              timeline.from(card, { opacity: 0, y: 34, duration: .48, ease: 'power3.out' }, 0);
+              timeline.from(wall.children, { opacity: 0, scale: .72, stagger: .026, duration: .28, ease: 'back.out(1.4)' }, .16);
+              ctx.setAttr(root, 'data-project-draft', 'PD-GOLDEN-S02-BARRIER-RELATION');
+              ctx.meta = { kind: 'RELATIONSHIP', bricks: 21 };
+            },
+          });
+        })();
+      </script>
+    </main>
+  </body>
+</html>

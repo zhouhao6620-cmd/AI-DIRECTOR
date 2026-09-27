@@ -1,0 +1,225 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#e8b86d"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-DATA-014 仪表盘指标 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-014"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #fafafa; --muted: rgba(250,250,250,0.58); --track: rgba(250,250,250,0.10); --accent: #e8b86d;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .gd-card { position: absolute; }
+    .gd-svg { display: block; overflow: visible; }
+    .gd-readout { position: absolute; left: 0; right: 0; text-align: center; }
+    .gd-value { font-family: var(--font-mono); font-weight: 700; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; white-space: pre; }
+    .gd-label { color: var(--muted); font-weight: 600; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-014" data-width="1920" data-height="1080">
+    <div class="gd-card" data-card>
+      <svg class="gd-svg" data-svg viewBox="0 0 360 360" aria-hidden="true"></svg>
+      <div class="gd-readout" data-readout>
+        <div class="gd-value" data-value></div>
+        <div class="gd-label" data-label></div>
+      </div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"value": 68, "min": 0, "max": 100, "unit": "%", "label": "当前负载"}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {dialSize: 360, thickness: 26, sweepDegrees: 250, defaultTickCount: 9, maxTickCount: 12,
+          tickOuterInset: 0.72, tickInnerInset: 1.05, tickWidthRatio: 0.007, tickPassedOpacity: 0.85, tickIdleOpacity: 0.35,
+          needleTipInset: 0.55, needleTailRatio: 0.5, needleWidthRatio: 0.018, hubOuterRatio: 0.038, hubInnerRatio: 0.016,
+          readoutTopRatio: 0.62, readoutFontRatio: 0.14, readoutBoxRatio: 0.94, labelFontRatio: 0.055, labelLetterSpacingEm: 0.06,
+          labelMarginRatio: 0.028, sweepMs: 1467};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#fafafa", muted: "rgba(250,250,250,0.58)", track: "rgba(250,250,250,0.10)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.62)", track: "rgba(26,37,64,0.12)"},
+        };
+        const clamp01 = value => Math.min(1, Math.max(0, value));
+        const polar = (cx, cy, radius, degrees) => {
+          const radians = ((degrees - 90) * Math.PI) / 180;
+          return {x: cx + radius * Math.cos(radians), y: cy + radius * Math.sin(radians)};
+        };
+        const arcPath = (cx, cy, radius, startDeg, endDeg) => {
+          const start = polar(cx, cy, radius, startDeg);
+          const end = polar(cx, cy, radius, endDeg);
+          const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+          return `M ${start.x.toFixed(3)} ${start.y.toFixed(3)} A ${radius} ${radius} 0 ${large} 1 ${end.x.toFixed(3)} ${end.y.toFixed(3)}`;
+        };
+        const formatNumber = (value, decimals) => value.toLocaleString("en-US", {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+        const decimalsOf = value => {
+          if (Number.isInteger(value)) return 0;
+          if (Math.abs(value * 10 - Math.round(value * 10)) < 1e-9) return 1;
+          if (Math.abs(value * 100 - Math.round(value * 100)) < 1e-9) return 2;
+          return 0;
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-data-014",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#e8b86d"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--track", tokens.track);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const svg = root.querySelector("[data-svg]");
+            const factor = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+
+            const min = Number(content.min ?? 0);
+            const max = Number(content.max ?? 100);
+            const value = Number(content.value ?? 0);
+            const decimals = decimalsOf(Math.max(1, (max - min) / 100));
+            const target = clamp01((value - min) / (max - min || 1));
+            const unit = String(content.unit ?? "");
+            const label = String(content.label ?? "");
+
+            const dial = GEO.dialSize * factor;
+            const radius = (dial - GEO.thickness * factor) / 2;
+            const center = dial / 2;
+            const startAngle = -GEO.sweepDegrees / 2;
+            const tickCount = Math.min(GEO.maxTickCount, Math.max(2, GEO.defaultTickCount));
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+
+            card.style.cssText = `left:0;top:0;width:${dial}px;height:${dial}px;`;
+            svg.setAttribute("viewBox", `0 0 ${GEO.dialSize} ${GEO.dialSize}`);
+            svg.style.width = `${dial}px`;
+            svg.style.height = `${dial}px`;
+
+            const track = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            track.setAttribute("data-gauge-track", "");
+            track.setAttribute("d", arcPath(center, center, radius, startAngle, startAngle + GEO.sweepDegrees));
+            track.setAttribute("fill", "none");
+            track.setAttribute("stroke", tokens.track);
+            track.setAttribute("stroke-width", String(GEO.thickness * factor));
+            track.setAttribute("stroke-linecap", "round");
+            svg.appendChild(track);
+
+            const arc = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            arc.setAttribute("data-gauge-arc", "");
+            arc.setAttribute("fill", "none");
+            arc.setAttribute("stroke", options.accent);
+            arc.setAttribute("stroke-width", String(GEO.thickness * factor));
+            arc.setAttribute("stroke-linecap", "round");
+            svg.appendChild(arc);
+
+            const ticks = [];
+            for (let index = 0; index < tickCount; index += 1) {
+              const fraction = index / (tickCount - 1);
+              const angle = startAngle + fraction * GEO.sweepDegrees;
+              const inner = polar(center, center, radius * GEO.tickInnerInset, angle);
+              const outer = polar(center, center, radius * GEO.tickOuterInset, angle);
+              const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+              line.setAttribute("data-gauge-tick-index", String(index));
+              line.setAttribute("x1", inner.x.toFixed(2));
+              line.setAttribute("y1", inner.y.toFixed(2));
+              line.setAttribute("x2", outer.x.toFixed(2));
+              line.setAttribute("y2", outer.y.toFixed(2));
+              line.setAttribute("stroke-width", String(Math.max(1, radius * GEO.tickWidthRatio)));
+              line.setAttribute("stroke-linecap", "round");
+              svg.appendChild(line);
+              ticks.push({line, fraction});
+            }
+
+            const needle = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            needle.setAttribute("data-gauge-needle", "");
+            needle.setAttribute("stroke", tokens.ink);
+            needle.setAttribute("stroke-width", String(Math.max(1.5, radius * GEO.needleWidthRatio)));
+            needle.setAttribute("stroke-linecap", "round");
+            svg.appendChild(needle);
+            [["data-gauge-hub", GEO.hubOuterRatio, tokens.ink], ["data-gauge-hub-inner", GEO.hubInnerRatio, options.accent]]
+              .forEach(([attr, ratio, fill]) => {
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute(attr, "");
+                circle.setAttribute("cx", String(center));
+                circle.setAttribute("cy", String(center));
+                circle.setAttribute("r", String(radius * ratio));
+                circle.setAttribute("fill", fill);
+                svg.appendChild(circle);
+              });
+
+            const readout = root.querySelector("[data-readout]");
+            readout.style.top = `${GEO.readoutTopRatio * dial}px`;
+            const valueNode = root.querySelector("[data-value]");
+            valueNode.style.fontSize = `${GEO.readoutFontRatio * dial}px`;
+            valueNode.style.maxWidth = `${GEO.readoutBoxRatio * dial}px`;
+            const labelNode = root.querySelector("[data-label]");
+            labelNode.style.cssText = `font-size:${GEO.labelFontRatio * dial}px;letter-spacing:${GEO.labelFontRatio * dial * GEO.labelLetterSpacingEm}px;margin-top:${GEO.labelMarginRatio * dial}px;`;
+            labelNode.textContent = label;
+
+            const cardWidth = dial;
+            const cardHeight = dial;
+            card.style.left = `${safeX + (availableWidth - cardWidth) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - cardHeight) * options.position.y}px`;
+
+            const needleFraction = {value: 0};
+            const arcFraction = {value: 0};
+            const paint = () => {
+              arc.setAttribute("d", arcPath(center, center, radius, startAngle, startAngle + arcFraction.value * GEO.sweepDegrees));
+              const angle = startAngle + needleFraction.value * GEO.sweepDegrees;
+              const tip = polar(center, center, radius * GEO.needleTipInset, angle);
+              const tail = polar(center, center, radius * GEO.needleTailRatio, angle + 180);
+              needle.setAttribute("x1", tail.x.toFixed(2));
+              needle.setAttribute("y1", tail.y.toFixed(2));
+              needle.setAttribute("x2", tip.x.toFixed(2));
+              needle.setAttribute("y2", tip.y.toFixed(2));
+              ticks.forEach(({line, fraction}) => {
+                const passed = fraction <= needleFraction.value;
+                line.setAttribute("stroke", passed ? tokens.ink : tokens.muted);
+                line.setAttribute("opacity", String(passed ? GEO.tickPassedOpacity : GEO.tickIdleOpacity));
+              });
+              valueNode.textContent = `${formatNumber(min + (max - min) * arcFraction.value, decimals)}${unit}`;
+            };
+            paint();
+            timeline.to(arcFraction, {value: target, duration: GEO.sweepMs / 1000, ease: "expo.out", onUpdate: paint}, 0);
+            timeline.to(needleFraction, {value: target, duration: GEO.sweepMs / 1000, ease: "expo.out", onUpdate: paint}, 0);
+            ctx.setAttr(root, "data-gauge-target", target.toFixed(6));
+            ctx.setAttr(root, "data-gauge-ticks", tickCount);
+            ctx.meta = {target, ticks: tickCount};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

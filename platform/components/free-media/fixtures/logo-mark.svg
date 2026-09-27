@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="合成 Logo 测试素材">
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#5fa0fa" stroke-width="28"/>
+  <circle cx="256" cy="256" r="96" fill="#5fa0fa" opacity="0.92"/>
+  <path d="M256 92 L256 420" stroke="#f0a24f" stroke-width="22" stroke-linecap="round"/>
+  <path d="M92 256 L420 256" stroke="#f0a24f" stroke-width="22" stroke-linecap="round"/>
+  <text x="256" y="278" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff">LOG</text>
+</svg>

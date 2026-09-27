@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ExportRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "mode", "status", "files"],
+      "properties": {
+        "projectId": {"type": "string"},
+        "mode": {"type": "string", "enum": ["FULL_VIDEO", "LAYER"]},
+        "status": {"type": "string", "enum": ["RUNNING", "SUCCESS", "FAILED"]},
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["title", "path", "sizeBytes", "createdAt"],
+            "properties": {
+              "title": {"type": "string"},
+              "path": {"type": "string"},
+              "sizeBytes": {"type": "integer", "minimum": 0},
+              "createdAt": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exportId", "schemaVersion", "lifecycle", "runId", "productionStateVersion", "confirmedProductionVersion", "startedAt"],
+      "properties": {
+        "exportId": {"type": "string"},
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "lifecycle": {"type": "string", "enum": ["DRAFT", "CONFIRMED", "FROZEN"]},
+        "runId": {"type": "string"},
+        "productionStateVersion": {"type": "string"},
+        "confirmedProductionVersion": {"type": "string"},
+        "startedAt": {"type": "string"},
+        "completedAt": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

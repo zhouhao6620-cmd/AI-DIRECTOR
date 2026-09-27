@@ -1,0 +1,151 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-TYP-001",
+    "name": "TypeShift｜文字切换",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KEY_STATEMENT",
+    "pattern": "TEXT_SWAP_REFLOW",
+    "useCases": [
+      "先像草稿一样错落铺开，再“啪”地重排成层级版式",
+      "结尾升华：多行过渡到一句最重的大标"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 5,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/type-shift/content.schema.json",
+    "requiredFields": [
+      "lines"
+    ],
+    "optionalFields": [],
+    "nodeShape": "行数组（1–5 行，每行 1–30 字）；* 开头为重排后的大标，— 或 - 开头为小字收尾",
+    "primaryLine": "lines[]，按标记解析出大标 / 中间行 / 小字三种角色",
+    "optionalNodes": false,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 5,
+    "lineMaxLength": 30,
+    "capacityNote": "30 字是内容上限（含开头的 * 或 — 标记）。9:16 画幅下整块文字按安全区等比缩小，大标有效容量约 18 字；16:9 下内容上限先触发。无法容纳时明确拒绝并给出原因，不裁切文字。",
+    "lineMarkerSyntax": "* 开头 = 重排后的大标（唯一）；— 或 - 开头 = 小字收尾；其余为中间行",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": true,
+    "variants": [
+      "NONE",
+      "GLASS"
+    ],
+    "variantDefault": "NONE",
+    "variantSupport": "background 保留来源「玻璃底」开关：NONE 为来源默认无底，GLASS 复用来来源 hud-glass 底板",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "type-reflow"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "shiftAtMsRange": {
+      "min": 800,
+      "max": 4000
+    },
+    "glassAlphaRange": {
+      "min": 0.2,
+      "max": 1,
+      "default": 0.6
+    },
+    "variantLabels": {
+      "NONE": "纯文字",
+      "GLASS": "玻璃底"
+    }
+  },
+  "runtime": {
+    "module": "platform/components/type-shift/TypeShift.jsx",
+    "export": "TypeShift",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "background",
+      "glassAlpha",
+      "shiftAtMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Draft Scatter",
+        "Typography Reflow"
+      ],
+      "description": "行按 150 + 160 × 行号毫秒依次淡入（420 毫秒），此时每行带来源的草稿错落偏移（−180 / 40 / −80 / 120 / −30 px）；到达 shiftAtMs 后各行按 70 毫秒错峰“啪”地重排归零，620 毫秒 cubic-bezier(0.25, 0.9, 0.3, 1)，同时字号与字重过渡到大标 84 / 800、中间行 44 / 600、小字 28 / 0.16 em，大标颜色 500 毫秒过渡到强调色。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 TypeShift 的排版流：来源草稿错落偏移表、逐行淡入节奏、重排时长与错峰、三档角色字号 / 字重 / 字距，以及可选玻璃底。"
+    },
+    "knownDifferences": [
+      "来源的行是 nowrap，长句会直接超出画面；本项目按安全区测量整块文字并在必要时等比缩到 60%，仍放不下时明确拒绝。",
+      "来源固定 1920×1080 舞台；本项目在 9:16 画布下把草稿错落偏移收进安全区，重排后的版式与来源一致。"
+    ]
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/TypeShift.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留草稿错落、重排节奏、三档角色样式、可选玻璃底与来源配色令牌；仅为行数组内容树、长句测量、画幅安全区、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "文字重排",
+    "description": "把多行文字从草稿布局重排为重点结论。",
+    "tags": [
+      "文字",
+      "观点"
+    ],
+    "aliases": [
+      "文字切换",
+      "排版动画"
+    ]
+  }
+}

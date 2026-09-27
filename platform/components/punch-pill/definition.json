@@ -1,0 +1,126 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-PUN-001",
+    "name": "PunchPill｜短观点强调",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KEY_STATEMENT",
+    "pattern": "SINGLE_LINE_PUNCH",
+    "useCases": [
+      "一句短观点、设问或局部强调",
+      "在画面角落或底部定格一条金句"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/punch-pill/content.schema.json",
+    "requiredFields": [
+      "text"
+    ],
+    "optionalFields": [],
+    "nodeShape": "单条短观点：一句 1–32 字文本，药丸内单行呈现",
+    "primaryLine": "text",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": false,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "textMaxLength": 32,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "pill-pop"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "positionSupport": "来源底部居中 / 左上 / 右上三个锚点合并为一个安全区内的 0–1 位置；默认 0.5 / 1 即来源底部居中"
+  },
+  "runtime": {
+    "module": "platform/components/punch-pill/PunchPill.jsx",
+    "export": "PunchPill",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Pop In"
+      ],
+      "description": "药丸从 0.9 倍放大到 1 并淡入：透明度 420 毫秒、缩放 460 毫秒，同一条三次贝塞尔缓动，无退场；强调色圆点固定贴在文字左侧。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 PunchPill 的药丸形态：15 / 32 px 内边距、100 px 圆角、2 px 强调色描边、强调色 14% 半透明底、13 px 圆点、14 px 间距、30 px / 700 文字，以及 420 / 460 毫秒的弹入。"
+    },
+    "knownDifferences": [
+      "来源在导出模式下把半透明药丸底换成 `node` 混色的实底；本项目统一保留半透明底，因为叠加在真实视频上时底色会自然跟随画面。"
+    ]
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/PunchPill.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留药丸形态、圆点、来源配色令牌与弹入动画；仅为单字段内容树、长句适配、画幅、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "短观点强调",
+    "description": "用短句突出一个观点、设问或提醒。",
+    "tags": [
+      "观点",
+      "文字"
+    ],
+    "aliases": [
+      "强调胶囊",
+      "短观点"
+    ]
+  }
+}

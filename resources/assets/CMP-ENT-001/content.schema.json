@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "EntityChipsContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["chips"],
+  "properties": {
+    "chips": {
+      "type": "array", "minItems": 1, "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "style", "name"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "style": {"enum": ["LIGHT", "DARK"]},
+          "name": {
+            "type": "string", "minLength": 1, "maxLength": 12,
+            "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+          },
+          "sub": {
+            "type": "string", "maxLength": 16,
+            "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+          }
+        }
+      }
+    },
+    "noteA": {"type": "string", "maxLength": 10, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+    "noteB": {"type": "string", "maxLength": 14, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+  }
+}

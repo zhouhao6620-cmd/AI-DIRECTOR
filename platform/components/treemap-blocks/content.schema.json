@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TreemapBlocksContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["blocks"],
+  "properties": {
+    "blocks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "value"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 6, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "value": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000000}
+        }
+      }
+    },
+    "unit": {"type": "string", "maxLength": 4, "pattern": "^[^\\r\\n\\t]*$"}
+  }
+}

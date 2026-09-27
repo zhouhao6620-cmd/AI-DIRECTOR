@@ -1,0 +1,65 @@
+{
+  "componentId": "CMP-DATA-014",
+  "folder": "gauge-dial",
+  "content": {
+    "value": 72,
+    "min": 0,
+    "max": 100,
+    "unit": "%",
+    "label": "本机样例达标率"
+  },
+  "optionDefaults": {
+    "position": {
+      "x": 0,
+      "y": 0.5
+    },
+    "size": 1,
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 15,
+    "durationInFrames": 210
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#e8b86d",
+      "LIGHT": "#a1691a"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "ink": "#fafafa",
+      "muted": "rgba(250, 250, 250, 0.58)",
+      "track": "rgba(250, 250, 250, 0.10)"
+    },
+    "LIGHT": {
+      "ink": "#1a2540",
+      "muted": "rgba(26, 37, 64, 0.62)",
+      "track": "rgba(26, 37, 64, 0.12)"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

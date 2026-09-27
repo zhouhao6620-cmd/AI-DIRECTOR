@@ -1,0 +1,138 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-006",
+    "name": "GrowthCurve｜增长曲线",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_TREND",
+    "pattern": "SMOOTH_GROWTH_CURVE",
+    "useCases": [
+      "2–6 个时间点的趋势或累计增长",
+      "曲线自动画出并同步滚动峰值数字"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/growth-curve/content.schema.json",
+    "requiredFields": [
+      "points"
+    ],
+    "optionalFields": [
+      "kicker",
+      "kickerZh",
+      "unit",
+      "caption"
+    ],
+    "nodeShape": "数据点：稳定 ID + 1–8 字标签 + 数值（最多 2 位小数）；曲线穿过每个真实数据点",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "kickerMaxLength": 28,
+    "kickerZhMaxLength": 28,
+    "labelMaxLength": 8,
+    "unitMaxLength": 6,
+    "captionMaxLength": 40,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "曲线上每个数据点的标签与数值必须待在各自的 x 槽内：640 px 画布、左右各留 40 / 96 px，2 个点时每槽 504 px，6 个点时只剩约 101 px（约 4 个汉字或 8 位数字）。超容量时先缩小到 12 px 下限，再明确拒绝，不让标签互相压住。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "curve-draw",
+      "composableParameter": "drawMs｜曲线画完时长（来源 600–5000 ms，峰值随后 +300 ms 计数）；保留为可编排参数，本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/growth-curve/GrowthCurve.jsx",
+    "export": "GrowthCurve",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "drawMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "平滑曲线（Catmull-Rom 转三次贝塞尔）用 pathLength 在绘制时长内从左向右画出，曲线下渐变面积同步淡入；每个数据点按 0.9 × i/(n−1) 的阈值依次亮起点与数值；峰值数字在绘制结束后 300 毫秒内滚到最大值并进入来源的轻微呼吸。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"IBM Plex Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourceEffectId": "growth-curve",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/GrowthCurve.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一）；来源设计优先，保留 640 × 310 画布、Catmull-Rom 平滑曲线、曲线下渐变面积、点序号点亮阈值、62 px 峰值计数与玻璃卡，仅适配点标签容量、数值精度、内容树、画幅、安全区定位、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04A_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04A_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "增长曲线",
+    "description": "沿时间点绘出增长趋势并强调峰值。",
+    "tags": [
+      "数据图表",
+      "趋势"
+    ],
+    "aliases": [
+      "增长趋势",
+      "增长折线"
+    ]
+  }
+}

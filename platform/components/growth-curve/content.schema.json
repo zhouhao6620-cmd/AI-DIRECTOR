@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "GrowthCurveContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["points"],
+  "properties": {
+    "kicker": {
+      "type": "string", "maxLength": 28, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "kickerZh": {
+      "type": "string", "maxLength": 28, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "points": {
+      "type": "array", "minItems": 2, "maxItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "label", "value"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 8, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"},
+          "value": {"type": "number", "minimum": -1000000000, "maximum": 1000000000}
+        }
+      }
+    },
+    "unit": {
+      "type": "string", "maxLength": 6, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "caption": {
+      "type": "string", "maxLength": 40, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

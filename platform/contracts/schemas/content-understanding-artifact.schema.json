@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ContentUnderstandingArtifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "projectName", "language", "summary", "keyFacts", "segments"],
+      "properties": {
+        "projectId": {"type": "string", "minLength": 1},
+        "projectName": {"type": "string", "minLength": 1},
+        "language": {"type": "string", "minLength": 2},
+        "summary": {"type": "string", "minLength": 1},
+        "keyFacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fact", "sourceSegmentIds"],
+            "properties": {
+              "fact": {"type": "string", "minLength": 1},
+              "sourceSegmentIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+            }
+          }
+        },
+        "segments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sourceSegmentId", "sourceCueId", "sourceRef", "startMs", "endMs", "text", "semanticRole"],
+            "properties": {
+              "sourceSegmentId": {"type": "string", "minLength": 1},
+              "sourceCueId": {"type": "string", "minLength": 1},
+              "sourceRef": {"type": "string", "minLength": 1},
+              "startMs": {"type": "integer", "minimum": 0},
+              "endMs": {"type": "integer", "minimum": 1},
+              "text": {"type": "string", "minLength": 1},
+              "semanticRole": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "schemaVersion", "lifecycle", "inputRevision", "createdAt", "traceability"],
+      "properties": {
+        "artifactId": {"type": "string", "minLength": 1},
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "lifecycle": {"type": "string", "enum": ["DRAFT", "CANDIDATE", "CONFIRMED", "READY_FOR_PACKAGING", "FROZEN"]},
+        "inputRevision": {"type": "string", "minLength": 1},
+        "createdAt": {"type": "string", "minLength": 1},
+        "traceability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["inputRefs"],
+          "properties": {
+            "inputRefs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-STP-001",
+    "name": "StepTimeline｜步骤时间线",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "STEP_TIMELINE",
+    "pattern": "STAGED_ROADMAP_REVEAL",
+    "useCases": [
+      "按阶段展示章节大纲或流程",
+      "逐句冒出的步骤线，未讲到的阶段先留空"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/step-timeline/content.schema.json",
+    "requiredFields": [
+      "title",
+      "steps"
+    ],
+    "nodeShape": "阶段：稳定 ID + 名称；已讲到的章节数由 revealed 控制，不写进内容树",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "titleMaxLength": 24,
+    "titleMarkup": "保留来源的 *关键词* 高亮标记；标记需成对出现",
+    "itemMaxLength": 24,
+    "labelMaxLines": 2,
+    "titleMaxLines": 2,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionModes": [
+      "LEFT",
+      "RIGHT"
+    ],
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "positionDefault": "RIGHT",
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "staged-slide-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "staggerControl": "stepMs 对应来源「逐句出现的节奏」240 ms 常量，范围 50–2000 ms",
+    "animationControls": [
+      {
+        "path": "stepMs",
+        "label": "步骤出现间隔（毫秒）",
+        "min": 50,
+        "max": 2000,
+        "step": 10
+      }
+    ],
+    "revealedControl": "revealed 保留来源「已讲到第几章」控件，其余阶段渲染为来源的空框状态"
+  },
+  "runtime": {
+    "module": "platform/components/step-timeline/StepTimeline.jsx",
+    "export": "StepTimeline",
+    "props": [
+      "content",
+      "revealed",
+      "stepMs",
+      "position",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal",
+        "Progressive Build"
+      ],
+      "description": "保留来源逐句冒出：标题竖条 560 毫秒从顶部展开、步骤行按 240 毫秒间隔从锚点方向推入 48 px（translateX ∓48px → 0，560 毫秒 0.22/1/0.36/1 缓动），节点圆点随后 460 毫秒从 0 放大到 1；未讲到的阶段保留来源的空框状态（玻璃描边 + 50% 不透明度），不加入来源不存在的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 2,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 StepTimeline 的标题竖条 + 关键词高亮、竖向虚线导轨、圆形节点、玻璃胶囊步骤框、空框状态与 240 毫秒逐句节奏；落位锚点沿用左 120 / 右 120。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/StepTimeline.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceLibraryPath": "/Users/skyai/Documents/ChatGPT/枝鸥视频工作流/effects-library/effect-library.json",
+    "effectId": "step-timeline",
+    "sourceRole": "用户本地内部制作来源（枝鸥 / Overlay Studio 20 效果之一）；来源设计优先，保留标题竖条、关键词高亮、虚线导轨、节点与玻璃胶囊、空框状态和逐句节奏，仅适配内容树、真实时间轴、画幅、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "步骤时间线",
+    "description": "沿时间线逐步呈现流程或章节大纲。",
+    "tags": [
+      "流程",
+      "要点"
+    ],
+    "aliases": [
+      "流程时间线",
+      "步骤线"
+    ]
+  }
+}

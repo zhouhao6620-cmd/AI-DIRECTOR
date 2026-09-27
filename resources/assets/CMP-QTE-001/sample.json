@@ -1,0 +1,70 @@
+{
+  "componentId": "CMP-QTE-001",
+  "folder": "quote-lockup",
+  "content": {
+    "lines": [
+      "多行金句",
+      "逐行揭示，",
+      "停在画面上。"
+    ],
+    "author": "— 署名放这里"
+  },
+  "optionDefaults": {
+    "position": {
+      "x": 1,
+      "y": 0.5
+    },
+    "size": 1,
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 0,
+    "durationInFrames": 180
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "ink": "#ffffff",
+      "muted": "rgba(255,255,255,0.70)",
+      "glass": "linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045))",
+      "glassBorder": "rgba(255,255,255,0.22)",
+      "cardShadow": "0 30px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.12)"
+    },
+    "LIGHT": {
+      "ink": "#1a2540",
+      "muted": "rgba(26,37,64,0.66)",
+      "glass": "linear-gradient(160deg, rgba(255,255,255,0.52), rgba(255,255,255,0.20))",
+      "glassBorder": "rgba(255,255,255,0.85)",
+      "cardShadow": "0 22px 54px rgba(88,70,104,0.16), 0 3px 10px rgba(88,70,104,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

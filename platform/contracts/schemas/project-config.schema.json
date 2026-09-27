@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ProjectConfig",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "projectName", "aspectRatio"],
+      "properties": {
+        "projectId": {"type": "string", "minLength": 1},
+        "projectName": {"type": "string", "minLength": 1},
+        "aspectRatio": {"type": "string", "enum": ["9:16", "16:9"]}
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "lifecycle", "revision", "sourceFiles"],
+      "properties": {
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "lifecycle": {"type": "string", "enum": ["DRAFT", "CANDIDATE", "CONFIRMED", "FROZEN"]},
+        "revision": {"type": "string", "minLength": 1},
+        "sourceFiles": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseVideo", "finalSrt"],
+          "properties": {
+            "baseVideo": {"type": "string", "minLength": 1},
+            "finalSrt": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+npm-debug.log*
+.npm/
+.r3-test-artifacts/
+dist/
+.DS_Store
+
+# Supplied source copies are provenance only; authoritative copies live in docs/authoritative/.
+docs/产品基线/

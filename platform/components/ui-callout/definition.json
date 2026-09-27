@@ -1,0 +1,131 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-UIC-001",
+    "name": "UICallout｜界面标注",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "ANNOTATION",
+    "pattern": "TARGET_RING_CALLOUT",
+    "useCases": [
+      "圈出界面或画面上的目标区域",
+      "给截图、软件界面或局部细节加一条指引"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "TWO_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/ui-callout/content.schema.json",
+    "requiredFields": [
+      "label"
+    ],
+    "optionalFields": [],
+    "nodeShape": "单条标注：标签文字；圈选尺寸与标签方向属于实例参数，不属于内容",
+    "primaryLine": "label",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": false,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "labelMaxLength": 36,
+    "capacityNote": "36 字是内容上限。标签是 nowrap 的一条玻璃标签，实际容量随圈宽与画幅变化：9:16 下 300 px 圈约可放 16 个中文字，16:9 下内容上限先触发。放不下时明确拒绝并给出可用宽度，不裁切文字。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "sizeSupport": "整组件支持 0.5–2× 等比缩放；ring.width 与 ring.height 仍用于调整圈选区域",
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "grow-draw"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "sideToggle": "side 保留来源「标签方向」两态：圈右 / 圈左；标签方向决定引线与标签落在圈的哪一侧"
+  },
+  "runtime": {
+    "module": "platform/components/ui-callout/UICallout.jsx",
+    "export": "UICallout",
+    "props": [
+      "content",
+      "ring",
+      "side",
+      "position",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Grow Draw"
+      ],
+      "description": "圈框先淡入并从 1.12 倍收到 1 倍（460 毫秒），130 px 引线随后用 dash-offset 自圈侧画向标签（620 毫秒，延迟 220 毫秒），标签最后淡入并上浮 12 px 归位（460 毫秒，延迟 620 毫秒）；三段共用来源的 cubic-bezier(0.22, 1, 0.36, 1)。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 UICallout 的标注形态：2.5 px 强调色圆角圈、130 px 自绘引线、14 / 26 px 玻璃标签、标签左侧 4 px 强调色线、来源卡片阴影与生长描画动画。"
+    },
+    "knownDifferences": [
+      "来源的标签是 nowrap，长标签会直接跑出盒子；本项目测量标签宽度并把整块标注纳入安全区，放不下时明确拒绝并给出原因。",
+      "来源固定 1920×1080 舞台；本项目在 9:16 画布下同样不缩放圈大小，只重新计算安全区内的落位。"
+    ]
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/UICallout.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留圈框、引线、标签形态、来源配色令牌与生长描画动画；仅为内容树、标签测量、画幅安全区、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "界面指引标注",
+    "description": "圈出界面目标区域并用指引线提示位置。",
+    "tags": [
+      "标注",
+      "媒体"
+    ],
+    "aliases": [
+      "界面标注",
+      "画面标注"
+    ]
+  }
+}

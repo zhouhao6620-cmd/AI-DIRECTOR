@@ -1,0 +1,149 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-ENT-001",
+    "name": "EntityChips｜实体标签",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "ENTITY_CHIPS",
+    "pattern": "PERSISTENT_ENTITY_ANCHOR",
+    "useCases": [
+      "提到人物或机构时在画面上钉住实体名牌",
+      "白牌机构 + 黑牌人物 + 侧注身份/代码"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 3,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/entity-chips/content.schema.json",
+    "requiredFields": [
+      "chips"
+    ],
+    "optionalFields": [
+      "noteA",
+      "noteB"
+    ],
+    "nodeShape": "名牌：稳定 ID + 牌面（LIGHT 机构 / DARK 人物）+ 名称 + 可选身份小字；侧注上下两行可选",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 3,
+    "nameMaxLength": 12,
+    "subMaxLength": 16,
+    "noteAMaxLength": 10,
+    "noteBMaxLength": 14,
+    "outOfBounds": "REJECT_WITH_MESSAGE",
+    "capacityNote": "名牌名称不换行：横排总宽超出画布安全区时明确拒绝，不静默截断。9:16 带侧注时，单块名牌名称约 6 字，不带侧注时约 7 字。"
+  },
+  "workbench": {
+    "position": true,
+    "positionModes": [
+      "LEFT",
+      "CENTER",
+      "RIGHT"
+    ],
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "positionDefault": "LEFT",
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "sequential-slide-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "themeScope": "来源只在黑牌身份行使用强调色；白牌保持来源的固定深色文字，底色的强调色不进入白牌",
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "staggerControl": "stepMs 保留来源「逐块滑入间隔」控件，范围 0–1500 ms，默认 500 ms",
+    "animationControls": [
+      {
+        "path": "stepMs",
+        "label": "名牌出现间隔（毫秒）",
+        "min": 0,
+        "max": 1500,
+        "step": 10
+      }
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/entity-chips/EntityChips.jsx",
+    "export": "EntityChips",
+    "props": [
+      "content",
+      "stepMs",
+      "position",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal",
+        "Persistent"
+      ],
+      "description": "保留来源逐块滑入：每块名牌按 stepMs 间隔从左侧 30 px 滑入（0.6 秒 0.22/1/0.36/1 缓动）并同时淡入 0.5 秒，侧注随后按同样的节奏从 20 px 滑入；全部滑入后整段讨论期间常驻画面，不加入来源不存在的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 1,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "sourceReuse": {
+      "overlay": "复用 EntityChips 的白牌机构 / 黑牌人物 + 侧注结构、30 px 名称、等宽 15 px 身份小字、12 px 圆角与 0 14px 34px 投影、左侧滑入节奏，以及来源刻意去掉文字光晕的做法；落位锚点沿用左 120 / 居中 / 右 120。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/EntityChips.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceLibraryPath": "/Users/skyai/Documents/ChatGPT/枝鸥视频工作流/effects-library/effect-library.json",
+    "effectId": "entity-chips",
+    "sourceRole": "用户本地内部制作来源（枝鸥 / Overlay Studio 20 效果之一，AKK 项目实际使用 1 次）；来源设计优先，保留名牌结构、牌面配色、等宽身份行、侧注与滑入节奏，仅适配内容树、真实时间轴、画幅、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "人物机构标签",
+    "description": "在画面中标出人物、机构及其身份信息。",
+    "tags": [
+      "标注",
+      "媒体"
+    ],
+    "aliases": [
+      "实体标签",
+      "机构名牌"
+    ]
+  }
+}

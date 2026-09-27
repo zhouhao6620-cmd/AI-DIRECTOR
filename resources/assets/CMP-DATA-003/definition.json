@@ -1,0 +1,138 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-003",
+    "name": "Odometer｜整数计数",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KPI_INTEGER_COUNTER",
+    "pattern": "ODOMETER_ROLL",
+    "useCases": [
+      "人数、件数、年份等整数里程碑",
+      "用翻牌里程表强调数字到位"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "ONE_LEVEL",
+    "density": "LOW"
+  },
+  "content": {
+    "schemaRef": "platform/components/odometer/content.schema.json",
+    "requiredFields": [
+      "value"
+    ],
+    "optionalFields": [
+      "kicker",
+      "unit",
+      "label"
+    ],
+    "nodeShape": "单整数：可选小标签 + 非负整数（每位数字一行滚轮）+ 可选单位 + 可选说明",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "kickerMaxLength": 24,
+    "unitMaxLength": 6,
+    "labelMaxLength": 28,
+    "valueRange": {
+      "min": 0,
+      "max": 99999
+    },
+    "labelCapacityNote": "0–99999 为非负整数边界（来源控件范围）；小数或负数会被明确拒绝，不做四舍五入。150 px 数字位在 9:16 安全区内 5 位绰绰有余，更多位会先缩小到 24 px 下限。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "digit-reel",
+      "composableParameter": "来源固定每位 900 ms 滚轮、从低位到高位每级 110 ms 延迟；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "glass｜来源玻璃底",
+      "offsetX / offsetY｜来源像素微调（改为安全区 0–1 比例）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/odometer/Odometer.jsx",
+    "export": "Odometer",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Linear",
+        "Emphasis"
+      ],
+      "description": "每位数字是一列 0–9 的滚轮，按来源 900 毫秒 cubic-bezier(0.2, 0.85, 0.25, 1) 滚到目标数字；从个位向高位每级 110 毫秒延迟，最高位最后停稳。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourceEffectId": "odometer",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/Odometer.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "用户本地内部制作来源（Overlay Studio / 枝鸥 20 效果之一，AKK 项目使用 4 次）；来源设计优先，保留 150 px 等宽数字列、1.15 em 滚轮窗口、强调色单位与从低位到高位的停稳顺序，仅适配整数边界、内容树、画幅、安全区定位、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04A_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04A_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "数字翻牌",
+    "description": "用翻牌动画强调人数、件数或年份等整数。",
+    "tags": [
+      "数字",
+      "指标"
+    ],
+    "aliases": [
+      "整数计数",
+      "里程表"
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-SKL-001",
+    "name": "SkillIntroCard｜技能介绍卡",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KEY_STATEMENT",
+    "pattern": "SKILL_INTRO_DECK",
+    "useCases": [
+      "介绍一个技能 / 工具：名称 + 钩子观点 + 说明 + 使用规模佐证",
+      "连续介绍 2–4 个技能，一张说完自动切下一张"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 4,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/skill-intro-card/content.schema.json",
+    "requiredFields": [
+      "cards[].skill",
+      "cards[].hook",
+      "cards[].body"
+    ],
+    "optionalFields": [
+      "cards[].badge",
+      "cards[].accent"
+    ],
+    "nodeShape": "技能卡数组：每张卡 = 技能名（等宽标题）+ 钩子观点（强调色粗体）+ 说明段 + 可选数据胶囊 + 可选单卡强调色",
+    "primaryLine": "cards[].skill",
+    "secondaryLine": "cards[].hook、cards[].body、cards[].badge",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 4,
+    "skillMaxLength": 20,
+    "hookMaxLength": 24,
+    "bodyMaxLength": 51,
+    "badgeMaxLength": 18,
+    "accentModes": [
+      "INHERIT",
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "accentNote": "多卡组里每张卡可以单独取一套项目主题色：INHERIT 跟随实例 / 项目主题（默认参考原色蓝），其余取蓝 / 橙 / 红 / 紫；强调色同时用在钩子观点、标题下蓝线、上沿高光、数据胶囊描边与圆点上。",
+    "capacityNote": "按参考图换算到 620 px 内容宽后：技能名最多 2 行（等宽 58 px、20 字符）、钩子观点最多 2 行（47 px、24 字）、说明最多 3 行（34 px、51 字）、胶囊 1 行（27 px、18 字）。上限按「全中文最宽字形」定，任何 schema 合法内容都能在卡内换行显示；行数超出时明确拒绝，不裁切文字。",
+    "cardTimingNote": "实例时长均分给每张卡，每张卡至少 2.6 秒；2 张卡最少 5.2 秒、4 张卡最少 10.4 秒。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯文字卡，内容树里没有图片或视频素材位，所以不开放素材替换。",
+    "variant": false,
+    "variantReason": "第一版只有参考图这一种版式；等有第二种真实参考再加变体。",
+    "cardAccentNote": "单卡强调色是内容字段（cards[].accent），在内容面板里逐张选；组件级主题仍在主题区选，两者独立。",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "typewriter-accent-line",
+      "cardSwapNote": "换卡节奏由实例时长决定（均分），本版不开放成可调参数。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "positionSupport": "参考图的固定版式改成可用安全区内的 0–1 位置；默认 0.5 / 0.5 即居中，两种画幅下卡盒尺寸一致。"
+  },
+  "runtime": {
+    "module": "platform/components/skill-intro-card/SkillIntroCard.jsx",
+    "export": "SkillIntroCard",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Card Rise",
+        "Typewriter Accent Line",
+        "Sequential Card Swap"
+      ],
+      "description": "整卡从下方 24 px 上浮并同时从 0.985 倍回到 1 倍（420 毫秒）；标题下蓝色短线延迟 200 毫秒后从左向右像打字机一样展开 460 毫秒，展开完定住不动；钩子观点按行遮罩升入（620 毫秒起、每行延迟 110 毫秒）、分隔线左向展开、说明段淡入、数据胶囊最后落定。一张卡说完后在时间槽末尾 320 毫秒退场，下一张卡紧接着入场。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 5.2,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "userReference": "按用户参考图复刻：深蓝玻璃卡 + 极淡网格纹理 + 上沿左侧亮蓝高光边；等宽技能名、标题下蓝色短线、蓝色钩子句、细分隔线、正文段、底部数据胶囊；强调蓝 #538BFE、正文 #C6CBDD、卡底 #26334F → #101728 对角渐变、胶囊 322 × 70 px 在 650 px 内容宽下的占比。",
+      "existingComponents": "复用 TermCard 的卡片基因（620 px 内容宽、40 px 上下内边距量级、玻璃底、字号层级）与 PunchPill 的胶囊形态（圆点 + 描边 + 半透明强调底）。"
+    },
+    "knownDifferences": [
+      "参考图是单卡；本组件把入口改成 2–4 张卡的数组，实例时长均分给每张卡，切换节奏由实例时长决定。",
+      "参考图没有浅底状态；LIGHT 是同一套层级在浅色画布上的映射，不是参考图自带样式。",
+      "参考图文字为左对齐的固定版式；本组件把落位改成安全区内 0–1 比例位置。",
+      "参考图只有一种强调色（蓝）；多卡组新增「每张卡单独取主题色」，默认仍为参考原色，属于本次用户要求补的能力。",
+      "技能名字体使用项目既有等宽栈 SF Mono / ui-monospace，未引入参考图可能使用的第三方字体文件。"
+    ]
+  },
+  "provenance": {
+    "source": "BUILT_IN_PROJECT",
+    "sourceKind": "USER_REFERENCE_IMAGE",
+    "sourcePath": "docs/component-assets/references/COMP-01_reference_find-skills-card.png",
+    "sourceNote": "参考图为用户 2026-09-15 随 COMP-01 下发的设计截图（原件 codex-clipboard-f97aae8e-18dc-4936-b455-3f56c6ab59f9.png），本组件按图解读版式、层级与配色后在本项目内补建。",
+    "rawEvidence": "dev-control-panel/tasks/COMP-01_PILOT_TASK.md",
+    "adaptationRef": "docs/component-assets/COMP-01_QA_REPORT.md",
+    "qaRef": "docs/component-assets/COMP-01_QA_REPORT.md",
+    "reuseAnalysis": "先查现有 21 项已注册组件：TermCard（术语 + 定义）最接近但没有钩子观点行与数据胶囊，QuoteLockup / PunchPill 只有文字层级，均不能直接复用；且本卡禁止修改正式组件目录。枝鸥 20 个效果与 Overlay 现有实现里没有技能介绍卡或前后对照类效果。因此本组件按项目规范补建，来源记为 BUILT_IN_PROJECT，并复用 TermCard 与 PunchPill 的既有视觉基因。",
+    "draftLane": "本组件是组件创建试点（COMP-01）的首个草稿：以 DRAFT-skill-intro-card / status = DRAFT 建立，期间不进入能力索引、AI 导演不可见。",
+    "promotion": "用户 2026-09-15 确认验收通过后由总控晋升：componentId DRAFT-skill-intro-card → CMP-SKL-001，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-SKL-001/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "技能介绍卡",
+    "description": "逐张介绍技能或工具及其说明和佐证。",
+    "tags": [
+      "观点",
+      "要点"
+    ],
+    "aliases": [
+      "工具介绍",
+      "能力卡"
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "componentId": "CMP-DATA-002",
+  "folder": "stat-proof",
+  "content": {
+    "kicker": "SAMPLES · 本机台账",
+    "kickerZh": "本机合成样例，不代表真实数据",
+    "prefix": "",
+    "value": 42,
+    "suffix": "%",
+    "footEn": "SOURCE · LOCAL FIXTURE",
+    "footZh": "数字来自本机合成样例"
+  },
+  "optionDefaults": {
+    "position": {
+      "x": 0,
+      "y": 0.5
+    },
+    "size": 1,
+    "surface": "DARK",
+    "theme": "SOURCE",
+    "countMs": 1600
+  },
+  "timing": {
+    "startFrame": 15,
+    "durationInFrames": 210
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "node": "#12121a",
+      "ink": "#ffffff",
+      "muted": "rgba(255, 255, 255, 0.70)",
+      "faint": "rgba(255, 255, 255, 0.44)"
+    },
+    "LIGHT": {
+      "node": "#ece6e0",
+      "ink": "#1a2540",
+      "muted": "rgba(26, 37, 64, 0.66)",
+      "faint": "rgba(26, 37, 64, 0.42)"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

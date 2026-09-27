@@ -1,0 +1,148 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-CHK-001",
+    "name": "Checklist｜步骤打勾",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "CHECKLIST",
+    "pattern": "SEQUENTIAL_COMPLETION_LIST",
+    "useCases": [
+      "讲解有先后顺序的流程步骤",
+      "按讲解进度把已完成步骤打勾"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "LOW_MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/checklist/content.schema.json",
+    "requiredFields": [
+      "items"
+    ],
+    "optionalFields": [
+      "title"
+    ],
+    "nodeShape": "步骤：稳定 ID + 名称；小标题可选；已完成数量由 checkedCount 控制，不写进内容树",
+    "optionalNodes": true,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "titleMaxLength": 24,
+    "itemMaxLength": 32,
+    "labelMaxLines": 2,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionModes": [
+      "LEFT",
+      "RIGHT",
+      "TOP_LEFT"
+    ],
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "positionDefault": "LEFT",
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "sequential-check-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "staggerControl": "stepMs 保留来源「每条间隔」控件，范围 50–2000 ms，默认 160 ms",
+    "animationControls": [
+      {
+        "path": "stepMs",
+        "label": "逐条出现间隔（毫秒）",
+        "min": 50,
+        "max": 2000,
+        "step": 10
+      }
+    ],
+    "checkedControl": "checkedCount 保留来源「已完成到第几步」控件"
+  },
+  "runtime": {
+    "module": "platform/components/checklist/Checklist.jsx",
+    "export": "Checklist",
+    "props": [
+      "content",
+      "checkedCount",
+      "stepMs",
+      "position",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Sequential Reveal",
+        "State Change"
+      ],
+      "description": "保留来源逐条出现：每条按 stepMs 间隔从锚点方向滑入（translateX ∓20px → 0，480 毫秒 0.22/1/0.36/1 缓动）、小标题 640 毫秒淡入；已完成步骤的勾选框同时用来源的 300 毫秒令牌过渡点亮为强调色底 + 白色对勾，未完成步骤保持描边空框与次要文字色。不新增来源不存在的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 2,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "sourceReuse": {
+      "overlay": "复用 Checklist 的卡片结构（小标题 kicker + 逐条列表）、落位锚点（左 120 / 右 120 / 左上 120,96）、32 px / 500 正文、38 px 圆角 10 勾选框、2 px 玻璃描边、强调色打勾、16 字距间隔 160 ms 的逐条节奏与 480 毫秒滑入。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/Checklist.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceLibraryPath": "/Users/skyai/Documents/ChatGPT/枝鸥视频工作流/effects-library/effect-library.json",
+    "effectId": "checklist",
+    "sourceRole": "用户本地内部制作来源（枝鸥 / Overlay Studio 20 效果之一，AKK 项目实际使用 2 次）；来源设计优先，保留逐条列表、勾选框、强调色、落位锚点与入场节奏，仅适配内容树、真实时间轴、画幅、主题映射与透明输出",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "步骤打勾",
+    "description": "按讲解顺序展示步骤，并标记已完成的步骤。",
+    "tags": [
+      "流程",
+      "要点"
+    ],
+    "aliases": [
+      "待办清单",
+      "检查清单"
+    ]
+  }
+}

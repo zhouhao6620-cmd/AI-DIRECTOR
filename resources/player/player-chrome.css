@@ -1,0 +1,125 @@
+/* 播放器外壳样式 · 预览内核部分（HyperFrames 版）
+   Role: Reference（冒烟测试件，不是基线）
+
+   来源：workbench-v0/src/shared/component-preview/component-preview.css（LIB-01 阶段 5 冻结的预览内核样式）
+   这里的 .preview-surface / .preview-stage / .preview-chrome / .preview-safe-area 全部逐条复制，
+   目的就是「播放器样式保持统一」：换掉的是播放内核（Remotion Player → HyperFrames），不是外壳。
+   组件基线里的那份样式改动时，这里要同步；本文件不改动原文件。
+
+   本文件只放**共用内核**：组件库内壳（library/index.html）与独立播放器页（player/index.html）都引用它。
+   独立播放器页自己的页面骨架（顶栏、body 布局、内核宿主）在 player-page.css。 */
+
+.preview-surface {
+  flex-shrink: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+.player-surface { container-type: inline-size; }
+.preview-surface, .player-surface { position: relative; }
+.preview-stage { position: relative; margin: 0 auto; }
+.preview-chrome {
+  position: absolute;
+  z-index: 8;
+  inset: auto 0 0;
+  /* 进度条与下方两组控制共用同一条左右基线。 */
+  --preview-controls-inset: 24px;
+  padding: 42px var(--preview-controls-inset) 2px;
+  color: var(--wb-text-on-dark, #fff);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .72) 44%, rgba(0, 0, 0, .94));
+  font-family: inherit;
+}
+.preview-progress { position: relative; height: 12px; display: flex; align-items: center; margin-bottom: 0; }
+.preview-progress input {
+  appearance: none; box-sizing: border-box; display: block; width: 100%; height: 5px; margin: 0; border: 0; border-radius: 999px;
+  background: linear-gradient(to right, #fff var(--preview-progress), rgba(255,255,255,.37) var(--preview-progress));
+  cursor: pointer;
+}
+.preview-progress input::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(0,0,0,.2); opacity: 0; transition: opacity .16s ease; }
+.preview-progress:hover input::-webkit-slider-thumb, .preview-progress input:focus-visible::-webkit-slider-thumb { opacity: 1; }
+.preview-progress input::-moz-range-thumb { width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; background: #fff; }
+.preview-controls-row, .preview-primary-controls, .preview-secondary-controls { display: flex; align-items: center; }
+.preview-controls-row { width: 100%; justify-content: space-between; gap: 14px; min-height: 48px; }
+.preview-primary-controls { gap: 10px; height: 48px; flex: none; }
+.preview-secondary-controls { justify-content: flex-end; gap: clamp(5px, .7vw, 11px); height: 48px; min-width: 0; }
+.preview-play-button {
+  width: 40px; height: 48px; flex: none; display: grid; place-items: center; padding: 0;
+  border: 0; background: transparent; color: #fff;
+  cursor: pointer; transition: transform .18s ease, opacity .18s ease;
+}
+.preview-play-button:hover { transform: scale(1.08); opacity: .8; }
+.preview-play-button svg:has(polygon) { margin-left: 3px; }
+.preview-time { display: flex; align-items: center; height: 48px; color: rgba(255,255,255,.62); font-size: 15px; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; letter-spacing: .015em; }
+.preview-time strong { color: #fff; font-weight: 600; }
+.preview-time > span { margin: 0 8px; color: rgba(255,255,255,.4); }
+.preview-text-button, .preview-icon-button { border: 0; color: #fff; background: transparent; font: inherit; cursor: pointer; transition: opacity .15s ease, background .15s ease; }
+.preview-text-button { display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 5px; white-space: nowrap; font-size: 14px; font-weight: 600; line-height: 1; letter-spacing: .01em; }
+.preview-icon-button { width: 32px; height: 48px; display: grid; place-items: center; padding: 0; border-radius: 8px; }
+.preview-text-button:hover, .preview-icon-button:hover { opacity: .76; }
+.preview-text-button[aria-expanded="true"], .preview-icon-button[aria-expanded="true"] { color: var(--wb-primary, #f36b21); opacity: 1; }
+.preview-text-button:disabled { opacity: .35; cursor: not-allowed; }
+.preview-menu-anchor { position: relative; display: flex; align-items: center; height: 48px; flex: none; }
+.preview-safe-toggle { display: inline-flex; align-items: center; gap: 8px; height: 48px; line-height: 1; white-space: nowrap; font-size: 14px; font-weight: 600; cursor: pointer; }
+.preview-safe-toggle input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.preview-safe-toggle i { width: 32px; height: 19px; position: relative; border-radius: 999px; background: rgba(255,255,255,.32); transition: background .16s ease; }
+.preview-safe-toggle i::after { content: ""; position: absolute; width: 13px; height: 13px; top: 3px; left: 3px; border-radius: 50%; background: #fff; transition: transform .16s ease; }
+.preview-safe-toggle input:checked + i { background: var(--wb-primary, #f36b21); }
+.preview-safe-toggle input:checked + i::after { transform: translateX(13px); }
+.preview-safe-toggle input:focus-visible + i, .preview-chrome button:focus-visible, .preview-chrome input:focus-visible { outline: 2px solid var(--wb-primary, #f36b21); outline-offset: 3px; }
+.preview-popover, .preview-volume-popover {
+  position: absolute; z-index: 11; bottom: calc(100% + 39px); left: 50%; transform: translateX(-50%);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 14px; background: rgba(19,19,21,.97);
+  box-shadow: 0 16px 38px rgba(0,0,0,.42); backdrop-filter: blur(18px);
+}
+.preview-popover { min-width: 160px; padding: 7px; }
+.preview-popover button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 38px; padding: 0 11px; border: 0; border-radius: 8px; color: #fff; background: transparent; font: inherit; font-size: 13px; text-align: left; white-space: nowrap; cursor: pointer; }
+.preview-popover button:hover { background: rgba(255,255,255,.1); }
+.preview-popover button[aria-checked="true"] { color: var(--wb-primary, #f36b21); }
+.preview-popover button:disabled { opacity: .4; cursor: not-allowed; }
+.preview-volume-popover { width: 66px; height: 186px; display: flex; align-items: center; flex-direction: column; padding: 12px 8px 8px; }
+.preview-volume-popover span { color: #fff; font-size: 13px; font-variant-numeric: tabular-nums; }
+.preview-volume-popover input { appearance: slider-vertical; writing-mode: vertical-lr; direction: rtl; width: 24px; height: 110px; margin: 6px 0; accent-color: #fff; cursor: pointer; }
+.preview-volume-popover button { display: grid; place-items: center; width: 30px; height: 28px; border: 0; background: transparent; color: #fff; cursor: pointer; }
+.preview-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.preview-surface:fullscreen, .player-surface:fullscreen { display: flex; align-items: center; justify-content: center; height: 100vh !important; background: #000; }
+.preview-surface:fullscreen > .preview-stage, .player-surface:fullscreen > .preview-stage { width: min(100vw, calc(100vh * 16 / 9)) !important; height: auto !important; max-height: 100vh; }
+.preview-surface:fullscreen .preview-chrome, .player-surface:fullscreen .preview-chrome { width: 100%; box-sizing: border-box; }
+.preview-surface.checker,
+.player-surface.checker {
+  background-color: #252936;
+  background-image: linear-gradient(45deg, #323847 25%, transparent 25%), linear-gradient(-45deg, #323847 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #323847 75%), linear-gradient(-45deg, transparent 75%, #323847 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+.preview-surface.dark,
+.player-surface.dark { background: #000; }
+.preview-surface.light,
+.player-surface.light { background: #ebe8e1; }
+
+/* 安全区标识：标题安全区 90% / 动作安全区 80% / 中心十字 */
+.preview-safe-area { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.preview-safe-area .preview-safe-box { position: absolute; border: 1px dashed rgba(255, 255, 255, 0.42); }
+.preview-safe-area .preview-safe-box.is-title { inset: 5%; }
+.preview-safe-area .preview-safe-box.is-action { inset: 10%; border-color: rgba(255, 176, 120, 0.55); }
+.preview-safe-area .preview-safe-cross::before,
+.preview-safe-area .preview-safe-cross::after { content: ""; position: absolute; background: rgba(255, 255, 255, 0.5); }
+.preview-safe-area .preview-safe-cross::before { left: 50%; top: calc(50% - 9px); width: 1px; height: 18px; }
+.preview-safe-area .preview-safe-cross::after { top: 50%; left: calc(50% - 9px); height: 1px; width: 18px; }
+.preview-safe-area .preview-safe-label { position: absolute; padding: 2px 6px; background: rgba(16, 21, 33, 0.72); color: rgba(255, 255, 255, 0.82); font-size: 12px; letter-spacing: 0.02em; white-space: nowrap; }
+.preview-safe-area .preview-safe-label.is-title { left: 5%; top: 5%; transform: translateY(-120%); }
+.preview-safe-area .preview-safe-label.is-action { left: 10%; bottom: 10%; transform: translateY(120%); }
+
+@container (max-width: 760px) {
+  .preview-chrome { --preview-controls-inset: 12px; padding: 30px var(--preview-controls-inset) 2px; }
+  .preview-controls-row { flex-wrap: wrap; gap: 2px; }
+  .preview-primary-controls { width: 100%; height: 44px; justify-content: space-between; }
+  .preview-secondary-controls { width: 100%; height: 40px; justify-content: space-between; gap: 2px; }
+  .preview-play-button { width: 44px; height: 44px; }
+  .preview-play-button svg { width: 20px; height: 20px; }
+  .preview-time { height: 44px; }
+  .preview-time, .preview-text-button, .preview-safe-toggle { font-size: 12px; }
+  .preview-menu-anchor, .preview-text-button, .preview-icon-button, .preview-safe-toggle { height: 40px; }
+  .preview-safe-toggle { gap: 4px; }
+  .preview-safe-toggle i { transform: scale(.83); transform-origin: right center; }
+  .preview-icon-button { width: 27px; }
+  .preview-icon-button svg { width: 18px; height: 18px; }
+}

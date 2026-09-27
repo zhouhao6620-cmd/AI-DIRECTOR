@@ -1,0 +1,142 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"checkedCount","type":"number","label":"已勾条数","default":3,"min":0,"max":8,"step":1},
+  {"id":"stepMs","type":"number","label":"逐条节奏（毫秒）","default":160,"min":60,"max":800,"step":20},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-CHK-001 步骤打勾 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-chk-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --glass-border: rgba(255,255,255,0.22); --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .ck-kicker { position: absolute; left: 0; top: 0; display: flex; align-items: center; font-family: var(--font-mono);
+      font-weight: 600; text-transform: uppercase; color: var(--muted); white-space: pre; }
+    .ck-dot { border-radius: 50%; background: var(--accent); flex: none; }
+    .ck-item { position: absolute; left: 0; display: flex; align-items: center; }
+    .ck-box { box-sizing: border-box; border-radius: 10px; border-style: solid; border-color: var(--glass-border);
+      display: grid; place-items: center; color: transparent; flex: none; }
+    .ck-item[data-ck-item-state="done"] .ck-box { background: var(--accent); border-color: var(--accent); color: #0b0b0c; }
+    .ck-label { color: var(--ink); font-weight: 500; line-height: 1.2; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-chk-001" data-width="1920" data-height="1080">
+    <div data-scope><div data-box style="position:absolute;inset:0">
+      <div class="ck-kicker" data-kicker><span class="ck-dot" data-kicker-dot></span><span data-kicker-text></span></div>
+      <div data-items></div>
+    </div></div>
+
+    <script type="application/json" data-hf-content>
+      {"title": "制作步骤", "items": [{"id": "step-1", "label": "确认目标"}, {"id": "step-2", "label": "拆分步骤"}, {"id": "step-3", "label": "逐项执行"}, {"id": "step-4", "label": "核对结果"}]}
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {anchorInsetX: 120, anchorInsetY: 96, kickerFontSize: 20, kickerLetterSpacingEm: 0.18, kickerDotSize: 9,
+          kickerDotGap: 10, kickerMarginBottom: 28, itemFontSize: 32, itemGap: 18, itemMarginBottom: 22,
+          boxSize: 38, boxRadius: 10, boxBorderWidth: 2, checkFontSize: 22};
+        const MOTION = {kickerEnterMs: 640, itemEnterMs: 480, boxPopMs: 300};
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", glassBorder: "rgba(255,255,255,0.22)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", glassBorder: "rgba(255,255,255,0.85)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-chk-001",
+          mount: "instance",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            checkedCount: Math.max(0, Number(variables.checkedCount ?? 3)),
+            stepMs: Math.min(800, Math.max(60, Number(variables.stepMs) || 160)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--glass-border", tokens.glassBorder);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, timeline} = ctx;
+            const itemsHost = root.querySelector("[data-items]");
+            const kicker = root.querySelector("[data-kicker]");
+            const kickerText = root.querySelector("[data-kicker-text]");
+            const scale = options.size;
+            const title = String(content.title ?? "");
+            const items = (Array.isArray(content.items) ? content.items : []).slice(0, 8);
+            if (!items.length) ctx.reject("步骤打勾至少需要一条步骤。");
+
+            const kickerFontSize = GEO.kickerFontSize * scale;
+            kicker.style.cssText = `gap:${GEO.kickerDotGap * scale}px;font-size:${kickerFontSize}px;letter-spacing:${kickerFontSize * GEO.kickerLetterSpacingEm}px;`;
+            root.querySelector("[data-kicker-dot]").style.cssText = `width:${GEO.kickerDotSize * scale}px;height:${GEO.kickerDotSize * scale}px;`;
+            kickerText.textContent = title;
+            kicker.style.display = title ? "flex" : "none";
+
+            const boxSize = GEO.boxSize * scale;
+            const itemFontSize = GEO.itemFontSize * scale;
+            const itemGap = GEO.itemGap * scale;
+            const rowHeight = Math.max(boxSize, itemFontSize * 1.2);
+            const top = title ? GEO.kickerMarginBottom * scale + Math.max(kickerFontSize * 1.2, boxSize) : 0;
+            itemsHost.textContent = "";
+            const nodes = items.map((item, index) => {
+              const row = document.createElement("div");
+              row.className = "ck-item";
+              row.setAttribute("data-ck-item-id", item.id ?? `item-${index}`);
+              row.setAttribute("data-ck-item-index", String(index));
+              row.setAttribute("data-ck-item-state", index < options.checkedCount ? "done" : "todo");
+              row.style.cssText = `top:${top + index * (rowHeight + GEO.itemMarginBottom * scale)}px;gap:${itemGap}px;height:${rowHeight}px;`;
+              const box = document.createElement("span");
+              box.className = "ck-box";
+              box.style.cssText = `width:${boxSize}px;height:${boxSize}px;border-radius:${GEO.boxRadius * scale}px;border-width:${GEO.boxBorderWidth * scale}px;font-size:${GEO.checkFontSize * scale}px;font-weight:800;`;
+              box.textContent = "✓";
+              const label = document.createElement("span");
+              label.className = "ck-label";
+              label.style.fontSize = `${itemFontSize}px`;
+              label.textContent = String(item.label ?? "");
+              row.append(box, label);
+              itemsHost.appendChild(row);
+              return {row, box, done: index < options.checkedCount, index};
+            });
+
+            const anchorX = GEO.anchorInsetX * scale;
+            const anchorY = GEO.anchorInsetY * scale;
+            root.querySelector("[data-items]").style.cssText = `position:absolute;left:${anchorX}px;top:${anchorY}px;`;
+            kicker.style.left = `${anchorX}px`;
+            kicker.style.top = `${anchorY}px`;
+            itemsHost.style.top = `${anchorY}px`;
+
+            if (title) timeline.from(kicker, {opacity: 0, y: 14 * scale, duration: MOTION.kickerEnterMs / 1000, ease: "power3.out"}, 0);
+            nodes.forEach(({row, box, done, index}) => {
+              const at = 0.18 + (index * options.stepMs) / 1000;
+              timeline.from(row, {opacity: 0, x: -24 * scale, duration: MOTION.itemEnterMs / 1000, ease: "power3.out"}, at);
+              if (done) timeline.from(box, {scale: 0, duration: MOTION.boxPopMs / 1000, ease: "back.out(2)"}, at + 0.12);
+            });
+            ctx.setAttr(root, "data-checked-count", options.checkedCount);
+            ctx.setAttr(root, "data-item-count", items.length);
+            ctx.meta = {items: items.length, checked: options.checkedCount};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

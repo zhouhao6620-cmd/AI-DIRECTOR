@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+  CMP-DATA-001 要点钉板 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 组件库改造，不是基线）
+  事实源：workbench-v0/platform/components/pin-board/**（只读复制）
+          · 版式：标题 36·900·2 / 副题 28·800·1（强调色）/ 胶囊 26·700·1、内边距 22×8、圆角 10、
+            列间距 13 / 锚点 120×96
+          · 动效：标题与副题上浮淡入；逐条胶囊按 stepMs 节奏上浮 + 从 0.96 回到 1
+          · 内容：{title, subtitle, items[{id,label}]}；选项：align(LEFT/RIGHT)、stepMs
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"align","type":"enum","label":"对齐","default":"LEFT","options":[{"value":"LEFT","label":"左对齐"},{"value":"RIGHT","label":"右对齐"}]},
+  {"id":"stepMs","type":"number","label":"逐条节奏（毫秒）","default":600,"min":120,"max":1600,"step":20},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0,"min":0,"max":1,"step":0.01}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-DATA-001 要点钉板 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-001"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --faint: rgba(255,255,255,0.44); --accent: #5fa0fa;
+      --chip-bg: rgba(255,255,255,0.10); --chip-border: rgba(255,255,255,0.22); --chip-ink: #ffffff;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .pin-card { position: absolute; display: flex; flex-direction: column; color: var(--ink); }
+    .pin-title { font-weight: 900; line-height: 1.2; color: var(--ink); white-space: pre; }
+    .pin-subtitle { font-weight: 800; line-height: 1.2; color: var(--accent); white-space: pre; }
+    .pin-chip { box-sizing: border-box; border-radius: 10px; background: var(--chip-bg); color: var(--chip-ink);
+      border: 1px solid var(--chip-border); font-weight: 700; line-height: 1.2; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-001" data-width="1920" data-height="1080">
+    <div class="pin-card" data-card>
+      <div class="pin-title" data-title></div>
+      <div class="pin-subtitle" data-subtitle></div>
+      <div data-chips style="display:contents"></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"title": "本段要点", "subtitle": "讲解进度:", "items": [{"id": "point-1", "label": "确认目标"}, {"id": "point-2", "label": "组织要点"}, {"id": "point-3", "label": "突出重点"}, {"id": "point-4", "label": "检查结果"}]}
+    </script>
+
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/canvas-backdrop.js"></script>
+    <script src="/vendor/hf-component-kit.js"></script>
+    <script>
+      (function () {
+        const GEO = {titleFontSize: 36, titleLetterSpacing: 2, subtitleFontSize: 28, subtitleLetterSpacing: 1,
+          chipFontSize: 26, chipLetterSpacing: 1, chipPadX: 22, chipPadY: 8, chipRadius: 10, chipBorderWidth: 1,
+          columnGap: 13, lineHeight: 1.2, anchorX: 120, anchorY: 96};
+        const MOTION = {titleRisePx: 18, subtitleRisePx: 14, chipRisePx: 12, chipScaleFrom: 0.96, titleMs: 480, chipMs: 420};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", accentChipBg: "rgba(255,255,255,0.10)", accentChipBorder: "rgba(255,255,255,0.22)", chipInk: "#ffffff"},
+          LIGHT: {ink: "#1a2540", accentChipBg: "rgba(26,37,64,0.08)", accentChipBorder: "rgba(26,37,64,0.20)", chipInk: "#1a2540"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-data-001",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            align: String(variables.align || "LEFT").toUpperCase() === "RIGHT" ? "RIGHT" : "LEFT",
+            stepMs: Math.min(1600, Math.max(120, Number(variables.stepMs) || 600)),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--chip-bg", tokens.accentChipBg);
+            ctx.root.style.setProperty("--chip-border", tokens.accentChipBorder);
+            ctx.root.style.setProperty("--chip-ink", tokens.chipInk);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+            ctx.root.setAttribute("data-align", ctx.options.align);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const chipsHost = root.querySelector("[data-chips]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const gap = GEO.columnGap * scale;
+            const title = String(content.title ?? "");
+            const subtitle = String(content.subtitle ?? "");
+            const items = (Array.isArray(content.items) ? content.items : []).slice(0, 12);
+            if (!title && !items.length) ctx.reject("要点钉板至少需要标题或一条要点。");
+
+            card.style.cssText = `gap:${gap}px;align-items:${options.align === "RIGHT" ? "flex-end" : "flex-start"};`;
+            const titleNode = root.querySelector("[data-title]");
+            titleNode.style.cssText = `font-size:${GEO.titleFontSize * scale}px;letter-spacing:${GEO.titleLetterSpacing * scale}px;`;
+            titleNode.textContent = title;
+            const subtitleNode = root.querySelector("[data-subtitle]");
+            subtitleNode.style.cssText = `font-size:${GEO.subtitleFontSize * scale}px;letter-spacing:${GEO.subtitleLetterSpacing * scale}px;`;
+            subtitleNode.textContent = subtitle;
+            subtitleNode.style.display = subtitle ? "block" : "none";
+
+            chipsHost.textContent = "";
+            const maxChipWidth = Math.max(1, ...items.map(item => measure.width(String(item.label), GEO.chipFontSize * scale, 700, GEO.chipLetterSpacing * scale) + (GEO.chipPadX * 2 + GEO.chipBorderWidth * 2) * scale));
+            const chipNodes = items.map((item, index) => {
+              const chip = document.createElement("div");
+              chip.className = "pin-chip";
+              chip.setAttribute("data-pin-id", item.id ?? `pin-${index}`);
+              chip.setAttribute("data-pin-index", String(index));
+              chip.style.cssText = `width:${maxChipWidth}px;padding:${GEO.chipPadY * scale}px ${GEO.chipPadX * scale}px;`
+                + `border-radius:${GEO.chipRadius * scale}px;font-size:${GEO.chipFontSize * scale}px;letter-spacing:${GEO.chipLetterSpacing * scale}px;`;
+              chip.textContent = String(item.label ?? "");
+              chipsHost.appendChild(chip);
+              return chip;
+            });
+
+            const box = card.getBoundingClientRect();
+            card.style.width = `${Math.min(availableWidth, Math.max(box.width, maxChipWidth))}px`;
+            const finalBox = card.getBoundingClientRect();
+            card.style.left = `${safeX + (availableWidth - finalBox.width) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - finalBox.height) * options.position.y}px`;
+
+            timeline.from(titleNode, {opacity: 0, y: -MOTION.titleRisePx * scale, duration: MOTION.titleMs / 1000, ease: "power3.out"}, 0);
+            if (subtitle) timeline.from(subtitleNode, {opacity: 0, y: -MOTION.subtitleRisePx * scale, duration: MOTION.titleMs / 1000, ease: "power3.out"}, 0.12);
+            chipNodes.forEach((chip, index) => {
+              const at = 0.24 + (index * options.stepMs) / 1000;
+              timeline.from(chip, {opacity: 0, y: -MOTION.chipRisePx * scale, scale: MOTION.chipScaleFrom, duration: MOTION.chipMs / 1000, ease: "power3.out"}, at);
+            });
+            ctx.setAttr(root, "data-pin-count", items.length);
+            ctx.meta = {items: items.length, align: options.align};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

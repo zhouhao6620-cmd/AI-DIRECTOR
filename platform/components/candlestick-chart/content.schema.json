@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "CandlestickChartContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["candles"],
+  "properties": {
+    "candles": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "open", "high", "low", "close"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "open": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "high": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "low": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "close": {"type": "number", "minimum": -1000000000, "maximum": 1000000000},
+          "label": {"type": "string", "minLength": 1, "maxLength": 6, "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"}
+        }
+      }
+    },
+    "averageWindow": {"type": "integer", "minimum": 0, "maximum": 9},
+    "showLastPrice": {"type": "boolean"},
+    "unit": {"type": "string", "maxLength": 3, "pattern": "^[^\\r\\n\\t]*$"}
+  }
+}

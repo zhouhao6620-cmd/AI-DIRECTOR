@@ -1,0 +1,192 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-013",
+    "name": "FunnelChart｜漏斗图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_CONVERSION",
+    "pattern": "STAGE_TAPER_FUNNEL",
+    "useCases": [
+      "2–5 个阶段逐级收窄，讲清转化与流失",
+      "每段带数值与「相对上一段的变化」，梯形本身承载收窄比例"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/funnel-chart/content.schema.json",
+    "requiredFields": [
+      "stages"
+    ],
+    "optionalFields": [
+      "unit",
+      "showDropoff",
+      "showConversion"
+    ],
+    "nodeShape": "阶段：稳定 ID + 1–8 字名称 + 数值（最多 2 位小数，可单段覆盖颜色）；可选单位（≤6 字）与两个开关（环比 / 留存）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "stageLabelMaxLength": 8,
+    "unitMaxLength": 6,
+    "valueRange": {
+      "min": 0,
+      "max": 1000000000
+    },
+    "labelCapacityNote": "左栏可用宽度 = 画布宽 × 0.3 − 标签字号（默认 246 − 23 ≈ 223 px）：8 个全宽汉字在 23 px 字号下约 184 px，放得下；名称槽更紧时会先缩到 12 px 下限，再明确拒绝。右栏环比槽 = 画布宽 × 0.13 − 标签字号 × 1.5 ≈ 72 px，`−100%` 这类 5 字符文案约 63 px，放得下。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "band-wipe",
+      "composableParameter": "来源固定「每段 733 ms 向下擦除 + 段间 400 ms 错峰」（22 / 12 帧 @30 fps）；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.6,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE",
+      "note": "整组件等比缩放：梯形、左栏文字、环比与间距同乘一个系数。下限 0.6× 是左栏中文（13.8 px）与环比（12.7 px）的可读下限；上限按 05 §1.4 统一为 2×。默认大小 1×、默认落位未改变。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "labelWidth｜来源固定 width × 0.3 的左栏（本批不开放参数）",
+      "valueFormatter｜来源一律走紧凑写法（改为「≥1 万紧凑、小于 1 万按内容精度」）",
+      "exitAtInFrames / exitInFrames｜来源退场（由片段时序决定，本组件落定后保持）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/funnel-chart/FunnelChart.jsx",
+    "export": "FunnelChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Comparison"
+      ],
+      "description": "每段梯形从上往下擦除（0.16, 1, 0.3, 1 入场曲线，733 ms），段间错峰 400 ms；擦除过程中「向下收窄到下一段宽度」的坡度不变，所以半擦出的形状就是最终形状的真实切片；名称与数值跟着自己的段出现；环比 chip 等下一段也落地后才淡入（它是一个关于两段的结论）。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Noto Sans CJK SC\", sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceEntry": "funnel-chart",
+    "sourceRegistryPath": "RemotionGit/registry/funnel-chart.json",
+    "sourcePath": "RemotionGit/registry/bases/default/primitives/funnel-chart.tsx",
+    "sourceRole": "RemotionUI 源码复制式来源（primitives/funnel-chart.tsx）：保留 820 × 420 画布、10 px 段间隙、0.3 左栏 / 0.13 右栏、每段「从自身宽度收窄到下一段宽度」的梯形、末段画成矩形、向下擦除的揭示方式、0.5 → 1 的尾部透明度递增，以及「环比 chip 等下一段出现」的时序；仅适配中文左栏容量、数值精度口径、双画幅、四套主题、透明输出、安全区定位与内容树",
+    "license": "MIT",
+    "upstreamRepository": "https://github.com/riaz37/remotion-ui",
+    "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5",
+    "installCommand": "RemotionUI 为源码复制式库：不执行 npx remotion-ui add，直接从本地 registry/funnel-chart.json 的 files[].content 取源，本组件不从 npm 包 import",
+    "dependencyEntries": [
+      "@remotionui/chart-utils",
+      "@remotionui/motion-tokens"
+    ],
+    "reuseAnalysis": "复用结论：① 无可用——已注册的 CMP-STG-001 StageFlow / CMP-STP-001 StepTimeline 讲的是「阶段并列或先后」，没有「逐级收窄 + 环比」的转化语义；CMP-VRS-001 VersusCard 是两两对比；② 组件内元素尚未登记（REUSE_INDEX §② 仍为空）；③ 取 chart-utils + motion-tokens 两个零件装配；补建梯形收窄几何、左栏中文容量规则与环比口径。",
+    "elements": [
+      {
+        "elementId": "EL-CHART-UTIL-001",
+        "name": "chart-utils",
+        "nameZh": "图表工具",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/chart-utils.json",
+          "path": "registry/bases/default/lib/chart-utils.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/funnel-chart/elements/chart-utils/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-funnel-chart"
+        ],
+        "notes": "只取来源里本组件真正用到的 formatCompactNumber（≥1 万的阶段数值）；域 / 路径类函数留给线柱面积类组件按需取用。"
+      },
+      {
+        "elementId": "EL-MOTION-TOKENS-001",
+        "name": "motion-tokens",
+        "nameZh": "动效令牌",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/motion-tokens.json",
+          "path": "registry/bases/default/lib/motion-tokens.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/funnel-chart/elements/motion-tokens/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-funnel-chart"
+        ],
+        "notes": "取 EASING（enter / exit / editorial / pop）与 DURATION / DELAY / STAGGER / EMPHASIS；来源的 secondsToFrames() 换算成常量帧数，数值与来源一致。"
+      }
+    ],
+    "elementPromotion": "本批（CMP-06 B 批）6 个组件都取用了 motion-tokens、其中 3 个取用了 chart-utils，全部按「组件私有副本」放在各自 platform/components/<组件>/elements/<零件>/ 下。按元素工厂护栏第 12 条应提升为 platform/elements/motion-tokens/ 与 platform/elements/chart-utils/；提升动作留给总控执行——任务卡 §6 规定「公共零件提升为 platform/elements/ 前先回传总控」。",
+    "rawEvidence": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "adaptationRef": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_FUNNEL_CHART_QA_REPORT.md",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-funnel-chart → CMP-DATA-013，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-013/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "转化漏斗",
+    "description": "逐级展示阶段数量和流失变化。",
+    "tags": [
+      "数据图表",
+      "流程"
+    ],
+    "aliases": [
+      "漏斗图",
+      "转化率"
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "elementId": "EL-UTIL-002",
+  "nameZh": "动效令牌",
+  "nameEn": "motion-tokens",
+  "kind": "工具 / 参数",
+  "source": {
+    "from": "RemotionGit",
+    "file": "registry/motion-tokens.json",
+    "sourcePath": "registry/bases/default/lib/motion-tokens.ts（含所依赖的 timing.ts 曲线常量）",
+    "license": "MIT",
+    "commit": "802a637"
+  },
+  "localPath": "platform/elements/motion-tokens/",
+  "module": "platform/elements/motion-tokens/motion-tokens.js",
+  "status": "Adapted",
+  "renderable": true,
+  "usedBy": [
+    "CMP-DATA-016",
+    "CMP-DATA-007",
+    "CMP-DATA-021",
+    "CMP-DATA-011",
+    "CMP-DATA-022"
+  ],
+  "notes": "适配差异：① 令牌数值与来源完全一致（EASING.enter 0.16/1/0.3/1、DURATION 0.4/0.8/1.2 秒、STAGGER 4/8/12 帧、EMPHASIS 1.05/1.1/1.18）；② 来源把秒数在 30 fps 下折成帧写死，本项目按技能 §4.1 要求以内联 interpolate 表达，因此令牌同时给出秒数与 framesFor(seconds, fps)；③ 来源的 Easing.in(Easing.cubic) 换成等价的 CSS 贝塞尔 cubic-bezier(0.32, 0, 0.67, 1)，以便和其余曲线一样用 Easing.bezier 内联。",
+  "elementType": "UTILITY",
+  "summary": "统一缓动、时长、延迟和弹簧参数，供动画组件复用。",
+  "tags": [
+    "动画",
+    "缓动",
+    "节奏"
+  ],
+  "exports": [
+    "EASING",
+    "DEFAULT_FPS",
+    "DURATION_SECONDS",
+    "DELAY_SECONDS",
+    "DURATION",
+    "DELAY",
+    "STAGGER",
+    "EMPHASIS",
+    "framesFor",
+    "durationsFor",
+    "delaysFor",
+    "SPRINGS",
+    "BAR_SPRING"
+  ],
+  "standalonePreviewable": false
+}

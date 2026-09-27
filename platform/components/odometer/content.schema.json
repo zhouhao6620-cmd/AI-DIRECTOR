@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "OdometerContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["value"],
+  "properties": {
+    "kicker": {
+      "type": "string", "maxLength": 24, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "value": {"type": "integer", "minimum": 0, "maximum": 99999},
+    "unit": {
+      "type": "string", "maxLength": 6, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "label": {
+      "type": "string", "maxLength": 28, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

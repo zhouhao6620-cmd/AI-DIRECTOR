@@ -1,0 +1,72 @@
+/* 独立播放器页的页面骨架（HyperFrames 冒烟版）
+   Role: Reference（冒烟测试件，不是基线）
+
+   只服务 player/index.html：把内核放进一块居中、按画幅等比缩放的预览舞台上。
+   预览内核（控制条、底色、安全区）的样式在 player-chrome.css；组件库内壳页面引用的是同一份。 */
+
+:root {
+  color-scheme: dark;
+  --wb-primary: #f36b21;
+  --wb-text-on-dark: #fff;
+  --wb-text-muted: #737373;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #171717;
+  color: #ddd;
+  font-family: Inter, "PingFang SC", system-ui, sans-serif;
+  font-size: 14px;
+}
+.wb-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  color: #fff;
+  border-bottom: 1px solid #3b3b3b;
+}
+.wb-header strong { font-size: 16px; }
+.wb-header span { color: #bababa; }
+.wb-header em { font-style: normal; margin-left: auto; font-size: 12px; border: 1px solid #626262; border-radius: 20px; padding: 5px 12px; color: #ddd; }
+.player-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  background: #22242a;
+}
+/* 承载预览外壳的宿主：外壳本体（.preview-surface）由 preview-chrome.js 建在里面，
+   这样独立播放器页与组件库内壳页共用同一份外壳实现。 */
+.player-host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  box-shadow: 0 12px 50px #0005;
+}
+.player-host > .preview-surface {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 内核宿主：HyperFrames 官方 player 会把 Composition 按自身盒子等比缩放，
+   这里是唯一允许出现「内核」的地方；外壳的缩放、底色、选中层仍然由工作台控制。 */
+hyperframes-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* 合成是 transparent=true，画布底色由我们的预览底色决定，所以不要 player 自带的黑底。 */
+  background: transparent !important;
+}

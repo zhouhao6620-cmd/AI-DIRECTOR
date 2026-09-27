@@ -1,0 +1,162 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-011",
+    "name": "ComparisonBars｜对比条形",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "COMPARISON",
+    "pattern": "BEFORE_AFTER_PAIRS",
+    "useCases": [
+      "2–5 组「改造前 / 改造后」的并列对比",
+      "两组条形共用一把尺，变化幅度在第二条落定后给出"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/comparison-bars/content.schema.json",
+    "requiredFields": [
+      "rows"
+    ],
+    "optionalFields": [
+      "title",
+      "beforeLabel",
+      "afterLabel",
+      "unit",
+      "caption",
+      "rows[].delta"
+    ],
+    "nodeShape": "对比项：稳定 ID + 1–8 字标签 + 前值 + 后值（各 ±1,000,000,000）+ 可选自定幅度文本",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "titleMaxLength": 14,
+    "labelMaxLength": 8,
+    "seriesLabelMaxLength": 6,
+    "unitMaxLength": 4,
+    "deltaMaxLength": 6,
+    "captionMaxLength": 28,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "左侧标签列固定 190 px（来源值，扣 20 px 右内边距后 170 px）：8 个汉字在 16.5 px 下会缩到 12 px 下限附近仍放得下，超过容量明确拒绝——来源是 overflow: hidden + 省略号，本项目不静默截断。条形内的数值按最宽条形（630 px × 55%）测量，幅度文本按整块宽度的 22% 测量。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "grow-pairs",
+      "composableParameter": "growMs｜单条条形生长时长（来源 30 帧 = 1000 ms，可编排范围 300–3000 ms）；行距错峰固定为来源的 12 帧（400 ms）、第二条落后 6 帧（200 ms）；本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.4,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源的退场，本项目由编排层控制出点",
+      "rowHeight / gap / labelWidth / width｜来源的像素参数，本项目固定为来源默认值并整组件等比缩放",
+      "valueFormatter｜来源接受函数，内容树不能存函数，固定为项目的中文紧凑格式 + 内容级单位",
+      "beforeColor / afterColor / downColor / barInkColor / labelColor｜来源的颜色参数，改为四套主题 + 明暗底色映射（来源原色为 SOURCE 默认）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/comparison-bars/ComparisonBars.jsx",
+    "export": "ComparisonBars",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "growMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "每组的两条条形按 12 帧（400 ms）逐行错峰、组内第二条再落后 6 帧（200 ms）用 EASING.enter = cubic-bezier(0.16, 1, 0.3, 1) 生长；条形内的数字等第二条长到 55% 才出现，变化幅度等到 86% 才带 12 px 滑入落地——幅度是这一对的结论，不能抢在条形前面。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, PingFang SC, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTION_UI",
+    "sourceEffectId": "comparison-bars",
+    "sourcePath": "RemotionGit/registry/comparison-bars.json → registry/bases/default/primitives/comparison-bars.tsx",
+    "sourceRole": "RemotionUI 来源库（源码复制式，MIT，commit 802a637）；来源设计优先：保留 820 px 块宽 / 74 px 行高 / 26 px 行距 / 190 px 标签列 / 33 px 条形 / 前后共尺的 peak 归一 / 数值 0.55 与幅度 0.86 的两段式落地，仅适配整组件定位与缩放、文本实测与容量、内容树、画幅、主题映射与透明输出",
+    "reuseAnalysis": "复用结论：① 已注册 23 项里 VersusCard 是两张卡并列比较（不是同一尺度上的两条数值），RankBars 是单序列排名，都接不住「前后两条共用一把尺 + 变化幅度」的语义，也不允许在并行批次里改动；② 组件内元素尚未正式登记，本组件用不到；③ 取零件工厂的 chart-utils（中文紧凑数值 + 文本实测）与 motion-tokens（曲线与时长令牌）两个零件装配，无需补建。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/elements/chart-utils/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/elements/motion-tokens/",
+        "status": "Adapted"
+      }
+    ],
+    "rawEvidence": "RemotionGit/README.md（来源与许可记录：MIT，commit 802a637）",
+    "adaptationRef": "docs/component-assets/CMP-06_DATA_CHARTS_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-06_COMPARISON_BARS_QA_REPORT.md",
+    "draftLane": "本组件是 CMP-06 A 批草稿：componentId = DRAFT-comparison-bars、status = DRAFT，不占正式 CMP- 编号，不进能力索引，AI 导演不可见。",
+    "sourceNote": "来源条目已在本地可真实渲染（http://127.0.0.1:4174/remotionui-preview.html 左侧目录 179 项之一）；仓库 License 为 MIT（RemotionGit/repo/LICENSE）。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-comparison-bars → CMP-DATA-011，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-011/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "前后对比条形",
+    "description": "用同一数值尺度比较两组变化前后的结果。",
+    "tags": [
+      "数据图表",
+      "对比"
+    ],
+    "aliases": [
+      "对比条形",
+      "改造前后"
+    ]
+  }
+}

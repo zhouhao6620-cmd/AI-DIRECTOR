@@ -1,0 +1,144 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-EVD-001",
+    "name": "EvidenceMediaCard｜证据媒体卡",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "EVIDENCE_MEDIA_CARD",
+    "pattern": "CLAIM_WITH_SOURCED_MATERIAL",
+    "useCases": [
+      "展示截图、论文页或录屏作为论据",
+      "材料 + 图注 + 来源说明一起出现在画面上"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/evidence-media-card/content.schema.json",
+    "requiredFields": [
+      "title",
+      "media",
+      "source"
+    ],
+    "nodeShape": "材料：kind（IMAGE / VIDEO）+ 项目内素材路径 src + 画框 frame（WIDE 16:9 / SQUARE 1:1 / PORTRAIT 4:5）+ 可选图注；来源：publisher（必填）+ workTitle / reference / date / url（可选）",
+    "optionalNodes": true,
+    "secondaryNodes": false,
+    "dynamicReflow": false,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "titleMaxLength": 24,
+    "captionMaxLength": 40,
+    "publisherMaxLength": 20,
+    "mediaSrcRule": "只接受 publicDir 相对路径：不得是网络地址、不得以 / 或 ~ 开头、不得包含 ..",
+    "outOfBounds": "REJECT_WITH_MESSAGE",
+    "note": "url 只作为来源文字显示，组件不联网抓取素材；素材缺失时由 Remotion 的 Img / OffthreadVideo 加载失败直接暴露，不静默显示空白。"
+  },
+  "workbench": {
+    "position": true,
+    "positionModes": [
+      "LEFT",
+      "CENTER",
+      "RIGHT"
+    ],
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "positionDefault": "CENTER",
+    "positionNote": "CENTER 用满可用宽度；LEFT / RIGHT 收窄到 72%，给人物或画面留出另一侧空间",
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": true,
+    "assetKinds": [
+      "IMAGE",
+      "VIDEO"
+    ],
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "card-fade-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "frames": [
+      "WIDE",
+      "SQUARE",
+      "PORTRAIT"
+    ],
+    "frameDefault": "WIDE"
+  },
+  "runtime": {
+    "module": "platform/components/evidence-media-card/EvidenceMediaCard.jsx",
+    "export": "EvidenceMediaCard",
+    "props": [
+      "content",
+      "position",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Card Entrance"
+      ],
+      "description": "卡片整体淡入并从 0.94 缩放到 1（520 毫秒 0.22/1/0.36/1 缓动），材料与文字同层进入；图片与视频本身不做二次动画，保证证据材料的真实比例与可读性。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 1,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "mediaLoading": "IMG 使用 Remotion Img（等待真实加载，失败即抛错）；VIDEO 使用 Remotion OffthreadVideo（后台解码，随帧对齐）",
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "sourceReuse": {
+      "remotionui": "Media Frame 只核验过目录记录（CMP-01 证据表明示详情抓取未成功），本轮未安装、未复制其源码，也未使用其组件。",
+      "overlay": "视觉令牌沿用本地 HUD：玻璃卡片渐变与边框、卡片投影、强调色竖条与等宽小字；材料框比例由本项目自建。"
+    }
+  },
+  "provenance": {
+    "source": "BUILT_IN_PROJECT",
+    "sourcePath": "workbench-v0/platform/components/evidence-media-card/layout.js",
+    "sourceRole": "补建组件：枝鸥 / Overlay Studio 的 20 个效果中没有证据媒体卡；材料 + 图注 + 来源说明的内容结构与卡片版式由本项目自建，视觉令牌取自本地 HUD 既有样式；RemotionUI Media Frame 未安装、未复制，不作为已验证来源。",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "证据媒体卡",
+    "description": "把截图或录屏与图注、来源一起展示。",
+    "tags": [
+      "证据",
+      "媒体"
+    ],
+    "aliases": [
+      "证据卡",
+      "截图证据"
+    ]
+  }
+}

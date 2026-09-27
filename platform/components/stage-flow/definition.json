@@ -1,0 +1,193 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-STG-001",
+    "name": "StageFlow｜阶段流程",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "STEP_TIMELINE",
+    "pattern": "STAGE_FLOW_WITH_EXPANSION",
+    "useCases": [
+      "纵向讲清一个主题下的 2–5 个阶段 / 作用（例：AKK 四大流程）",
+      "横向把同样的阶段铺成一行（适合 16:9 或横向版面），当前阶段在下方展开一句说明",
+      "标题在画面上，流程本体逐条推进，只有当前那条展开"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/stage-flow/content.schema.json",
+    "requiredFields": [
+      "stages[].title"
+    ],
+    "optionalFields": [
+      "title",
+      "stages[].detail",
+      "stages[].icon",
+      "activeStageIndex",
+      "stepMs"
+    ],
+    "nodeShape": "可选标题（画面的表述，不是节点）+ 2–5 个阶段（单行节点：图标 + 编号 + 名称）+ 当前阶段的展开说明 + 当前阶段索引 + 每步节奏；排列方向由 variant 决定",
+    "primaryLine": "stages[].title",
+    "secondaryLine": "title / stages[].detail",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 5,
+    "titleMaxLength": 18,
+    "stageTitleMaxLength": 14,
+    "detailMaxLength": 30,
+    "capacityNote": "标题一行（44 px，最长 18 字）；阶段节点单行显示（图标 26 px + 编号 28 px + 名称），名称内文宽约 236 px（32 px 最多 2 行，最长 14 字）；右侧展开面板内文宽 387 px（24 px 最多 2 行，最长 30 字）。上限按「全中文最宽字形 × 行数」反推，任何 schema 合法内容都能渲染；超限时明确拒绝，不裁切、不缩字。",
+    "cardTimingNote": "叙事节奏：标题 → 阶段 i 落地 → 阶段 i 的展开 → 连线生长 → 阶段 i+1；连线 i 的生长恰好收在阶段 i+1 落地那一刻。默认每步 420 毫秒，可调 160–1200 毫秒。",
+    "directionNote": "variant 决定排列方向：VERTICAL＝阶段纵列、连线向下、当前阶段向右展开；HORIZONTAL＝阶段横排一行、连线向右、当前阶段向下展开。两个方向共用同一棵内容树、同一套内容上限与同一条时间轴；横向模式的节点规格更紧凑（一行要排 2–5 个）。",
+    "directionCapacityNote": "横向模式在竖屏（9:16）最多排 4 个阶段——5 个会低于 62% 可读下限，被明确拒绝并提示改用纵向或减少阶段；16:9 里可排 5 个。纵向模式两个画幅都支持 2–5 个。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "assetReplaceReason": "纯图形组件，内容树里没有图片或视频素材位，所以不开放素材替换。",
+    "variant": true,
+    "variants": [
+      "VERTICAL",
+      "HORIZONTAL"
+    ],
+    "textRoles": [
+      {"path": "titleSize", "label": "标题字号", "options": ["SMALL", "MEDIUM", "LARGE"], "labels": {"SMALL": "小", "MEDIUM": "中", "LARGE": "大"}, "default": "MEDIUM", "note": "只影响标题，不改变整组件大小。"},
+      {"path": "stageLabelSize", "label": "阶段字号", "options": ["SMALL", "MEDIUM", "LARGE"], "labels": {"SMALL": "小", "MEDIUM": "中", "LARGE": "大"}, "default": "MEDIUM", "note": "只影响阶段标题，不改变整组件大小。"}
+    ],
+    "variantDefault": "VERTICAL",
+    "variantNote": "方向模式（用户 2026-09-15 确认合并为一个组件）：与章节进度条 FILL / LINE 同一个变体机制。纵向＝阶段纵列 + 向右展开；横向＝阶段横排 + 向下展开。",
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "title-stage-expansion-sequence",
+      "note": "叙事顺序固定为 标题 → 阶段 → 展开 → 竖线 → 下一阶段；节奏由内容字段 stepMs 控制，本版不开放成动效参数组。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "positionSupport": "整块（标题 + 阶段列 + 展开走廊）在可用安全区内按 0–1 比例落位；默认 0.5 / 0.5 居中，块高随阶段数量自动重算。",
+    "activeStageNote": "当前阶段 activeStageIndex：-1 = 自动跟随（讲到哪里展开哪里，上一条收起），0–4 = 锁定某一条；非当前阶段降权，只有当前阶段有右侧展开面板。",
+    "variantLabels": {
+      "VERTICAL": "纵向流程",
+      "HORIZONTAL": "横向流程"
+    }
+  },
+  "runtime": {
+    "module": "platform/components/stage-flow/StageFlow.jsx",
+    "export": "StageFlow",
+    "props": [
+      "content",
+      "variant",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "titleSize",
+      "stageLabelSize",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Title Enter",
+        "Stage Landing",
+        "Detail Expansion",
+        "Spine Growth"
+      ],
+      "description": "标题从下方 12 px 落定（420 毫秒）；第 i 个阶段在 stepMs × (2i+1) 时刻从下方 12 px、0.98 倍落定；它的展开说明在 stageStart + 0.6 × stepMs 时刻用 cubic-bezier(0.22, 1, 0.36, 1) 展开（宽度 + 透明度，420 毫秒；纵向向右、横向向下）；第 i 条连线在 stepMs × (2i+2) 开始生长、时长 stepMs（pathLength=1 等速），恰好收在第 i+1 个阶段落地那一刻，方向箭头在描画到 70% 后出现。当前阶段高亮，其余降权；上一条的展开在下一条落地时收起。",
+      "implementationNote": "按技能 V1.2 第 4.1 节实现：结构用 Interactive.* + name（元素可在 Studio 内选中与改样式），动效用内联 interpolate()，位移与缩放用 translate / scale 属性而不是 transform 字符串；输出范围与 easing 硬编码。已知取舍：时间轴由内容字段 stepMs 驱动，关键帧输入范围是计算值，在 Studio 里灰显（功能正常，仅不可编辑）。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。",
+    "sourceReuse": {
+      "remotionui": "连接的描画方式取自 RemotionUI 官方 primitive `connector-lines`（复制式来源，MIT）：每条连接用 pathLength=1 归一后按 strokeDashoffset 生长，长边短边同速；方向标记跟着描画进度出现。原件与 sha256 留档在 docs/component-assets/references/。",
+      "existingComponents": "阶段节点的卡片令牌、编号与墨色分层沿用项目既有 HUD 层级（StepTimeline / Checklist 家族）；「逐条出现 + 当前项突出」的叙事节奏与 FourPointNavigation 一致。"
+    },
+    "knownDifferences": [
+      "来源只画线、不管节点定位，且线形是给一对多分叉用的（curve / elbow / straight）；本组件是单列串联的竖向主脊，因此线形收敛为「竖直脊线 + 下行箭头」，保留的只有等速描画与方向标记跟描画出现的做法。",
+      "来源 easing 来自它的 motion-tokens helper；本项目沿用自己既有的缓动，不引入该依赖。",
+      "与 CMP-STP-001 StepTimeline 的差别：StepTimeline 是「按阶段展示章节大纲、未讲到的先留空」；本组件的每个阶段额外带一块「右侧展开说明」，且展开跟着当前项走（手风琴），这是 StepTimeline 没有的合同。",
+      "图标从固定白名单（13 个 lucide 图标）里选，未开放任意图标名。",
+      "横向模式受画幅限制：竖屏一行最多 4 个阶段（5 个低于 62% 可读下限会被拒绝），这是版式事实，不是实现缺陷；需要 5 个阶段时用纵向模式或 16:9。"
+    ],
+    "designRules": [
+      "流程图类组件必须有方向箭头：连接线没有方向标记就不算完成（用户 2026-09-15 约定，适用于后续所有流程 / 分支 / 步骤类组件）。",
+      "竖线与箭头是一体的：同一条连接线用同一个方向色（深底暖黄 #FFD24A、浅底深琥珀 #D98A00），竖线与箭头取色一致、宽度接近（箭头为线宽的 1.15 倍），读起来是一个箭头而不是「线 + 装饰」（用户 2026-09-15 校正）。",
+      "方向色不跟主题走：主题只决定节点高亮色，流程方向始终是暖黄（同色系贴近 RemotionUI 连线默认描边 #E8B86D）。",
+      "粗细取克制一档：连线 2.2 px、当前连接 2.8 px、箭身 22 × 15 px；当前连接不透明度 1，走过的连接 0.45，靠明暗而不是靠加粗区分。",
+      "箭头叠一层深色/浅色描边（1.6 倍宽）再画本色，保证叠在实拍画面或任意底色上都读得出来。",
+      "箭头跟随描画进度出现（连线画到 70% 之后），保证「线到位 → 方向成立」的因果顺序。"
+    ]
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceKind": "COPIED_SOURCE",
+    "sourceComponent": "connector-lines",
+    "sourceRegistryUrl": "https://remotionui.com/r/presets/default/connector-lines.json",
+    "sourceDocsUrl": "https://remotionui.com/docs/components/connector-lines",
+    "sourcePath": "docs/component-assets/references/COMP-02_remotionui_connector-lines.registry.json",
+    "sourceUpstreamPath": "registry/bases/default/primitives/connector-lines.tsx（RemotionUI 官方仓库 riaz37/remotion-ui 内的原始路径，经 registry 复制）",
+    "sourceArchive": "docs/component-assets/references/COMP-02_remotionui_connector-lines.registry.json",
+    "sourceArchiveSha256": "e6a4b075fb3a02ea421415e7f23228604dee5ce7c4f932870203d4456e31aae2",
+    "sourceFetchedAt": "2026-09-15",
+    "sourcePackage": "remotion-ui@0.9.1（npm 包只是 CLI，组件以源码复制进项目）",
+    "sourceCommit": "github.com/riaz37/remotion-ui @ f929be76867bec517342663e2e30f7b0700d47be",
+    "sourceLicense": "MIT（npm 元数据声明；站点无 /license 页，故以 npm 元数据 + 官方仓库为准）",
+    "sourceRole": "来源设计优先：保留它的连接描画方式（pathLength=1 等速生长）与方向标记跟随描画的做法；节点版式、叙事顺序、竖向主脊形态、画幅、主题映射与透明输出由本项目适配。",
+    "userConventions": "用户 2026-09-15 追加两条长期约定，适用于本组件与后续所有扩展：(1) 流程类组件必须带方向箭头；(2) 箭头颜色要明显、要粗，取黄色（或白）而不是连线本身的颜色。已写入 runtime.designRules，建议总控在技能下一次修订时折叠进技能正文。",
+    "notes": "本次检索过但未采用：`data-flow-pipes`（流水线 + payload 输送）、`org-chart-build`（自上而下多级组织图，自带标题与背景）。两份原件同样留档于同目录。",
+    "reuseAnalysis": "先查现有 22 项 REGISTERED：CMP-STP-001 StepTimeline（按阶段展示流程、未讲到的先留空）是最接近的项——竖向阶段骨架与它同源，但「每个阶段可右侧展开说明、且展开跟着当前项走」它没有；CMP-CHK-001 Checklist 是打勾型步骤，语义不同；CMP-LNG-001 LogicNodeGraph 是放射状分叉。已注册组件目录本卡不允许修改，因此按补建处理，并在 knownDifferences 里写明与 StepTimeline 的差别。",
+    "directionNote": "本组件是 COMP-02 方向修正后的最终目标：用户 2026-09-15 指出 AKK 应是画面标题而不是流程节点，流程本体是「多个阶段 + 当前阶段展开」，并进一步确认把横向与纵向合成同一个组件的两个方向模式。原按初始需求做的横向父子版草稿 DRAFT-two-level-branch-flow 已按用户确认退役到 .runtime/retired/（可找回）。",
+    "rawEvidence": "dev-control-panel/tasks/COMP-02_TASK.md",
+    "adaptationRef": "docs/component-assets/COMP-02_QA_REPORT.md",
+    "qaRef": "docs/component-assets/COMP-02_QA_REPORT.md",
+    "draftLane": "按组件创建技能 V1.2 的草稿通道：以 DRAFT-stage-flow / status = DRAFT 建立；草稿期不进入能力索引、AI 导演不可见、不计入组件总数。",
+    "promotion": "用户 2026-09-15 确认验收通过后执行晋升（按技能 V1.2 第 5.1 节清单）：componentId DRAFT-stage-flow → CMP-STG-001（领域码 STG = stage，沿用 CMP-<领域>-<序号> 规则），version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，写入 provenance.promotion；渲染实现未改动，晋升后重跑播放器演示、全量回归与实验页巡检。"
+  },
+  "discovery": {
+    "title": "阶段流程",
+    "description": "用横向或纵向阶段节点逐步讲清流程，并展开当前阶段说明。",
+    "tags": [
+      "流程",
+      "要点"
+    ],
+    "aliases": [
+      "横向流程",
+      "纵向流程"
+    ]
+  }
+}

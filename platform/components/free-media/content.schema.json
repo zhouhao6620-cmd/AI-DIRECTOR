@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "FreeMediaContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "kind", "src", "x", "y", "width", "aspect", "fit"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]+$"},
+          "kind": {"enum": ["IMAGE", "VIDEO", "LOGO"]},
+          "src": {"type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[^\\s][^\\r\\n\\t]*$"},
+          "x": {"type": "number", "minimum": 0, "maximum": 1},
+          "y": {"type": "number", "minimum": 0, "maximum": 1},
+          "width": {"type": "number", "minimum": 0.05, "maximum": 1},
+          "aspect": {"type": "number", "minimum": 0.25, "maximum": 4},
+          "fit": {"enum": ["CONTAIN", "COVER"]},
+          "radius": {"type": "number", "minimum": 0, "maximum": 48},
+          "opacity": {"type": "number", "minimum": 0.1, "maximum": 1}
+        }
+      }
+    }
+  }
+}

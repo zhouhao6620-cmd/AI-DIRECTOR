@@ -1,0 +1,37 @@
+{
+  "projectId": "foundation-smoke",
+  "projectName": "公共工程底座验证",
+  "language": "zh-CN",
+  "observedAt": "2026-09-14T08:00:00.000Z",
+  "expectedSummary": "工作台通过能力名称调用 AI，所有输出经校验后只能先写入候选状态。",
+  "expectedFacts": [
+    {
+      "fact": "Workbench 只通过 capabilityName 调用 AI 能力。",
+      "sourceSegmentIds": ["seg-001"]
+    },
+    {
+      "fact": "Skill 输出经 Schema Validation 后由 State Manager 写入 Candidate。",
+      "sourceSegmentIds": ["seg-002"]
+    }
+  ],
+  "segments": [
+    {
+      "sourceSegmentId": "seg-001",
+      "sourceCueId": "1",
+      "sourceRef": "platform/fixtures/test-transcript.json",
+      "startMs": 0,
+      "endMs": 3200,
+      "text": "Workbench 只通过 capabilityName 调用 AI 能力。",
+      "semanticRole": "EXPLANATION"
+    },
+    {
+      "sourceSegmentId": "seg-002",
+      "sourceCueId": "2",
+      "sourceRef": "platform/fixtures/test-transcript.json",
+      "startMs": 3200,
+      "endMs": 7100,
+      "text": "Skill 输出经 Schema Validation 后由 State Manager 写入 Candidate。",
+      "semanticRole": "CONCLUSION"
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-007",
+    "name": "AnimatedBarChart｜动态柱状图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_RANKING",
+    "pattern": "RANKED_BARS_WITH_AXIS",
+    "useCases": [
+      "1–6 个条目在同一条数值轴上的横向对比",
+      "每条条形与它右侧的数字共用一条弹簧，数字不会超出条形已经走到的位置"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/animated-bar-chart/content.schema.json",
+    "requiredFields": [
+      "bars"
+    ],
+    "optionalFields": [
+      "title",
+      "subtitle",
+      "unit",
+      "caption",
+      "bars[].delta",
+      "bars[].emphasis"
+    ],
+    "nodeShape": "条目：稳定 ID + 1–8 字名 + 非负数值（0–1,000,000,000）+ 可选幅度文本 + 可选强调开关",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 6,
+    "titleMaxLength": 14,
+    "subtitleMaxLength": 20,
+    "labelMaxLength": 8,
+    "deltaMaxLength": 6,
+    "unitMaxLength": 4,
+    "captionMaxLength": 28,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "880 px 设计画布上，条形名列最多占 26%（229 px）：8 个汉字在 23–24 px 下会缩到 18 px 左右仍放得下，超长则明确拒绝——来源用 0.62 em 估算中文并靠 ellipsis 截断。数值列按实测最宽数值与幅度取大者（来源写死 96 px）。坐标轴刻度按真实字体测量，刻度文字不得超过条区宽度的 40%。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "spring-bars",
+      "composableParameter": "来源固定 spring({damping 20, stiffness 110, mass 0.9, durationInFrames: DURATION.slow = 1.2 s})，行距错峰为 STAGGER.normal = 0.267 s；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.4,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "backgroundColor（来源底板 #080810）｜改为透明输出，底色由 surface（DARK / LIGHT）只决定墨色",
+      "holdSeconds 与退场｜来源的定格后撤退，本项目由编排层控制出点",
+      "width / height 驱动的条形高度自适配｜本组件改为固定 880 px 设计画布 + 整组件等比缩放，条形高度固定为来源的 52 px 基准",
+      "highlightLabel｜来源用内容里的某个标签指定强调，容易与内容脱节；改为每条自己的 emphasis 开关",
+      "barColor / accentColor / maxValue / maxBars｜来源参数：条形颜色改为四套主题，值域固定按 niceDomain 取整，条数由内容树上限（6）决定",
+      "up / down｜来源把涨跌写成固定语义色（COLORS.up / COLORS.down），本项目保持不变：涨跌是语义不是品牌色，不随主题变化",
+      "valueFormatter｜来源接受函数，内容树不能存函数，固定为项目的中文紧凑格式 + 内容级单位",
+      "@remotion/google-fonts/Inter 的 loadFont｜本项目组件不加载网络字体，改用项目字体栈"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/animated-bar-chart/AnimatedBarChart.jsx",
+    "export": "AnimatedBarChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Spring Build",
+        "Stagger",
+        "Emphasis"
+      ],
+      "description": "每条条形用来源的 spring（damping 20 / stiffness 110 / mass 0.9，时长 1.2 秒）按 0.267 秒逐条错峰生长，长度、右侧数字计数与整行上浮由同一条弹簧驱动；幅度文本等条形长到 70% 才出现。标题先入场（0.8 秒），副标题从 0.133 秒起、坐标轴从 0.267 秒起淡入。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, PingFang SC, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTION_UI",
+    "sourceEffectId": "animated-bar-chart",
+    "sourcePath": "RemotionGit/registry/animated-bar-chart.json → registry/bases/default/scenes/animated-bar-chart/index.tsx",
+    "sourceRole": "RemotionUI 来源库（源码复制式，MIT，commit 802a637）；来源设计优先：保留按 niceDomain 取整的数值轴与竖网格线、条形与数字共用一条弹簧的计数口径、淡色轨道上的渐变药丸、强调条的辉光、幅度 70% 才出现的两段落地，以及 0.267 秒逐条错峰的节奏，仅适配设计画布、透明与底色、文本实测与容量、内容树、画幅、主题映射与安全区定位",
+    "reuseAnalysis": "复用结论：① 已注册 23 项里 RankBars 最接近（同样是横向排名条形），但它是固定卡内、无坐标轴与数值列、无弹簧计数、无强调条的口径，本批次不允许改动它，且本卡要求把这 18 项来源适配进库，故按来源 style 单独适配；② 组件内元素尚未正式登记，本组件用不到；③ 取零件工厂的 chart-utils（值域 + 中文紧凑数值与刻度 + 文本实测）、motion-tokens（DURATION / STAGGER / EASING 令牌）两个零件装配，无需补建。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/elements/chart-utils/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/elements/motion-tokens/",
+        "status": "Adapted"
+      }
+    ],
+    "rawEvidence": "RemotionGit/README.md（来源与许可记录：MIT，commit 802a637）",
+    "adaptationRef": "docs/component-assets/CMP-06_DATA_CHARTS_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-06_ANIMATED_BAR_CHART_QA_REPORT.md",
+    "draftLane": "本组件是 CMP-06 A 批草稿：componentId = DRAFT-animated-bar-chart、status = DRAFT，不占正式 CMP- 编号，不进能力索引，AI 导演不可见。",
+    "sourceNote": "来源条目已在本地可真实渲染（http://127.0.0.1:4174/remotionui-preview.html 左侧目录 179 项之一）；仓库 License 为 MIT（RemotionGit/repo/LICENSE）。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-animated-bar-chart → CMP-DATA-007，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-007/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "动态柱状图",
+    "description": "用逐条生长的条形比较多个数值。",
+    "tags": [
+      "数据图表",
+      "对比"
+    ],
+    "aliases": [
+      "动画柱状图",
+      "横向柱图"
+    ]
+  }
+}

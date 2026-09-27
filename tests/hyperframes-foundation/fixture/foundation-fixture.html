@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_HYPERFRAME_RUNTIME_ENTRY__"></script>
+    <style>
+      html, body, #fixture-root { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+      #fixture-root { display: grid; place-items: center; background: #10131a; color: #fff; font: 600 32px system-ui; }
+    </style>
+  </head>
+  <body>
+    <main id="fixture-root" data-composition-id="R3-HF-FOUNDATION-FIXTURE" data-width="640" data-height="360" data-duration="2">
+      <span id="fixture-label">Initial</span>
+    </main>
+    <script type="module">
+      import { createFoundationComponentKit } from '/r3-src/component-kit/browser-foundation-kit.mjs';
+
+      const label = document.querySelector('#fixture-label');
+      window.r3FoundationFixture = createFoundationComponentKit({
+        window,
+        initialVariables: { label: 'Initial' },
+        render: ({ label: nextLabel }) => { label.textContent = nextLabel; },
+        createTimeline: () => window.gsap?.timeline({ paused: true }),
+      });
+    </script>
+  </body>
+</html>

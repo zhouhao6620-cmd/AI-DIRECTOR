@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "StatProofContent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kicker", "value"],
+  "properties": {
+    "kicker": {
+      "type": "string", "minLength": 1, "maxLength": 32,
+      "pattern": "^[^\\r\\n\\t]*\\S[^\\r\\n\\t]*$"
+    },
+    "kickerZh": {
+      "type": "string", "maxLength": 24, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "prefix": {
+      "type": "string", "maxLength": 4, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "value": {"type": "number", "minimum": -1000000000000, "maximum": 1000000000000},
+    "suffix": {
+      "type": "string", "maxLength": 8, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "footEn": {
+      "type": "string", "maxLength": 48, "pattern": "^[^\\r\\n\\t]*$"
+    },
+    "footZh": {
+      "type": "string", "maxLength": 40, "pattern": "^[^\\r\\n\\t]*$"
+    }
+  }
+}

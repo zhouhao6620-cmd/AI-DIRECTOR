@@ -1,0 +1,84 @@
+{
+  "componentId": "CMP-CHK-001",
+  "folder": "checklist",
+  "content": {
+    "title": "制作步骤",
+    "items": [
+      {
+        "id": "step-1",
+        "label": "确认目标"
+      },
+      {
+        "id": "step-2",
+        "label": "拆分步骤"
+      },
+      {
+        "id": "step-3",
+        "label": "逐项执行"
+      },
+      {
+        "id": "step-4",
+        "label": "核对结果"
+      }
+    ]
+  },
+  "optionDefaults": {
+    "size": 1,
+    "positionOffset": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "checkedCount": 3,
+    "stepMs": 160,
+    "position": "LEFT",
+    "surface": "DARK",
+    "theme": "SOURCE"
+  },
+  "timing": {
+    "startFrame": 15,
+    "durationInFrames": 210
+  },
+  "accents": {
+    "SOURCE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "BLUE": {
+      "DARK": "#5fa0fa",
+      "LIGHT": "#1e63d8"
+    },
+    "ORANGE": {
+      "DARK": "#f0a24f",
+      "LIGHT": "#d97a1c"
+    },
+    "RED": {
+      "DARK": "#e88686",
+      "LIGHT": "#cf5555"
+    },
+    "PURPLE": {
+      "DARK": "#8f86ea",
+      "LIGHT": "#6353d6"
+    }
+  },
+  "surfaceTokens": {
+    "DARK": {
+      "ink": "#ffffff",
+      "muted": "rgba(255, 255, 255, 0.70)",
+      "faint": "rgba(255, 255, 255, 0.44)",
+      "glassBorder": "rgba(255, 255, 255, 0.22)"
+    },
+    "LIGHT": {
+      "ink": "#1a2540",
+      "muted": "rgba(26, 37, 64, 0.66)",
+      "faint": "rgba(26, 37, 64, 0.42)",
+      "glassBorder": "rgba(255, 255, 255, 0.85)"
+    }
+  },
+  "variants": null,
+  "projectThemes": [
+    "BLUE",
+    "ORANGE",
+    "RED",
+    "PURPLE"
+  ]
+}

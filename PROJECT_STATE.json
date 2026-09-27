@@ -1,0 +1,284 @@
+{
+  "project": {
+    "name": "AI视频导演剪辑工作台_R3",
+    "status": "M0_D_IN_PROGRESS",
+    "updated_at": "2026-09-20"
+  },
+  "current_stage": "M0-D · Contracts and Product Skill Assets (IN_PROGRESS)",
+  "current_baseline": [
+    "docs/authoritative/00_AI DIRECTOR产品架构R3.md",
+    "docs/authoritative/01_AI DIRECTOR内容理解与导演编排R3.md",
+    "docs/authoritative/02_AI DIRECTOR智能剪辑R3.md",
+    "docs/authoritative/03_AI DIRECTOR智能剪辑工作台R3.md",
+    "docs/authoritative/04_AI DIRECTOR主题包装资产库R3.md",
+    "docs/authoritative/05_AI DIRECTOR导出R3.md",
+    "docs/authoritative/06_R3_REPOSITORY_STORAGE_ARCHITECTURE_研发工程与存储边界.md",
+    "docs/authoritative/07_R3_LEGACY_REUSE_AND_MIGRATION_CONTRACT_旧项目复用与迁移合同.md"
+  ],
+  "frozen": [
+    "R3 must be a physically independent new project",
+    "Reuse verified, R3-compatible implementation before rebuilding proven capability",
+    "Development Control Center must show full module map, state, dependencies, change impact, coupling risk, module history, and current/blocker/next",
+    "The six product documents under docs/authoritative remain the sole default R3 product baseline set",
+    "Product Repository, Project Workspace, Shared Asset Library, and Runtime Root are physically and responsibility-separated roots",
+    "Users choose one visible ProjectsRoot on first use; new projects default to independent folders under it, and the global ProjectsRoot can later change",
+    "Every Project Workspace uses project.json plus 01_输入素材, 02_导演计划, 03_项目实现, and 04_导出成片; runtime, cache, build, logs, temp, preview, and job data are excluded",
+    "V1 Shared Asset Library is application-managed under AppDataRoot and managed through the product UI",
+    "A formally adopted shared asset must be locked and materialized reproducibly in 03_项目实现 using Asset ID, Version Lock, Resolved Configuration, and a Production Snapshot or equivalent implementation",
+    "Only the Product Repository top-level responsibility boundary is frozen; source-internal organization remains provisional until Wave 1 and Pilot dependency closure",
+    "Gate 1B audit conclusions are frozen through docs/authoritative/07; the Gate 1B manifest remains a non-authoritative audit source",
+    "The 19 HyperFrames legacy assets are classified by the current R3 Asset Library baseline: 17 Component Card candidates plus CMP-CHP-001 as Global Chapter Progress and CMP-SUB-001 as Global Subtitle",
+    "Migration is Pilot First: Wave 2 begins with CMP-DATA-002, CMP-SKL-001, and CMP-SUB-001; the remaining 16 assets require Pilot Gate PASS",
+    "Migration Waves are frozen as HyperFrames Foundation, HyperFrames Asset Migration, Asset Library UI, Global Skeleton and Visual Gene, Material Foundation, and Stage 1; Development Control Center is a separate track",
+    "The Gate 1C Do Not Bring denylist remains mandatory for every migration wave",
+    "Gate 1C PASS does not authorize Wave 1 or any migration action",
+    "Wave 1 HyperFrames Foundation is independently verified with an R3-owned runtime resolver, adapter, player, component kit, Patch/Ack contract, timeline rebind, minimal fixture registry and non-formal test fixture",
+    "Wave 1 PASS does not authorize Wave 2 or migration of any formal CMP asset"
+    ,"All 19 approved HyperFrames assets are R3-managed, taxonomy-classified, and independently preview-validated"
+    ,"R3 Asset Registry and all 19 HyperFrames assets, Material Foundation, Workspace boundary patterns, and Project-State-driven Development Control Center are migrated without legacy runtime dependencies"
+    ,"Future product UIs must reuse one R3 workbench shell and shared primitives; business pages must not duplicate navigation, panels, states, asset cards, filters, or the HyperFrames preview player"
+    ,"The workbench-v0 implementation at /Users/skyai/Desktop/视频生产线流程/基线文档/workbench-v0, including its root workbench and design-spec.html, is the confirmed core reuse source for the unified visual language and product workbench shell; R3 must inherit it without retaining a runtime path dependency"
+    ,"The HyperFrames implementation at /Users/skyai/Desktop/视频生产线流程/基线文档/hyperframes and its /library experience is the confirmed core reuse source for the complete asset library, shared preview player, and configuration interactions; R3 must inherit it without retaining a runtime path dependency"
+    ,"The three confirmed Gold Master pages must be migrated with 1:1 visible content, UI, layout, styling, states, and interaction behavior; only non-visible path, runtime, registry, storage, and build wiring may change"
+    ,"Confirmed completed Legacy capabilities must use DIRECT COPY → VERIFY PARITY → MINIMAL ADAPT → VERIFY INDEPENDENCE; rewriting reusable UI, CSS, components, or interaction logic requires prior evidence and control approval"
+  ],
+  "working_consensus": [
+    "BASELINE_INDEX.md is the unique authority resolver; docs/产品基线 is provenance only",
+    "src/app, src/modules, src/ui, src/engines, src/storage, src/shared and equivalent source-internal organization remain PROVISIONAL until Wave 1 and the three Pilot assets reveal the real dependency closure",
+    "Exact storage schemas, operating-system root mappings, runtime cleanup policies, and shared-asset snapshot packaging remain PROVISIONAL",
+    "Shared Asset Library Backup, Export, and Import are later capabilities and are not part of Gate 1A implementation",
+    "Logical receiving boundaries may be discussed per frozen Migration Wave, but no final src directory tree or empty source directories are authorized by Gate 1C",
+    "The Wave 1 execution card is the controlled implementation scope for HyperFrames Foundation and uses a new non-asset test fixture; its receiving boundary name does not freeze the final src architecture",
+    "M0-B acceptance separates the verified HyperFrames foundation/player kernel from the not-yet-accepted global Shared Preview product component",
+    "Shared UI reuse order is fixed as discover existing shared capability, reuse directly, extend when required, and create only when no suitable capability exists",
+    "The local previews at 4174, 4174/design-spec.html, and 3030/library are inspection endpoints only; their source trees are controlled migration inputs, while R3 remains physically and operationally independent"
+  ],
+  "current_delta": [
+    "Stage 1 browser entry is implemented as an independent module: user-selected ProjectsRoot, unique Project Workspace creation, real Base Video + Final SRT import, Media Probe / Parser / Project Timebase validation, and VERIFIED project.json recording.",
+    "Golden Smoke Content Structure is STRUCTURE_CONFIRMED by Hao from the verified 15-cue Final SRT; it remains a controlled simulation because the formal R3 Content Understanding module is not implemented.",
+    "Golden Smoke DirectorPlan is DIRECTORPLAN_CONFIRMED by Hao and has been consumed only by a controlled non-formal test fixture, not a formal R3 DirectorPlan Artifact.",
+    "Golden Smoke controlled-simulation Intelligent Editing / HyperFrames Preview is complete: 6 semantically matching REGISTERED assets are reused and 2 unmatched relationship/flow needs are implemented as test-only HyperFrames Project DRAFTs. No external materials, Asset Candidate, asset registration, formal ProductionState, or export was created.",
+    "M0-B migration acceptance verified 15 deterministic checks, the production build, a real MP4 probe, the HyperFrames browser integration, all 19 asset previews, and a zero-hit legacy runtime/path scan; Hao accepted the gate on 2026-09-20.",
+    "M0-B found that the current Asset Library product page is a partial prototype and the global Shared Preview player is not yet a complete product component; neither may be represented as a finished cross-module capability."
+    ,"M0-C directly copied the confirmed Workbench, full Design Specification, HyperFrames Asset Library, shared player shell, 19 asset definitions, 19 compositions, preview posters, configuration interactions, and runtime files into R3; no replacement UI was handwritten."
+    ,"The copied Gold Masters run from the R3 4173 preview and the production dist package without requests to ports 4174/3030 or absolute Legacy folders; only R3-owned /shared-ui and /engine/hyperframes paths are used."
+  ],
+  "blockers": [
+    "Mount src/stage1/stage1-entry.mjs in the application shell and complete Chrome UI file-system validation; main.js and shell.css remain owned by the concurrent Development Control Center track.",
+    "Gap: the formal R3 Content Understanding, Director Arrangement / DirectorPlan, Intelligent Editing, and Workbench modules are absent; the Golden Smoke preview must not be represented as formal Stage 2–4 product capability."
+  ],
+  "open_issues": [
+    "Freeze final source-internal architecture after the completed migration dependency closure",
+    "Define the exact R3 Parent Asset, HyperFrames Engine Child, Registry, Patch and Shared Player schemas before formal Pilot Asset acceptance; the Wave 1 runtime contract is verified, while formal asset schemas remain provisional",
+    "Define exact storage schemas and operating-system root mappings before implementation",
+    "Decide whether 30-second real video + SRT becomes the formal Golden Project",
+    "Implement the formal R3 Content Understanding module as a separate module task after the Golden Smoke verification gate",
+    "Implement the formal R3 Director Arrangement / DirectorPlan module as a separate module task after the Golden Smoke verification gate",
+    "Implement formal R3 Intelligent Editing and Workbench / Acceptance as separate module tasks; the Golden Smoke preview is deliberately a non-formal test fixture.",
+    "Converge the product shell, shared UI primitives, Asset Library UI, and HyperFrames Shared Preview consumer contract without duplicating them per business page",
+    "Verify the shared player at 9:16 and add shared chrome plus loading, empty, error, duration, ended, audio, loop, fullscreen, and accessibility behavior before global product acceptance"
+  ],
+  "next_step": "M0-D is running in an independent GPT-5.6 Terra High task. Await its first controlled inventory and major-node report; do not start M0-E or M1-M7.",
+  "milestone_control": {
+    "state_source_rule": "Current milestone state only; evidence and detailed classification live in the linked acceptance report.",
+    "m0_a": {
+      "name": "研发可视化控制中心",
+      "status": "user_accepted",
+      "evidence": "docs/governance/DEVELOPMENT_LOG.md"
+    },
+    "m0_b": {
+      "name": "V1 迁移验收",
+      "status": "user_accepted",
+      "accepted_at": "2026-09-20",
+      "classification_counts": {
+        "accepted": 11,
+        "adapt_before_reuse": 14,
+        "reference_only": 4,
+        "forbidden": 7,
+        "not_migrated": 15
+      },
+      "evidence": "docs/migration/M0_B_V1_MIGRATION_ACCEPTANCE_2026-09-20.md"
+    },
+    "m0_c": {
+      "name": "研发仓库、存储与核心视觉资产迁移",
+      "status": "user_accepted",
+      "accepted_at": "2026-09-20",
+      "evidence_task": "01a0bdd2-57b3-7953-b17f-7b839e41c75d",
+      "verification": {
+        "core_tests": "16/16 PASS",
+        "m0_c_contract_tests": "15/15 PASS",
+        "production_build": "PASS",
+        "release_package_boundary": "PASS",
+        "hyperframes_browser_integration": "PASS · 19/19 assets",
+        "gold_master_visual_parity": "PASS · Workbench and Design Spec pixel-identical; Asset Library visual/interaction parity verified",
+        "standalone_package": "PASS · no requests to 4174/3030 or Legacy absolute folders"
+      }
+    },
+    "m0_d": {"name": "合同与产品技能资产", "status": "in_progress", "started_at": "2026-09-20", "execution_model": "GPT-5.6 Terra / High"},
+    "m0_e": {"name": "真实全链路黄金样例", "status": "not_started"},
+    "m1_to_m7": {"status": "not_started"}
+  },
+  "development_control_center": {
+    "schema_version": 1,
+    "status": "pass",
+    "status_label": "V1 PASS · Separate Track",
+    "last_verified_at": "2026-09-19",
+    "state_source": "PROJECT_STATE.json",
+    "state_source_rule": "Read-only projection; the dashboard owns no parallel manual state.",
+    "modules": [
+      {
+        "id": "project-workspace",
+        "name": "Project Workspace",
+        "track": "Product foundation",
+        "state": "pass",
+        "state_label": "Foundation PASS",
+        "description": "用户项目的持久事实源、ProjectsRoot 入口与四层可见目录边界。",
+        "upstream": [],
+        "downstream": ["material-preparation"],
+        "coupling_risk": {"level": "independent", "detail": "通过 R3 Workspace Boundary 与显式 Adapter 连接，不依赖旧工程运行时。"},
+        "history": [
+          {"date": "2026-09-19", "title": "Project Workspace foundation accepted", "result": "项目创建、四层目录与受控素材入口已具备确定性测试。"}
+        ]
+      },
+      {
+        "id": "material-preparation",
+        "name": "Material Preparation",
+        "track": "Stage 1",
+        "state": "pending_acceptance",
+        "state_label": "Gold Master UI copied · R3 data wiring pending",
+        "description": "Base Video、Final SRT 与 Project Timebase 的受控输入和校验。",
+        "upstream": ["project-workspace"],
+        "downstream": ["content-understanding", "intelligent-editing"],
+        "coupling_risk": {"level": "controlled", "detail": "依赖 Project Workspace 的输入边界，Parser 与 Media Probe 由 R3 自有实现提供。"},
+        "history": [
+          {"date": "2026-09-19", "title": "Material Foundation accepted", "result": "SRT Parser、Media Probe 与 Workspace Adapter 已进入 R3；用户选择器仍是下一最小接线。"}
+        ]
+      },
+      {
+        "id": "content-understanding",
+        "name": "Content Understanding",
+        "track": "Stage 2",
+        "state": "planned",
+        "state_label": "Planned by baseline",
+        "description": "从 Final SRT 与素材事实形成可确认的内容结构。",
+        "upstream": ["material-preparation"],
+        "downstream": ["director-arrangement"],
+        "coupling_risk": {"level": "controlled", "detail": "必须消费 Final SRT 合同，不恢复旧 Stage 1 Artifact 或 DirectorPlan Contract。"},
+        "history": []
+      },
+      {
+        "id": "director-arrangement",
+        "name": "Director Arrangement",
+        "track": "Stage 3",
+        "state": "planned",
+        "state_label": "Planned by baseline",
+        "description": "将内容结构收敛为 Confirmed DirectorPlan 与视觉生产意图。",
+        "upstream": ["content-understanding", "asset-library"],
+        "downstream": ["intelligent-editing"],
+        "coupling_risk": {"level": "controlled", "detail": "主题资产库提供 Visual DNA 与可复用资产，但 DirectorPlan 仍是上游业务合同。"},
+        "history": []
+      },
+      {
+        "id": "asset-library",
+        "name": "Theme Packaging Asset Library",
+        "track": "Horizontal system",
+        "state": "pending_acceptance",
+        "state_label": "19 assets + Gold Master UI + Player · Pending acceptance",
+        "description": "19 个 HyperFrames 资产、完整主题资产库 UI、共享播放器外壳与配置交互已直接复制并独立运行；正式 Theme Preset / Draft Box 产品合同仍属于后续研发。",
+        "upstream": ["engine-foundation"],
+        "downstream": ["director-arrangement", "intelligent-editing"],
+        "coupling_risk": {"level": "controlled", "detail": "资产通过 R3 Taxonomy、Asset ID 与版本锁定连接；正式项目必须形成本地可复现记录。"},
+        "history": [
+          {"date": "2026-09-19", "title": "19 approved assets independently preview-validated", "result": "R3 Asset Registry 与 19 个 HyperFrames 资产已脱离旧状态源并完成真实 Runtime / Player 验证；完整产品 UI 不在此结论内。"},
+          {"date": "2026-09-20", "title": "Gold Master asset library copied into R3", "result": "完整资产库 UI、播放器、19 个合成与配置交互已按原源码迁入 R3，通过独立构建运行验证并由用户验收。"}
+        ]
+      },
+      {
+        "id": "intelligent-editing",
+        "name": "Intelligent Editing",
+        "track": "Stage 4",
+        "state": "planned",
+        "state_label": "Planned by baseline",
+        "description": "解析资产、物化内容、编译布局与 Timing，形成真实 ProductionState。",
+        "upstream": ["material-preparation", "director-arrangement", "asset-library", "engine-foundation"],
+        "downstream": ["workbench"],
+        "coupling_risk": {"level": "controlled", "detail": "同时消费 DirectorPlan、Final SRT、Base Video、Theme Preset 与 Engine Adapter。"},
+        "history": []
+      },
+      {
+        "id": "workbench",
+        "name": "Workbench / Acceptance",
+        "track": "Production acceptance",
+        "state": "planned",
+        "state_label": "Planned by baseline",
+        "description": "本地真实预览、Inspector、轻量验收与 Pending Acceptance。",
+        "upstream": ["intelligent-editing", "engine-foundation"],
+        "downstream": ["export"],
+        "coupling_risk": {"level": "controlled", "detail": "消费 ProductionState 与 Shared Player；Stage 4 不直接生成正式导出文件。"},
+        "history": []
+      },
+      {
+        "id": "export",
+        "name": "Export",
+        "track": "Stage 5",
+        "state": "planned",
+        "state_label": "Planned by baseline",
+        "description": "用户明确开始后生成 Export Job、真实进度与正式文件产物。",
+        "upstream": ["workbench", "engine-foundation"],
+        "downstream": [],
+        "coupling_risk": {"level": "controlled", "detail": "仅从确认完成的 ProductionState Snapshot 开始，不把生产完成隐式升级为导出。"},
+        "history": []
+      },
+      {
+        "id": "engine-foundation",
+        "name": "HyperFrames Foundation / Engine Adapter",
+        "track": "Technical foundation",
+        "state": "pass",
+        "state_label": "Wave 1 PASS",
+        "description": "R3-owned Runtime Resolver、Shared Player 内核、Component Kit 与 Patch/Ack 合同；全局产品化 Player 仍需后续 Gate。",
+        "upstream": [],
+        "downstream": ["asset-library", "intelligent-editing", "workbench", "export"],
+        "coupling_risk": {"level": "independent", "detail": "运行时从 R3 自有依赖解析，已通过独立性与真实浏览器集成验证。"},
+        "history": [
+          {"date": "2026-09-19", "title": "HyperFrames Foundation Wave 1 PASS", "result": "Runtime、Player、Component Kit、Patch/Ack、timeline rebind 与非正式 fixture 已闭环。"}
+        ]
+      },
+      {
+        "id": "development-control-center",
+        "name": "Development Control Center",
+        "track": "Separate track",
+        "state": "pass",
+        "state_label": "V1 PASS · Separate Track",
+        "description": "以 Project State 为唯一事实源的产品 / 架构研发地图与连续性交接面。",
+        "upstream": ["project-workspace", "material-preparation", "asset-library", "engine-foundation"],
+        "downstream": [],
+        "coupling_risk": {"level": "independent", "detail": "只读 PROJECT_STATE.json；明确拒绝旧 development-state.json 与旧运行时耦合。"},
+        "history": [
+          {"date": "2026-09-19", "title": "Development Control Center V1 delivered", "result": "Product Map、状态、依赖、Change Impact、Coupling Risk、Module History 与 Current/Blocker/Next 已齐备。"}
+        ]
+      }
+    ],
+    "change_impact": {
+      "summary": "DCC V1 作为独立内部研发工具运行，以 PROJECT_STATE 只读投影展示研发事实；只复用导演台的视觉规范，不进入 AI 视频导演产品。",
+      "affected_modules": ["development-control-center"],
+      "regression_surface": [
+        "development-control-center.html + src/development-control-center/main.js · 独立启动路径、中文主画布与右侧详情抽屉",
+        "src/development-control-center/control-center.css · 复用导演台的顶部栏、左侧栏、Canvas、Drawer、卡片与状态样式",
+        "src/application-shell/main.js + src/application-shell/shell.css · 产品 Shell 已清理 DCC 导航与样式，保留后续 Stage 1 接线面",
+        "vite.config.mjs · 产品与独立 DCC 双入口构建",
+        "PROJECT_STATE.json · schema_version=1 与统一状态读取",
+        "R3 state-source guard · 不读取旧 development-state.json"
+      ],
+      "guardrails": [
+        "DCC 不维护手工状态、不接收旧状态、不写入 Project Workspace",
+        "AI 视频导演产品内不出现研发控制中心入口；后续 Stage 1 接线仍由产品 Shell 独立处理",
+        "Frozen Baseline 与 Migration Wave 规则保持不变"
+      ]
+    },
+    "coupling_risk_summary": [
+      {"level": "independent", "tone": "independent", "label": "Independent", "count": 3, "detail": "R3-owned boundary or read-only state projection with no legacy runtime dependency。"},
+      {"level": "controlled", "tone": "controlled", "label": "Controlled Dependency", "count": 7, "detail": "通过已声明的产品合同、Workspace、Asset 或 Engine Adapter 连接。"},
+      {"level": "hidden", "tone": "hidden", "label": "Hidden Coupling / Legacy Dependency", "count": 0, "detail": "当前未登记；旧项目路径、旧状态与旧运行时均在 denylist 内。"}
+    ]
+  }
+}

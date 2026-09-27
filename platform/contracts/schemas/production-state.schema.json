@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ProductionState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "aspectRatio", "shots", "globalPackaging"],
+      "properties": {
+        "projectId": {"type": "string"},
+        "aspectRatio": {"type": "string", "enum": ["9:16", "16:9"]},
+        "theme": {"type": "string", "enum": ["BLUE", "ORANGE", "RED", "PURPLE"]},
+        "shots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["directorShotId", "characterLayoutInstance", "componentInstances"],
+            "properties": {
+              "directorShotId": {"type": "string"},
+              "characterLayoutInstance": {"type": "object"},
+              "componentInstances": {"type": "array", "items": {"type": "object"}}
+            }
+          }
+        },
+        "globalPackaging": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stateId", "schemaVersion", "lifecycle", "revision", "directorPlanVersion", "fps", "durationInFrames", "width", "height"],
+      "properties": {
+        "stateId": {"type": "string"},
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "lifecycle": {"type": "string", "enum": ["DRAFT", "CANDIDATE", "CONFIRMED", "FROZEN"]},
+        "revision": {"type": "string"},
+        "directorPlanVersion": {"type": "string"},
+        "fps": {"type": "number", "minimum": 1},
+        "durationInFrames": {"type": "integer", "minimum": 1},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-TRM-001",
+    "name": "TermCard｜术语解释",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "KEY_STATEMENT",
+    "pattern": "TERM_DEFINITION",
+    "useCases": [
+      "解释一个新名词",
+      "术语 + 一句话定义 + 可选原文写法"
+    ],
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/term-card/content.schema.json",
+    "requiredFields": [
+      "term",
+      "definition"
+    ],
+    "optionalFields": [
+      "en"
+    ],
+    "nodeShape": "术语卡：术语 + 一句话定义；en 为可选英文 / 拼音小标",
+    "primaryLine": "term",
+    "secondaryLine": "definition",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 1,
+    "maxCardinality": 1,
+    "termMaxLength": 24,
+    "definitionMaxLength": 120,
+    "enMaxLength": 40,
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "size": true,
+    "sizeRange": {
+      "min": 0.8,
+      "max": 2
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "card-rise"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "positionSupport": "来源左侧 / 右侧锚点合并为安全区内的 0–1 位置；默认 1 / 0.5 即来源右侧落位"
+  },
+  "runtime": {
+    "module": "platform/components/term-card/TermCard.jsx",
+    "export": "TermCard",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Card Rise"
+      ],
+      "description": "整卡从下方 16 px 处上浮并同时从 0.98 倍回到 1 倍，透明度与位移共用 520 毫秒同一条三次贝塞尔缓动；无退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "overlay": "复用 TermCard 的术语卡形态：620 px 内容宽、34 / 38 px 内边距、22 px 圆角、5 px 强调色左边线、玻璃底与来源卡片阴影、等宽大写小标、52 px 强调色术语、30 px / 1.45 行高定义。"
+    }
+  },
+  "provenance": {
+    "source": "OVERLAY_STUDIO",
+    "sourcePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/TermCard.tsx",
+    "sourceStylePath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/hud.css",
+    "sourceTokenPath": "/Users/skyai/overlay-studio/motion-playground/src/effects/hud/accent.ts",
+    "sourceRole": "来源设计优先：保留术语卡布局、左边线、玻璃底、字体层级与上浮动画；仅为内容树、长定义换行、画幅、位置比例、主题映射与透明输出做必要适配",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04B_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04B_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "术语解释",
+    "description": "展示术语、一句话解释及可选英文写法。",
+    "tags": [
+      "文字",
+      "观点"
+    ],
+    "aliases": [
+      "名词解释",
+      "概念卡"
+    ]
+  }
+}

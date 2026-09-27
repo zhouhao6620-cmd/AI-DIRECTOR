@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  CMP-SKL-001 冒烟测试 · 变量覆盖夹具（第二个根合成）
+
+  Role: Reference（冒烟测试件，不是基线）
+  用途：证明「同一份子合成资产 + 不同 data-variable-values = 不同实例」这条 HyperFrames 核心能力
+        （调研指南 §34 实例级变量覆盖）。
+
+  与 index.html 的差别只有宿主上的 data-variable-values：文字、数据胶囊、强调色全部换掉，
+  子合成文件一行都没有改。
+  这个文件放在 fixtures/ 下（项目只能有一个根 index.html，否则 lint 会报 multiple_root_compositions），
+  所以里面的相对路径都按「本文件所在目录」写：../compositions/... 与 ../vendor/canvas-backdrop.js。
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"canvas","type":"enum","label":"画布底色","default":"DARK","options":[{"value":"DARK","label":"黑色"},{"value":"LIGHT","label":"浅色"},{"value":"CHECKER","label":"透明网格"}]}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-SKL-001 变量覆盖夹具</title>
+  <script src="../vendor/canvas-backdrop.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; background: transparent; }
+    [data-composition-id="cmp-skl-001-override-root"] {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-skl-001-override-root" data-width="1920" data-height="1080" data-duration="12" data-no-timeline>
+    <div
+      id="el-cmp-skl-001-override"
+      data-composition-id="cmp-skl-001-override-instance"
+      data-composition-src="../compositions/skill-intro-card.html"
+      data-start="0"
+      data-duration="12"
+      data-track-index="1"
+      style="z-index:20"
+      data-variable-values='{"surface":"DARK","size":1,"duration":12,"position-x":0.5,"position-y":0.5,"card1_skill":"hyperframes","card1_hook":"HTML 就是视频的源文件","card1_body":"一条可以 Seek 的 GSAP 时间线，替代逐帧渲染的组件代码。","card1_badge":"冒烟测试实例","accent-1":"#F0A24F","card2_skill":"smoke-test","card2_hook":"换一份变量，不换一行业务代码","card2_body":"同一份子合成资产，两个实例各说各话，版式与动效完全一致。","card2_badge":"内核 0.8.46","accent-2":"#8F86EA","card3_skill":"instance-override","card3_hook":"数据驱动，而不是改代码","card3_body":"实例级变量变更停留在数据层，资产本身保持可复用。","card3_badge":"同一份资产","accent-3":"#538BFE","card4_skill":"","card4_hook":"","card4_body":"","card4_badge":""}'
+    ></div>
+  </div>
+</body>
+</html>

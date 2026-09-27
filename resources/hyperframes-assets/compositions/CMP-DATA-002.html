@@ -1,0 +1,199 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"countMs","type":"number","label":"数起时长（毫秒）","default":1600,"min":400,"max":5000,"step":50},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-DATA-002 数据实证 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-002"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+      --ink: #ffffff;
+      --muted: rgba(255,255,255,0.70);
+      --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .spf-card { position: absolute; display: flex; flex-direction: column; color: var(--ink); }
+    .spf-kicker { display: flex; align-items: center; font-family: var(--font-mono); font-weight: 600; color: var(--accent); white-space: pre; }
+    .spf-kicker i { display: inline-block; background: var(--accent); flex: none; }
+    .spf-kicker-zh, .spf-foot-zh { color: var(--muted); white-space: pre; line-height: 1.2; }
+    .spf-num { color: var(--ink); font-weight: 900; line-height: 1.02; white-space: pre; font-variant-numeric: tabular-nums; }
+    .spf-num .prefix, .spf-num .suffix { color: var(--accent); }
+    .spf-foot-en { font-family: var(--font-mono); font-weight: 600; color: var(--accent); white-space: pre; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-002" data-width="1920" data-height="1080">
+    <div class="spf-card" data-card>
+      <div class="spf-kicker" data-kicker><i data-kicker-bar></i><span data-kicker-text></span></div>
+      <div class="spf-kicker-zh" data-kicker-zh></div>
+      <div class="spf-num" data-num><span class="prefix" data-prefix></span><span data-value></span><span class="suffix" data-suffix></span></div>
+      <div class="spf-foot-en" data-foot-en></div>
+      <div class="spf-foot-zh" data-foot-zh></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {
+        "kicker": "RESEARCH FINDING",
+        "kickerZh": "研究结论",
+        "prefix": "",
+        "value": 1280,
+        "suffix": "万",
+        "footEn": "SAMPLE SIZE · PEER REVIEWED",
+        "footZh": "样本量来自公开研究，可复核。"
+      }
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {
+          gap: 6, barWidth: 5, barHeight: 20, kickerGap: 10,
+          kickerFontSize: 19, kickerLetterSpacingEm: 0.14,
+          kickerZhFontSize: 20, kickerZhLetterSpacingEm: 0.06,
+          numFontSize: 150, numLetterSpacingEm: 0.01, suffixScale: 0.62, suffixRaiseEm: 0.28,
+          footEnFontSize: 18, footEnLetterSpacingEm: 0.16, footEnMarginTop: 4,
+          footZhFontSize: 20, footZhLetterSpacingEm: 0.05, lineHeight: 1.2, anchorX: 120,
+        };
+        const MOTION = {boxOpacityMs: 600, boxTransformMs: 700, boxRisePx: 24, breathDelayMs: 1400, breathPeriodMs: 2800, breathMaxBrightness: 0.12, breathShadowPx: 9};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)"},
+        };
+        const decimalsOf = value => (Number.isInteger(value) ? 0 : 1);
+        const formatNumber = (value, decimals = decimalsOf(value)) =>
+          value.toLocaleString("en-US", {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+
+        hfComponentKit.mount({
+          id: "cmp-data-002",
+          mount: "none",                    // 来源组件自己吃 position / size
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            countMs: Math.min(5000, Math.max(400, Number(variables.countMs) || 1600)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {
+              x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))),
+              y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5))),
+            },
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const factor = options.size;                       // 画布与本舞台等面积 → canvasScale = 1
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const gap = GEO.gap * factor;
+            const overflow = [];
+            const fitText = (text, fontSize, fontWeight, letterSpacing, maxWidth, floor, label) => {
+              if (!text) return {fontSize, letterSpacing, width: 0};
+              const natural = measure.width(text, fontSize, fontWeight, letterSpacing);
+              let resolved = {fontSize, letterSpacing, width: natural};
+              if (natural > maxWidth) {
+                const scaled = Math.max(floor, fontSize * (maxWidth / natural));
+                resolved = {fontSize: scaled, letterSpacing: letterSpacing * (scaled / fontSize), width: measure.width(text, scaled, fontWeight, letterSpacing * (scaled / fontSize))};
+              }
+              if (resolved.width > maxWidth + 0.5) overflow.push(label);
+              return resolved;
+            };
+
+            const kickerText = String(content.kicker ?? "");
+            const kickerZh = String(content.kickerZh ?? "");
+            const prefix = String(content.prefix ?? "");
+            const suffix = String(content.suffix ?? "");
+            const footEn = String(content.footEn ?? "");
+            const footZh = String(content.footZh ?? "");
+            const value = Number(content.value ?? 0);
+
+            card.setAttribute("data-component-id", "CMP-DATA-002");
+            const kickerBarWidth = GEO.barWidth * factor;
+            const kickerBarHeight = GEO.barHeight * factor;
+            root.querySelector("[data-kicker-bar]").style.cssText = `width:${kickerBarWidth}px;height:${kickerBarHeight}px;`;
+            root.querySelector("[data-kicker]").style.cssText = `gap:${GEO.kickerGap * factor}px;font-size:${GEO.kickerFontSize * factor}px;letter-spacing:${GEO.kickerFontSize * GEO.kickerLetterSpacingEm * factor}px;`;
+            root.querySelector("[data-kicker-text]").textContent = kickerText;
+            root.querySelector("[data-kicker-zh]").style.cssText = `font-size:${GEO.kickerZhFontSize * factor}px;letter-spacing:${GEO.kickerZhFontSize * GEO.kickerZhLetterSpacingEm * factor}px;margin-top:${gap}px;`;
+            root.querySelector("[data-kicker-zh]").textContent = kickerZh;
+            root.querySelector("[data-num]").style.cssText = `font-size:${GEO.numFontSize * factor}px;letter-spacing:${GEO.numFontSize * GEO.numLetterSpacingEm * factor}px;margin-top:${gap}px;`;
+            const suffixNode = root.querySelector("[data-suffix]");
+            suffixNode.style.fontSize = `${GEO.numFontSize * GEO.suffixScale * factor}px`;
+            suffixNode.style.verticalAlign = `${GEO.suffixRaiseEm}em`;
+            suffixNode.textContent = suffix;
+            root.querySelector("[data-prefix]").textContent = prefix;
+            const valueNode = root.querySelector("[data-value]");
+            const footEnNode = root.querySelector("[data-foot-en]");
+            footEnNode.style.cssText = `margin-top:${GEO.footEnMarginTop * factor}px;font-size:${GEO.footEnFontSize * factor}px;letter-spacing:${GEO.footEnFontSize * GEO.footEnLetterSpacingEm * factor}px;`;
+            footEnNode.textContent = footEn;
+            const footZhNode = root.querySelector("[data-foot-zh]");
+            footZhNode.style.cssText = `font-size:${GEO.footZhFontSize * factor}px;letter-spacing:${GEO.footZhFontSize * GEO.footZhLetterSpacingEm * factor}px;margin-top:${gap}px;`;
+            footZhNode.textContent = footZh;
+
+            // 卡片宽度取各块最宽者（与来源一致：卡片按内容定宽，再按安全区落位）
+            const numberWidth = measure.width(prefix + formatNumber(value), GEO.numFontSize * factor, 900, GEO.numFontSize * GEO.numLetterSpacingEm * factor)
+              + measure.width(suffix, GEO.numFontSize * GEO.suffixScale * factor, 900, 0);
+            const widths = [
+              kickerBarWidth + GEO.kickerGap * factor + measure.width(kickerText, GEO.kickerFontSize * factor, 600, GEO.kickerFontSize * GEO.kickerLetterSpacingEm * factor),
+              measure.width(kickerZh, GEO.kickerZhFontSize * factor, 400, GEO.kickerZhFontSize * GEO.kickerZhLetterSpacingEm * factor),
+              numberWidth,
+              measure.width(footEn, GEO.footEnFontSize * factor, 600, GEO.footEnFontSize * GEO.footEnLetterSpacingEm * factor),
+              measure.width(footZh, GEO.footZhFontSize * factor, 400, GEO.footZhFontSize * GEO.footZhLetterSpacingEm * factor),
+            ];
+            const cardWidth = Math.min(availableWidth, Math.max(1, ...widths));
+            const lines = [kickerText, kickerZh, "", footEn, footZh].filter(Boolean).length;
+            card.style.width = `${cardWidth}px`;
+            const cardHeight = card.getBoundingClientRect().height;
+            card.style.left = `${safeX + (availableWidth - cardWidth) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - cardHeight) * options.position.y}px`;
+            ctx.setAttr(root, "data-card-width", cardWidth.toFixed(1));
+            ctx.setAttr(root, "data-line-blocks", lines);
+
+            const shown = formatNumber(0, decimalsOf(value));
+            valueNode.textContent = shown;
+            const counter = {value: 0};
+            const duration = options.duration;
+            timeline.fromTo(card, {opacity: 0}, {opacity: 1, duration: MOTION.boxOpacityMs / 1000, ease: "power2.out"}, 0);
+            timeline.from(card, {y: MOTION.boxRisePx * factor, duration: MOTION.boxTransformMs / 1000, ease: "power3.out"}, 0);
+            timeline.to(counter, {
+              value, duration: options.countMs / 1000, ease: "expo.out",
+              onUpdate: () => { valueNode.textContent = formatNumber(counter.value, decimalsOf(value)); },
+            }, 0);
+            // 呼吸：亮度 + 辉光，周期 2800ms、延迟 1400ms，交替到片段结束（有限次重复）
+            const cycles = Math.max(1, Math.floor(Math.max(0, duration - MOTION.breathDelayMs / 1000) / (MOTION.breathPeriodMs / 1000)));
+            const numberNode = root.querySelector("[data-num]");
+            timeline.fromTo(numberNode, {filter: "brightness(1) drop-shadow(0 0 0px rgba(0,0,0,0))"},
+              {filter: `brightness(${1 + MOTION.breathMaxBrightness}) drop-shadow(0 0 ${MOTION.breathShadowPx}px ${options.accent})`,
+                duration: MOTION.breathPeriodMs / 1000, ease: "sine.inOut", yoyo: true, repeat: cycles * 2 - 1},
+              MOTION.breathDelayMs / 1000);
+            ctx.meta = {value, cardWidth: Math.round(cardWidth), overflow};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

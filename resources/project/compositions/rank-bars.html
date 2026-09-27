@@ -1,0 +1,176 @@
+<!doctype html>
+<!--
+  CMP-DATA-004 排名条形图 · HyperFrames 子合成
+
+  Role: Reference（HyperFrames 组件库改造，不是基线）
+  事实源：workbench-v0/platform/components/rank-bars/**（只读复制）
+          · 版式：最小宽度 560 / 行距 24 / 名称 27·500 / 数值 32·600 / 轨道 6·圆角 6 /
+            眉题等宽 20·600·0.18em + 9px 圆点 / 锚点 120
+          · 动效：逐行 560ms 上浮淡入（stagger 140ms）、条形 900ms 生长、数值 1400ms 数起；
+            领先项用强调色，其余用淡紫
+          · 内容：{title, rows[{id,name,value}], suffix}
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-DATA-004 排名条形图 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-004"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff; --muted: rgba(255,255,255,0.70); --track: rgba(255,255,255,0.16); --lav: #b9b2ee; --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .rb-card { position: absolute; display: flex; flex-direction: column; color: var(--ink); }
+    .rb-title { display: inline-flex; align-items: center; font-family: var(--font-mono); font-weight: 600;
+      text-transform: uppercase; color: var(--muted); white-space: pre; }
+    .rb-title i { border-radius: 50%; background: var(--accent); flex: none; display: block; }
+    .rb-row { display: flex; flex-direction: column; }
+    .rb-head { display: flex; justify-content: space-between; align-items: baseline; }
+    .rb-name { font-weight: 500; white-space: pre; }
+    .rb-value { font-weight: 600; white-space: pre; font-variant-numeric: tabular-nums; }
+    .rb-track { position: relative; width: 100%; border-radius: 6px; background: var(--track); overflow: hidden; }
+    .rb-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; transform-origin: left center; }
+    .rb-row[data-rb-top="true"] .rb-fill { background: var(--accent); }
+    .rb-row[data-rb-top="false"] .rb-fill { background: var(--lav); }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-004" data-width="1920" data-height="1080">
+    <div class="rb-card" data-card>
+      <div class="rb-title" data-title><i data-title-dot></i><span data-title-text></span></div>
+      <div data-rows></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {"title": "本机样例 · 对比排名", "rows": [{"id": "row-1", "name": "样本甲", "value": 42}, {"id": "row-2", "name": "样本乙", "value": 21}, {"id": "row-3", "name": "样本丙", "value": 9.5}], "suffix": "%"}
+    </script>
+
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/canvas-backdrop.js"></script>
+    <script src="/vendor/hf-component-kit.js"></script>
+    <script>
+      (function () {
+        const GEO = {minWidth: 560, rowMarginBottom: 24, headMarginBottom: 11, nameFontSize: 27, valueFontSize: 32,
+          trackHeight: 6, headGap: 16, anchorX: 120, maxRows: 6};
+        const MOTION = {staggerMs: 140, rowFadeMs: 560, rowRisePx: 12, fillMs: 900, valueRampMs: 1400};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", track: "rgba(255,255,255,0.16)", lav: "#b9b2ee"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", track: "rgba(26,37,64,0.13)", lav: "#837bc4"},
+        };
+        const decimalsOf = value => (Number.isInteger(value) ? 0 : Math.abs(value * 10 - Math.round(value * 10)) < 1e-9 ? 1 : 2);
+        const formatNumber = (value, decimals) => value.toLocaleString("en-US", {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+
+        hfComponentKit.mount({
+          id: "cmp-data-004",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))), y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5)))},
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--track", tokens.track);
+            ctx.root.style.setProperty("--lav", tokens.lav);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const rowsHost = root.querySelector("[data-rows]");
+            const scale = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const rows = (Array.isArray(content.rows) ? content.rows : []).slice(0, GEO.maxRows).map((row, index) => ({
+              id: row.id ?? `row-${index}`, name: String(row.name ?? ""), value: Number(row.value) || 0,
+            }));
+            if (!rows.length) ctx.reject("排名条形图至少需要一行数据。");
+            const suffix = String(content.suffix ?? "");
+            const title = String(content.title ?? "");
+            const peak = Math.max(...rows.map(row => row.value), 1);
+
+            const titleNode = root.querySelector("[data-title]");
+            titleNode.style.cssText = `gap:${10 * scale}px;font-size:${20 * scale}px;letter-spacing:${20 * 0.18 * scale}px;`
+              + `margin-bottom:${28 * scale}px;display:${title ? "inline-flex" : "none"};`;
+            root.querySelector("[data-title-dot]").style.cssText = `width:${9 * scale}px;height:${9 * scale}px;`;
+            root.querySelector("[data-title-text]").textContent = title;
+
+            rowsHost.textContent = "";
+            const nodes = rows.map((row, index) => {
+              const rowNode = document.createElement("div");
+              rowNode.className = "rb-row";
+              rowNode.setAttribute("data-rb-row-id", row.id);
+              rowNode.setAttribute("data-rb-index", String(index));
+              rowNode.setAttribute("data-rb-top", String(row.value === peak));
+              rowNode.style.marginBottom = index === rows.length - 1 ? "0" : `${GEO.rowMarginBottom * scale}px`;
+              const head = document.createElement("div");
+              head.className = "rb-head";
+              head.style.marginBottom = `${GEO.headMarginBottom * scale}px`;
+              const name = document.createElement("span");
+              name.className = "rb-name";
+              name.style.fontSize = `${GEO.nameFontSize * scale}px`;
+              name.textContent = row.name;
+              const value = document.createElement("span");
+              value.className = "rb-value";
+              value.style.cssText = `font-size:${GEO.valueFontSize * scale}px;color:${row.value === peak ? "var(--accent)" : "var(--ink)"};`;
+              value.textContent = formatNumber(0, decimalsOf(row.value)) + suffix;
+              head.append(name, value);
+              const track = document.createElement("div");
+              track.className = "rb-track";
+              track.style.height = `${GEO.trackHeight * scale}px`;
+              const fill = document.createElement("div");
+              fill.className = "rb-fill";
+              fill.style.width = "0%";
+              track.appendChild(fill);
+              rowNode.append(head, track);
+              rowsHost.appendChild(rowNode);
+              return {rowNode, fill, value, fraction: row.value / peak, decimals: decimalsOf(row.value)};
+            });
+
+            const cardWidth = Math.max(GEO.minWidth * scale,
+              ...rows.map(row => measure.width(row.name, GEO.nameFontSize * scale, 500, 0) + measure.width(formatNumber(row.value, decimalsOf(row.value)) + suffix, GEO.valueFontSize * scale, 600, 0) + GEO.headGap * scale));
+            card.style.width = `${Math.min(availableWidth, cardWidth)}px`;
+            const cardHeight = card.getBoundingClientRect().height;
+            card.style.left = `${safeX + (availableWidth - card.getBoundingClientRect().width) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - cardHeight) * options.position.y}px`;
+
+            nodes.forEach((entry, index) => {
+              const start = (index * MOTION.staggerMs) / 1000;
+              timeline.from(entry.rowNode, {opacity: 0, y: MOTION.rowRisePx * scale, duration: MOTION.rowFadeMs / 1000, ease: "power3.out"}, start);
+              timeline.fromTo(entry.fill, {width: "0%"}, {width: `${entry.fraction * 100}%`, duration: MOTION.fillMs / 1000, ease: "power3.out"}, start);
+              const counter = {value: 0};
+              timeline.to(counter, {
+                value: 1, duration: MOTION.valueRampMs / 1000, ease: "expo.out",
+                onUpdate: () => { entry.value.textContent = formatNumber(entry.fraction * peak * counter.value, entry.decimals) + suffix; },
+              }, start);
+            });
+            ctx.setAttr(root, "data-row-count", rows.length);
+            ctx.setAttr(root, "data-peak", String(peak));
+            ctx.meta = {rows: rows.length, peak};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

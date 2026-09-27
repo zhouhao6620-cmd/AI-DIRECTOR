@@ -1,0 +1,176 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-019",
+    "name": "RadarChart｜雷达图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_MULTI_AXIS",
+    "pattern": "SPIDER_AXIS_REACH",
+    "useCases": [
+      "同一个对象的 3–6 个维度打分，看短板与长板",
+      "1–3 组数据同框对比，逐轴伸出去形成轮廓"
+    ],
+    "minCardinality": 3,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/radar-chart/content.schema.json",
+    "requiredFields": [
+      "axes",
+      "series"
+    ],
+    "optionalFields": [
+      "maxValue",
+      "showLabels",
+      "showVertices",
+      "showLegend"
+    ],
+    "nodeShape": "轴：3–6 根，每根 1–6 字；数据组：1–3 组，每组一个稳定 ID + 1–10 字名称 + 与轴数等长的数值（0–1e9，最多 2 位小数，可整组覆盖颜色）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 3,
+    "maxCardinality": 6,
+    "axisLabelMaxLength": 6,
+    "seriesLabelMaxLength": 10,
+    "seriesRange": {
+      "min": 1,
+      "max": 3
+    },
+    "valueRange": {
+      "min": 0,
+      "max": 1000000000
+    },
+    "labelCapacityNote": "外框按实测标签包围盒反推（来源的「字数 × 0.52」系数低估中文约一半）：6 根轴 × 6 字标签 + 3 组数据下外框约 641 × 641 px、图例宽约 791 px，都在 9:16 的 912 px 安全区内。轴标签 6 字、数据组名称 10 字是本组件的内容上限。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "axis-reach",
+      "composableParameter": "来源固定「网先淡入 400 ms → 数据组间隔 333 ms → 每轴 167 ms 错峰、单轴 600 ms 伸出」；本批不开放参数"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.6,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE",
+      "note": "整组件等比缩放：网、多边形、轴标签与图例同乘一个系数。下限 0.6× 时轴标签 12 px（已是项目口径的下限）；上限按 05 §1.4 统一为 2×。默认大小 1×、默认落位未改变。"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "ringCount / fillOpacity｜来源固定 4 环与 0.22 填充（本批不开放参数）",
+      "exitAtInFrames / exitInFrames｜来源退场（由片段时序决定，本组件落定后保持）"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/radar-chart/RadarChart.jsx",
+    "export": "RadarChart",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Emphasis"
+      ],
+      "description": "底网（4 环 + 辐条 + 轴标签）在 400 ms 内整块淡入——它是量具不是数据；每组数据从 267 ms 起、每组间隔 333 ms，组内每根轴再错峰 167 ms，用带过冲的曲线在 600 ms 内伸到自己的比例；顶点跟着一起长大。落定后不再变化，没有来源之外的退场动画。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Noto Sans CJK SC\", sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTIONUI",
+    "sourceEntry": "radar-chart",
+    "sourceRegistryPath": "RemotionGit/registry/radar-chart.json",
+    "sourcePath": "RemotionGit/registry/bases/default/primitives/radar-chart.tsx",
+    "sourceRole": "RemotionUI 源码复制式来源（primitives/radar-chart.tsx）：保留 420 px 网、4 环、正上方起顺时针的轴序、标签锚点 radius + labelSize × 1.3、按轴错峰伸出的多边形、0.22 填充、0.008 × size 的描边与 0.012 × size 的顶点，以及「网先整块到位、数据再逐轴伸出」的分工；仅适配中文标签外框、图例、数值上限校验、双画幅、四套主题、透明输出、安全区定位与内容树",
+    "license": "MIT",
+    "upstreamRepository": "https://github.com/riaz37/remotion-ui",
+    "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5",
+    "installCommand": "RemotionUI 为源码复制式库：不执行 npx remotion-ui add，直接从本地 registry/radar-chart.json 的 files[].content 取源，本组件不从 npm 包 import",
+    "dependencyEntries": [
+      "@remotionui/motion-tokens"
+    ],
+    "reuseAnalysis": "复用结论：① 无可用——已注册组件里没有任何多维同框对比的图形（CMP-DATA-001 PinBoard 是多点钉板、CMP-DATA-004 RankBars 是单维排名、CMP-DATA-006 GrowthCurve 是时间趋势）；② 组件内元素尚未登记（REUSE_INDEX §② 仍为空）；③ 取 motion-tokens 零件（淡入 + 过冲两条曲线就是本组件的动效骨架）；补建极坐标轴几何、中文标签外框反推、图例与数值上限校验。",
+    "elements": [
+      {
+        "elementId": "EL-MOTION-TOKENS-001",
+        "name": "motion-tokens",
+        "nameZh": "动效令牌",
+        "kind": "工具 / 参数",
+        "source": {
+          "from": "RemotionGit",
+          "file": "registry/motion-tokens.json",
+          "path": "registry/bases/default/lib/motion-tokens.ts",
+          "license": "MIT",
+          "commit": "802a63708cc5c13936bcccb47f091a0b14325cb5"
+        },
+        "localPath": "platform/components/radar-chart/elements/motion-tokens/index.js",
+        "status": "Adapted",
+        "renderable": true,
+        "usedBy": [
+          "DRAFT-radar-chart"
+        ],
+        "notes": "本组件用到 EASING.enter（底网淡入）与 EASING.pop（顶点伸出）两条曲线；来源的 secondsToFrames() 换算成常量帧数，数值与来源一致。"
+      }
+    ],
+    "elementPromotion": "本批（CMP-06 B 批）6 个组件都取用了 motion-tokens，全部按「组件私有副本」放在各自 platform/components/<组件>/elements/motion-tokens/ 下。按元素工厂护栏第 12 条应提升为 platform/elements/motion-tokens/ 共享零件；提升动作留给总控执行——任务卡 §6 规定「公共零件提升为 platform/elements/ 前先回传总控」。",
+    "rawEvidence": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "adaptationRef": "docs/component-assets/CMP-06_BATCH_B_QA_REPORT.md",
+    "qaRef": "docs/component-assets/CMP-06_RADAR_CHART_QA_REPORT.md",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-radar-chart → CMP-DATA-019，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-019/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "雷达维度图",
+    "description": "展示一个或多个对象在不同维度上的强弱。",
+    "tags": [
+      "数据图表",
+      "对比"
+    ],
+    "aliases": [
+      "雷达图",
+      "能力雷达"
+    ]
+  }
+}

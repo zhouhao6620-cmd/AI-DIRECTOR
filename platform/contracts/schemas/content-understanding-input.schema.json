@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ContentUnderstandingInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product", "technical"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "projectName", "aspectRatio", "language", "segments"],
+      "properties": {
+        "projectId": {"type": "string", "minLength": 1},
+        "projectName": {"type": "string", "minLength": 1},
+        "aspectRatio": {"type": "string", "enum": ["9:16", "16:9"]},
+        "language": {"type": "string", "minLength": 2},
+        "segments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sourceSegmentId", "startMs", "endMs", "text"],
+            "properties": {
+              "sourceSegmentId": {"type": "string", "minLength": 1},
+              "startMs": {"type": "integer", "minimum": 0},
+              "endMs": {"type": "integer", "minimum": 1},
+              "text": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "inputRevision", "preparedAt", "sourceFiles", "baseVideoMetadata", "subtitleTrace"],
+      "properties": {
+        "schemaVersion": {"type": "string", "const": "1.0.0"},
+        "inputRevision": {"type": "string", "minLength": 1},
+        "preparedAt": {"type": "string", "minLength": 1},
+        "sourceFiles": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseVideo", "finalSrt"],
+          "properties": {
+            "baseVideo": {"type": "string", "minLength": 1},
+            "finalSrt": {"type": "string", "minLength": 1}
+          }
+        },
+        "baseVideoMetadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "encodedWidth", "encodedHeight", "actualAspectRatio", "orientation", "durationMs", "fps", "rotationDegrees", "format", "sizeBytes"],
+          "properties": {
+            "width": {"type": "integer", "minimum": 1},
+            "height": {"type": "integer", "minimum": 1},
+            "encodedWidth": {"type": "integer", "minimum": 1},
+            "encodedHeight": {"type": "integer", "minimum": 1},
+            "actualAspectRatio": {"type": "string", "minLength": 3},
+            "orientation": {"type": "string", "enum": ["PORTRAIT", "LANDSCAPE"]},
+            "durationMs": {"type": "integer", "minimum": 1},
+            "fps": {"type": ["number", "null"], "minimum": 1},
+            "sampleCount": {"type": ["integer", "null"], "minimum": 0},
+            "rotationDegrees": {"type": "integer", "enum": [0, 90, 180, 270]},
+            "format": {"type": "string", "enum": ["MP4", "MOV", "M4V"]},
+            "sizeBytes": {"type": "integer", "minimum": 1}
+          }
+        },
+        "subtitleTrace": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sourceSegmentId", "sourceCueId", "sourceRef"],
+            "properties": {
+              "sourceSegmentId": {"type": "string", "minLength": 1},
+              "sourceCueId": {"type": "string", "minLength": 1},
+              "sourceRef": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    }
+  }
+}

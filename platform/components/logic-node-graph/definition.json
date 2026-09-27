@@ -1,0 +1,137 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-LNG-001",
+    "name": "LogicNodeGraph｜逻辑节点图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "LOGIC_NODE_GRAPH",
+    "pattern": "RADIAL_BRANCH_EXPANSION",
+    "useCases": [
+      "一个中心结论发散出并列分支",
+      "分支下再挂一层可选的具体说明"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "TWO_LEVEL",
+    "density": "MEDIUM"
+  },
+  "content": {
+    "schemaRef": "platform/components/logic-node-graph/content.schema.json",
+    "requiredFields": [
+      "center",
+      "branches"
+    ],
+    "nodeShape": "中心节点（1–12 字）+ 一级分支（稳定 ID + 1–12 字）+ 一级分支下 0–2 个二级节点（稳定 ID + 1–10 字）",
+    "optionalNodes": true,
+    "secondaryNodes": true,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "childMaxPerBranch": 2,
+    "totalNodeMax": 13,
+    "centerMaxLength": 12,
+    "branchMaxLength": 12,
+    "leafMaxLength": 10,
+    "outOfBounds": "REJECT_WITH_MESSAGE",
+    "capacityNote": "节点名称为单行：名称过长、分支过密、超出安全区时明确拒绝，不静默截断文字也不偷偷缩字。9:16 竖屏建议不超过 4 个分支，6 个分支建议使用 16:9。"
+  },
+  "workbench": {
+    "position": true,
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "positionSupport": "默认居中；实例可调整水平与垂直位置，默认落位不变",
+    "size": true,
+    "sizeRange": {
+      "min": 0.5,
+      "max": 2,
+      "unit": "WHOLE_COMPONENT_SCALE"
+    },
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "radial-draw-in"
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "staggerControl": "stepMs 控制中心 → 一级 → 二级的展开节奏，范围 80–1200 ms",
+    "animationControls": [
+      {
+        "path": "stepMs",
+        "label": "节点展开间隔（毫秒）",
+        "min": 80,
+        "max": 1200,
+        "step": 10
+      }
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/logic-node-graph/LogicNodeGraph.jsx",
+    "export": "LogicNodeGraph",
+    "props": [
+      "content",
+      "stepMs",
+      "surface",
+      "theme",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Progressive Build",
+        "Connector Draw"
+      ],
+      "description": "中心节点先落位，一级节点按 stepMs 依次沿环出现（缩放 + 淡入 360 毫秒），连线用虚线绘制动画从父节点画到子节点（320 毫秒），二级节点跟随其连线出现。画幅变化时椭圆环自适应，节点与连线都不出安全区。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 2,
+    "maximumSampleDurationSeconds": 60,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+    "sourceReuse": {
+      "remotionui": "Connector Lines 只核验过能力记录（CMP-01 证据表），本轮未安装、未复制其源码，也未使用其组件；连线视觉语言改为沿用本地 HUD 既有的 `.uc-line` 描边与虚线绘制规则。",
+      "overlay": "复用本地 HUD 的节点视觉令牌：卡片圆角、玻璃渐变、边框、投影与强调色，以及连线 fill:none / stroke:var(--hud-acc) / stroke-width 2.5 / stroke-linecap:round / stroke-dashoffset 绘制动画。"
+    }
+  },
+  "provenance": {
+    "source": "BUILT_IN_PROJECT",
+    "sourcePath": "workbench-v0/platform/components/logic-node-graph/layout.js",
+    "sourceRole": "补建组件：枝鸥 / Overlay Studio 的 20 个效果中没有逻辑节点图；内容结构（中心 + 一级 + 可选二级）与图布局（等角椭圆环 + 三次贝塞尔连线）由本项目自建，节点与连线的视觉令牌取自本地 HUD 既有样式。RemotionUI Connector Lines 未安装、未复制，不作为已验证来源。",
+    "rawEvidence": "docs/component-assets/CMP-01_CONFIRMED_SCOPE_V1.0_2026-09-14.md",
+    "adaptationRef": "docs/component-assets/CMP-04C_SOURCE_STYLE_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-04C_QA_REPORT.md"
+  },
+  "discovery": {
+    "title": "中心发散逻辑图",
+    "description": "从一个中心结论展开并列分支与可选说明。",
+    "tags": [
+      "流程",
+      "关系"
+    ],
+    "aliases": [
+      "逻辑节点图",
+      "放射图"
+    ]
+  }
+}

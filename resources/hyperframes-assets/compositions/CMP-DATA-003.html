@@ -1,0 +1,185 @@
+<!doctype html>
+
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"surface","type":"enum","label":"底色","default":"DARK","options":[{"value":"DARK","label":"深色"},{"value":"LIGHT","label":"浅色"}]},
+  {"id":"accent","type":"color","label":"强调色","default":"#5fa0fa"},
+  {"id":"size","type":"number","label":"大小","default":1,"min":0.5,"max":2,"step":0.01},
+  {"id":"duration","type":"number","label":"实例时长（秒）","default":12,"min":3,"max":60,"step":0.1},
+  {"id":"position-x","type":"number","label":"水平位置","default":0,"min":0,"max":1,"step":0.01},
+  {"id":"position-y","type":"number","label":"垂直位置","default":0.5,"min":0,"max":1,"step":0.01}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>CMP-DATA-003 数字翻牌 · HyperFrames</title>
+  <style>
+    [data-composition-id="cmp-data-003"] {
+      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --ink: #ffffff;
+      --muted: rgba(255,255,255,0.70);
+      --accent: #5fa0fa;
+      position: relative; width: 1920px; height: 1080px; overflow: hidden;
+      background: transparent; font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+    }
+    .od-card { position: absolute; display: flex; flex-direction: column; align-items: center; color: var(--ink); }
+    .od-kicker { font-family: var(--font-mono); font-weight: 600; color: var(--muted); text-transform: uppercase; white-space: pre; }
+    .od-row { display: flex; align-items: baseline; }
+    .od-slot { display: inline-block; overflow: hidden; font-family: var(--font-mono); font-weight: 300; color: var(--ink); }
+    .od-reel { display: flex; flex-direction: column; }
+    .od-reel span { display: block; text-align: center; }
+    .od-unit { color: var(--accent); font-weight: 600; white-space: pre; }
+    .od-label { color: var(--muted); white-space: pre; line-height: 1.2; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-data-003" data-width="1920" data-height="1080">
+    <div class="od-card" data-card>
+      <div class="od-kicker" data-kicker></div>
+      <div class="od-row" data-row></div>
+      <div class="od-label" data-label></div>
+    </div>
+
+    <script type="application/json" data-hf-content>
+      {
+        "kicker": "VIEWS",
+        "value": 1284,
+        "unit": "万",
+        "label": "累计观看"
+      }
+    </script>
+
+    <script src="__R3_GSAP_ENTRY__"></script>
+    <script src="__R3_CANVAS_BACKDROP_ENTRY__"></script>
+    <script src="__R3_COMPONENT_KIT_ENTRY__"></script>
+    <script>
+      (function () {
+        const GEO = {
+          gap: 16, kickerFontSize: 20, kickerLetterSpacingEm: 0.22, slotHeightEm: 1.15, slotFontSize: 150,
+          slotFontWeight: 300, rowGap: 6, unitFontSize: 56, unitFontWeight: 600, unitMarginLeft: 8,
+          labelFontSize: 26, lineHeight: 1.2, maxValue: 99999,
+        };
+        const MOTION = {reelMs: 900, digitDelayMs: 110};
+        const SAFE_X = 84 / 1080;
+        const SAFE_Y = 0.08;
+        const DIGITS = "0123456789".split("");
+        const SURFACE_TOKENS = {
+          DARK: {ink: "#ffffff", muted: "rgba(255,255,255,0.70)", textShadow: "0 2px 12px rgba(0,0,0,0.4)"},
+          LIGHT: {ink: "#1a2540", muted: "rgba(26,37,64,0.66)", textShadow: "0 2px 12px rgba(255,255,255,0.5)"},
+        };
+
+        hfComponentKit.mount({
+          id: "cmp-data-003",
+          mount: "none",
+          tokens: SURFACE_TOKENS,
+          options: variables => ({
+            surface: String(variables.surface || "DARK").toUpperCase(),
+            accent: String(variables.accent || "#5fa0fa"),
+            size: Math.min(2, Math.max(0.5, Number(variables.size) || 1)),
+            duration: Math.max(3, Number(variables.duration) || 12),
+            position: {
+              x: Math.min(1, Math.max(0, Number(variables["position-x"] ?? 0))),
+              y: Math.min(1, Math.max(0, Number(variables["position-y"] ?? 0.5))),
+            },
+          }),
+          applyTokens(ctx) {
+            const tokens = ctx.tokens ?? SURFACE_TOKENS.DARK;
+            ctx.root.style.setProperty("--ink", tokens.ink);
+            ctx.root.style.setProperty("--muted", tokens.muted);
+            ctx.root.style.setProperty("--accent", ctx.options.accent);
+            ctx.root.setAttribute("data-surface", ctx.options.surface);
+          },
+          build(ctx) {
+            const {root, content, options, measure, timeline} = ctx;
+            const card = root.querySelector("[data-card]");
+            const row = root.querySelector("[data-row]");
+            const factor = options.size;
+            const stage = {width: root.clientWidth || 1920, height: root.clientHeight || 1080};
+            const safeX = stage.width * SAFE_X;
+            const safeY = stage.height * SAFE_Y;
+            const availableWidth = stage.width - safeX * 2;
+            const availableHeight = stage.height - safeY * 2;
+            const gap = GEO.gap * factor;
+            const kicker = String(content.kicker ?? "");
+            const unit = String(content.unit ?? "");
+            const label = String(content.label ?? "");
+            const value = Math.max(0, Math.min(GEO.maxValue, Math.round(Number(content.value ?? 0))));
+            const digits = String(value);
+
+            // 字号收缩：整行（各位数字 + 单位）必须放进安全区
+            const unitWidth = unit ? measure.width(unit, GEO.unitFontSize * factor, GEO.unitFontWeight, 0) : 0;
+            const rowGap = GEO.rowGap * factor;
+            const digitWidth = fontSize => measure.width("0", fontSize, GEO.slotFontWeight, 0);
+            let slotFontSize = Math.min(GEO.slotFontSize * factor, availableHeight * 0.4);
+            const needed = fontSize => digits.length * digitWidth(fontSize) + (digits.length - 1) * rowGap + (unit ? GEO.unitMarginLeft * factor + unitWidth : 0);
+            if (needed(slotFontSize) > availableWidth) slotFontSize = Math.max(24 * factor, slotFontSize * (availableWidth / needed(slotFontSize)));
+            const overflow = needed(slotFontSize) > availableWidth + 0.5;
+            if (overflow) ctx.reject("数字位数过多：在安全区内放不下，请降低位数或改用其它数据组件。");
+
+            row.textContent = "";
+            row.style.gap = `${rowGap}px`;
+            const slotHeight = slotFontSize * GEO.slotHeightEm;
+            const reels = [];
+            for (const [index, character] of [...digits].entries()) {
+              const target = Number(character);
+              const slot = document.createElement("span");
+              slot.className = "od-slot";
+              slot.setAttribute("data-od-slot", "");
+              slot.setAttribute("data-od-target", String(target));
+              slot.setAttribute("data-digit-index", String(index));
+              slot.style.height = `${slotHeight}px`;
+              slot.style.fontSize = `${slotFontSize}px`;
+              slot.style.lineHeight = String(GEO.slotHeightEm);
+              slot.style.textShadow = (ctx.tokens ?? SURFACE_TOKENS.DARK).textShadow;
+              const reel = document.createElement("span");
+              reel.className = "od-reel";
+              reel.setAttribute("data-od-reel", "");
+              DIGITS.forEach(digit => {
+                const node = document.createElement("span");
+                node.setAttribute("data-od-d", "");
+                node.style.height = `${slotHeight}px`;
+                node.style.lineHeight = String(GEO.slotHeightEm);
+                node.textContent = digit;
+                reel.appendChild(node);
+              });
+              slot.appendChild(reel);
+              row.appendChild(slot);
+              reels.push({reel, target, index, delayMs: (digits.length - index) * MOTION.digitDelayMs});
+            }
+            if (unit) {
+              const unitNode = document.createElement("span");
+              unitNode.className = "od-unit";
+              unitNode.setAttribute("data-od-unit", "");
+              unitNode.style.fontSize = `${GEO.unitFontSize * factor}px`;
+              unitNode.style.marginLeft = `${GEO.unitMarginLeft * factor}px`;
+              unitNode.textContent = unit;
+              row.appendChild(unitNode);
+            }
+            const kickerNode = root.querySelector("[data-kicker]");
+            kickerNode.style.cssText = `font-size:${GEO.kickerFontSize * factor}px;letter-spacing:${GEO.kickerFontSize * GEO.kickerLetterSpacingEm * factor}px;margin-bottom:${gap}px;`;
+            kickerNode.textContent = kicker;
+            const labelNode = root.querySelector("[data-label]");
+            labelNode.style.cssText = `font-size:${GEO.labelFontSize * factor}px;margin-top:${gap}px;`;
+            labelNode.textContent = label;
+
+            const cardWidth = Math.min(availableWidth, Math.max(needed(slotFontSize), measure.width(kicker, GEO.kickerFontSize * factor, 600, 0), measure.width(label, GEO.labelFontSize * factor, 400, 0)));
+            card.style.width = `${cardWidth}px`;
+            const cardHeight = card.getBoundingClientRect().height;
+            card.style.left = `${safeX + (availableWidth - cardWidth) * options.position.x}px`;
+            card.style.top = `${safeY + (availableHeight - cardHeight) * options.position.y}px`;
+
+            // 卷轴：每位从 0 号格转到目标位（translateY = -目标 × 槽高），最高位最后停
+            reels.forEach(({reel, target, delayMs}) => {
+              timeline.fromTo(reel, {y: 0}, {y: -target * slotHeight, duration: MOTION.reelMs / 1000, ease: "power3.out"}, delayMs / 1000);
+            });
+            const lastSettle = ((digits.length) * MOTION.digitDelayMs + MOTION.reelMs) / 1000;
+            ctx.setAttr(root, "data-digit-count", digits.length);
+            ctx.setAttr(root, "data-settled-at", lastSettle.toFixed(2));
+            ctx.meta = {value, digits: digits.length, slotFontSize: Math.round(slotFontSize)};
+          },
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>
+

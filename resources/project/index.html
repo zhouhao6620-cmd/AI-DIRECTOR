@@ -1,0 +1,51 @@
+<!doctype html>
+<!--
+  CMP-SKL-001 冒烟测试 · 根合成（16:9 / 1920×1080）
+
+  Role: Reference（冒烟测试件，不是基线）
+  这一层只做「Shot 内的组件槽位」：把技能介绍卡子合成按实例时间挂上去。
+  实例属性由 hyperframes/adapter/hyper-composition-compiler.mjs 编译产生，
+  可用 `node scripts/bind.mjs --check` 校验这里的内联值没有漂移。
+-->
+<html lang="zh-CN" data-composition-variables='[
+  {"id":"canvas","type":"enum","label":"画布底色","default":"DARK","options":[{"value":"DARK","label":"黑色"},{"value":"LIGHT","label":"浅色"},{"value":"CHECKER","label":"透明网格"}]}
+]'>
+<head><script src="/engine/hyperframes/hyperframe.runtime.iife.js"></script>
+  <meta charset="utf-8">
+  <title>CMP-SKL-001 冒烟测试 · 根合成</title>
+  <!-- 画布底色：透明合成在 iframe 里的正确做法（见 vendor/canvas-backdrop.js 顶部说明）。
+       写根绝对路径的原因与 GSAP 相同：合成可能被内联进不同目录的宿主文档。 -->
+  <script src="/vendor/canvas-backdrop.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; background: transparent; }
+    [data-composition-id="cmp-skl-001-root"] {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div data-composition-id="cmp-skl-001-root" data-width="1920" data-height="1080" data-duration="12" data-no-timeline>
+    <!--
+      Shot 04 / Slot 02 · 技能介绍卡实例
+        data-start / data-duration : ProductionState 的 start / duration（秒）
+        data-track-index            : Studio 与 Debug 的时间线提示位，不承担渲染层级
+        style z-index               : ProductionState.layer 的真实视觉层级
+        data-variable-values        : 该实例的内容与主题（同一份资产可多实例不同值）
+    -->
+    <div
+      id="el-cmp-skl-001-shot-04-slot-02"
+      data-composition-id="cmp-skl-001-shot-04-slot-02"
+      data-composition-src="compositions/skill-intro-card.html"
+      data-start="0"
+      data-duration="12"
+      data-track-index="1"
+      style="z-index:20"
+      data-variable-values='{"surface":"DARK","size":1,"duration":12,"position-x":0.5,"position-y":0.5,"card1_skill":"find-skills","card1_hook":"不知道装什么？直接说你想干嘛","card1_body":"几万个技能里，它帮你挑最合适的那个。把需求说出来，它给你答案。","card1_badge":"全网 300 万+ 安装","accent-1":"#538BFE","card2_skill":"video-dubbing","card2_hook":"一条片子，讲给所有人听","card2_body":"保留原来的音色，把口播换成另一种语言，字幕和口型一起对齐。","card2_badge":"覆盖 12 种语言","accent-2":"#F0A24F","card3_skill":"skill-authoring","card3_hook":"从一张参考图，到一个能用的组件","card3_body":"读懂参考里的版式与动效，产出能预览、能编辑、能导出的真实组件。","card3_badge":"已产出 21 个组件","accent-3":"#8F86EA","card4_skill":"","card4_hook":"","card4_body":"","card4_badge":""}'
+    ></div>
+  </div>
+</body>
+</html>

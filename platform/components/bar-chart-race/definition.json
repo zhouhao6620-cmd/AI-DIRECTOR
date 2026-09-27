@@ -1,0 +1,163 @@
+{
+  "status": "REGISTERED",
+  "identity": {
+    "componentId": "CMP-DATA-008",
+    "name": "BarChartRace｜柱状竞速图",
+    "version": "1.0.0"
+  },
+  "semantic": {
+    "type": "DATA_RANKING",
+    "pattern": "FRACTIONAL_RANK_RACE",
+    "useCases": [
+      "2–6 条系列在 2–6 个时间点上的名次变化",
+      "名次用分数排名，两条数值交叉时条形互相滑过而不是跳行"
+    ],
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "depth": "ONE_LEVEL",
+    "density": "HIGH"
+  },
+  "content": {
+    "schemaRef": "platform/components/bar-chart-race/content.schema.json",
+    "requiredFields": [
+      "steps",
+      "series"
+    ],
+    "optionalFields": [
+      "title",
+      "unit",
+      "caption"
+    ],
+    "nodeShape": "系列：稳定 ID + 1–8 字系列名 + 与时间点同长的 2–6 个非负数值；时间点为 2–6 个 1–4 字标签（年份等）",
+    "optionalNodes": false,
+    "secondaryNodes": false,
+    "dynamicReflow": true,
+    "minCardinality": 2,
+    "maxCardinality": 6,
+    "titleMaxLength": 14,
+    "seriesLabelMaxLength": 8,
+    "stepMaxLength": 4,
+    "unitMaxLength": 4,
+    "captionMaxLength": 28,
+    "valueLimit": 1000000000,
+    "labelCapacityNote": "900 px 块宽、行名占 200 px（扣 14 px 行距后 186 px）：8 个汉字在 21 px 下缩到 17 px 左右仍放得下；超过容量明确拒绝——来源是 overflow: hidden + 省略号，中文会被静默截断。数值按最宽条形（700 px × 55%）测量，时间点大字按块宽 30% 测量。",
+    "outOfBounds": "REJECT_WITH_MESSAGE"
+  },
+  "workbench": {
+    "position": true,
+    "size": true,
+    "theme": true,
+    "contentEditing": true,
+    "assetReplace": false,
+    "variant": false,
+    "motionPreset": {
+      "supported": true,
+      "exposed": false,
+      "default": "rank-race",
+      "composableParameter": "stepMs｜两个时间点之间的行进时长（来源 framesPerStep 26 帧 ≈ 867 ms，可编排范围 200–2000 ms）；本批不在 Inspector 开放"
+    },
+    "positionRange": {
+      "min": 0,
+      "max": 1,
+      "space": "AVAILABLE_SAFE_AREA"
+    },
+    "sizeRange": {
+      "min": 0.4,
+      "max": 2
+    },
+    "themes": [
+      "BLUE",
+      "ORANGE",
+      "RED",
+      "PURPLE"
+    ],
+    "themeDefault": "SOURCE",
+    "themeModes": [
+      "SOURCE",
+      "INSTANCE_OVERRIDE"
+    ],
+    "surfaceModes": [
+      "DARK",
+      "LIGHT"
+    ],
+    "surfaceDefault": "DARK",
+    "excludedSourceOptions": [
+      "exitAtInFrames / exitInFrames｜来源的退场，本项目由编排层控制出点",
+      "width / rowHeight / gap / labelWidth｜来源的像素参数，本项目固定为来源默认值并整组件等比缩放",
+      "visibleRows｜来源的可见窗口，本项目固定为系列条数（本组件最多 6 条，正是来源的窗口）",
+      "colors / inkColor / labelColor｜来源的颜色参数，改为四套主题 + 明暗底色映射（来源原色为 SOURCE 默认）",
+      "valueFormatter｜来源接受函数，内容树不能存函数，固定为项目的中文紧凑格式 + 内容级单位",
+      "framesPerStep｜改为毫秒参数 stepMs，便于在不同 fps 下保持同一节奏",
+      "series.values 与 steps 长度不一致｜来源按 0 静默补齐，本项目明确拒绝"
+    ]
+  },
+  "runtime": {
+    "module": "platform/components/bar-chart-race/BarChartRace.jsx",
+    "export": "BarChartRace",
+    "props": [
+      "content",
+      "position",
+      "size",
+      "surface",
+      "theme",
+      "stepMs",
+      "durationInFrames"
+    ],
+    "motionBehavior": {
+      "patterns": [
+        "Rank Transition",
+        "Continuous Motion"
+      ],
+      "description": "时间按 stepMs 连续推进，每条系列在两个时间点之间线性插值；名次用分数排名（Σ 1 / (1 + e^((自己 − 对方) / 软度))，软度 = 领先值 × 0.022），所以两条数值交叉时条形互相滑过而不是整行跳一格。条形长度按 current / leader 归一，最短保留 39.6 px 的可见药丸；可见窗口之外的行淡出。"
+    },
+    "timeModel": "REMOTION_FRAME",
+    "minimumDurationSeconds": 3,
+    "maximumSampleDurationSeconds": 30,
+    "transparent": true,
+    "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Noto Sans CJK SC, sans-serif",
+    "monoFontFamily": "\"SF Mono\", ui-monospace, PingFang SC, monospace",
+    "previewNote": "组件演示由播放器运行组件代码生成；不保存预渲染预览视频。"
+  },
+  "provenance": {
+    "source": "REMOTION_UI",
+    "sourceEffectId": "bar-chart-race",
+    "sourcePath": "RemotionGit/registry/bar-chart-race.json → registry/bases/default/primitives/bar-chart-race.tsx",
+    "sourceRole": "RemotionUI 来源库（源码复制式，MIT，commit 802a637）；来源设计优先：保留 900 px 块宽 / 66 px 行高 / 14 px 行距 / 200 px 行名列 / 分数排名与 sigmoid 软度 / 最短药丸宽度 / 右下角 0.22 不透明度的时间点大字，仅适配块尺寸测量、安全区定位、整组件缩放、文本实测与容量、内容树、画幅、主题映射与透明输出",
+    "reuseAnalysis": "复用结论：① 已注册 23 项里 RankBars 是固定排序的条目对比（一次性长成，不含时间轴与名次互换），不能承载「跨时间点的名次竞速」的语义，也不允许在并行批次里改动；② 组件内元素尚未正式登记，本组件用不到；③ 取零件工厂的 chart-utils（中文紧凑数值 + 文本实测）与 motion-tokens（入场曲线与时长令牌）两个零件装配，无需补建。",
+    "elements": [
+      {
+        "elementId": "EL-UTIL-001",
+        "name": "chart-utils",
+        "source": "RemotionGit/registry/chart-utils.json",
+        "localPath": "platform/elements/chart-utils/",
+        "status": "Adapted"
+      },
+      {
+        "elementId": "EL-UTIL-002",
+        "name": "motion-tokens",
+        "source": "RemotionGit/registry/motion-tokens.json",
+        "localPath": "platform/elements/motion-tokens/",
+        "status": "Adapted"
+      }
+    ],
+    "rawEvidence": "RemotionGit/README.md（来源与许可记录：MIT，commit 802a637）",
+    "adaptationRef": "docs/component-assets/CMP-06_DATA_CHARTS_ADAPTATION.md",
+    "qaRef": "docs/component-assets/CMP-06_BAR_CHART_RACE_QA_REPORT.md",
+    "draftLane": "本组件是 CMP-06 A 批草稿：componentId = DRAFT-bar-chart-race、status = DRAFT，不占正式 CMP- 编号，不进能力索引，AI 导演不可见。",
+    "sourceNote": "来源条目已在本地可真实渲染（http://127.0.0.1:4174/remotionui-preview.html 左侧目录 179 项之一）；仓库 License 为 MIT（RemotionGit/repo/LICENSE）。",
+    "promotion": "用户 2026-09-16 确认验收通过后由总控执行晋升（按技能 V1.4 §5.1 清单）：componentId DRAFT-bar-chart-race → CMP-DATA-008，version 0.1.0 → 1.0.0，status DRAFT → REGISTERED，预览产物目录同步改为 public/component-previews/CMP-DATA-008/；渲染实现未改动，晋升后重跑真实渲染 QA 与全量回归。"
+  },
+  "discovery": {
+    "title": "柱状竞速图",
+    "description": "展示多个对象随时间变化的名次与数值。",
+    "tags": [
+      "数据图表",
+      "排名",
+      "趋势"
+    ],
+    "aliases": [
+      "竞速条形图",
+      "动态排名"
+    ]
+  }
+}

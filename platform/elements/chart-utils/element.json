@@ -1,0 +1,58 @@
+{
+  "elementId": "EL-UTIL-001",
+  "nameZh": "图表工具",
+  "nameEn": "chart-utils",
+  "kind": "工具 / 参数",
+  "source": {
+    "from": "RemotionGit",
+    "file": "registry/chart-utils.json",
+    "sourcePath": "registry/bases/default/lib/chart-utils.ts",
+    "license": "MIT",
+    "commit": "802a637"
+  },
+  "localPath": "platform/elements/chart-utils/",
+  "module": "platform/elements/chart-utils/chart-utils.js",
+  "status": "Adapted",
+  "renderable": true,
+  "usedBy": [
+    "CMP-DATA-016",
+    "CMP-DATA-007",
+    "CMP-DATA-008",
+    "CMP-DATA-021",
+    "CMP-DATA-011",
+    "CMP-DATA-022"
+  ],
+  "notes": "适配差异：① 保留来源全部纯数学函数与原值（niceDomain / buildSmoothPath / buildAreaPath / getPlotArea / plotPoints / scaleValue / getChartDomain / readDelta）；② formatCompactNumber 默认改为本项目的中文紧凑写法（124000 → 12.4万，来源是 124K）；③ 新增 CJK 文本测量与按槽位缩放（textWidth / fitTextToWidth），让超长中文标签先缩小到 12 px 下限、再明确拒绝，而不是被裁切；④ 新增本项目画幅约定 equalAreaScale（等面积缩放）与 safeAreaOf（84 px / 8% 安全区）。",
+  "elementType": "UTILITY",
+  "summary": "图表数值、坐标和文字适配工具，可复用在数据图表组件中。",
+  "tags": [
+    "图表",
+    "坐标",
+    "数值",
+    "文字适配"
+  ],
+  "exports": [
+    "getChartDomain",
+    "niceDomain",
+    "scaleValue",
+    "getPlotArea",
+    "plotPoints",
+    "buildLinePath",
+    "buildSmoothPath",
+    "buildAreaPath",
+    "formatCompactNumber",
+    "formatAxisValue",
+    "readDelta",
+    "REFERENCE_CANVAS",
+    "SAFE_X_RATIO",
+    "SAFE_Y_RATIO",
+    "MIN_TEXT_FONT_SIZE",
+    "equalAreaScale",
+    "safeAreaOf",
+    "placeInSafeArea",
+    "textWidth",
+    "fitTextToWidth",
+    "formatNumber"
+  ],
+  "standalonePreviewable": false
+}

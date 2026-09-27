@@ -1,0 +1,83 @@
+/* 组件库内壳页 · 页面级补充样式
+   Role: Reference（冒烟测试件，不是基线）
+
+   这里只写「真实工作台样式没覆盖、又必须为本页 HyperFrames 内核补上」的部分：
+     1. 左栏布景化（整列不可点）
+     2. 预览内核（.preview-surface / <hyperframes-player>）在 .library-player-space 里的盒模型
+   视觉语言（黑壳 / 白画布 / 橙色信号 / 令牌）全部来自 styles.css 与 library.css，不在这里重定义。 */
+
+/* ── 1. 左栏是可点的资产导航（早期"布景版"的 pointer-events: none 已移除） ───── */
+/* 只保留一个细节：分组标题行本身不是入口，靠右侧二级入口进频道页。 */
+.library-nav .library-nav-item > .library-nav-button { cursor: pointer; }
+.library-nav .library-nav-caret { cursor: default; }
+.library-nav .library-subnav-button.is-active { color: var(--wb-primary); font-weight: 650; }
+
+/* ── 2. 预览内核盒模型 ─────────────────────────────────────────────────────── */
+/* 工作台里 .preview-surface 的宽高由内核脚本内联给出；这里高度也由 preview-chrome.js 计算。 */
+.library-player-space > .preview-surface {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.library-player-space .preview-stage { position: relative; margin: 0 auto; }
+
+/* HyperFrames 官方 player 的宿主：铺满舞台，画布底色由合成文档决定（见 project/canvas-backdrop.js） */
+.library-player-space hyperframes-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+}
+
+/* 组件库里的控制条沿用同一份内核样式；这里只把圆角与内边距对齐详情页画面 */
+.library-player-space .preview-chrome { border-radius: 0 0 2px 2px; }
+
+/* 工作台的全局 CSS 会给 svg / 弹层设 display，盖掉 [hidden] 的 UA 规则
+   （表现为播放键下面多出暂停键、音量弹层一直显示）。预览外壳内部固定按 [hidden] 隐藏。 */
+.preview-surface [hidden] { display: none !important; }
+
+/* 右栏：与真实详情页一致，配置区自己滚动 */
+.library-detail-controls { display: flex; flex-direction: column; }
+.library-detail-controls > .library-config-header { padding: 18px 20px 0; }
+
+/* ── 高度约束透传（详情页右栏能内部滚动的关键） ─────────────────────────────
+   真实工作台里 <section class="library-detail"> 是 main.canvas 的直接子节点，高度链是通的；
+   这里多包了 #detailView / #channelView 两层容器，必须把 min-height:0 与 1fr 行高继续传下去，
+   否则栅格会被内容撑高（body overflow:hidden），右栏底部的分区就永远滚不到。 */
+.library-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+#detailView {
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+#channelView {
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+/* display 规则会盖掉 HTML 的 hidden 属性（UA 的 [hidden]{display:none} 优先级更低）：
+   详情页与频道页来回切换全靠 hidden，所以这里必须显式声明，否则两个视图会互相遮挡。 */
+#detailView[hidden],
+#channelView[hidden] {
+  display: none !important;
+}
+/* 同理：分组折叠后的二级列表必须真的收起 */
+.library-nav .library-subnav[hidden] {
+  display: none !important;
+}
+
+/* 只读信息块（实例与导出）：沿用 .library-info 的视觉，但放在右栏里更紧凑 */
+.config-readonly dl { margin: 0; display: grid; gap: 8px; }
+.config-readonly dl > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; }
+.config-readonly dt { color: var(--wb-text-soft); font-size: 12px; }
+.config-readonly dd { margin: 0; color: var(--wb-text); font-size: 12px; line-height: 1.6; }
+
+/* Markdown 编辑器的放大编辑（对应真实面板的 overlay） */
+.config-editor-overlay .config-editor-dialog h2 { margin: 0 0 14px; font-size: 18px; font-weight: 600; }
